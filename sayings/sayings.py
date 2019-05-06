@@ -36,12 +36,28 @@ class Sayings(commands.Cog):
     
     @phrase.command()
     async def error(self,ctx):
+        """Don't use me!!"""
         async with ctx.typing():
             await ctx.send("Fuck, you broke me!")
             await asyncio.sleep(5)
             await ctx.send("Sike!")
+            await asyncio.sleep(2)
+            await ctx.send("Error: Sharky.exe Has Stopped Working")
+            await asyncio.sleep(2)
+            await ctx.send("Limitation To Sharky.exe....")
+            await asyncio.sleep(2)
+            await ctx.send("Crash Rebooting Sharky.exe......")
+            await asyncio.sleep(2)
+            await ctx.sleep("Failure Relaunching Sharky.exe......")
+            await asyncio.sleep(2)
+            await ctx.sleep("Failure Closing Sharky.exe......")
+            await asyncio.sleep(2)
+            await ctx.send("Confirmed Launching Sharky.exe....")
+            await asyncio.sleep(2)
+            await ctx.send("Failure Launching Sharky.exe.......")
+            await asyncio.sleep(10)
+            await ctx.send("Failure Launching Sharky.exe.....Failed")
 
-            
 #Red group
     @commands.group()
     async def red(self, ctx):
