@@ -20,6 +20,7 @@ class Sayings(commands.Cog):
     @commands.group()
     async def phrase(self, ctx):
         """Phrases"""
+
     @phrase.command()
     async def potato(self, ctx):
         """Potatos"""
@@ -34,4 +35,17 @@ class Sayings(commands.Cog):
     async def gofish(self, ctx):
         """Definition of \"Go Fish\""""
         await ctx.send("Go fuck yourself")
-        
+
+#Red group
+    @command.group()
+    async def red(self, ctx):
+        """People from Red"""
+    @red.command()
+    async def kenny(self, ctx):
+        """Kenny"""
+        await ctx.send("A lovely person, with the best profile picture ever. Though his name makes you question if you're accidentally going to ping everyone....all the damn time")
+
+    @red.command()
+    async def flare(self, ctx):
+        """Flare"""
+        await ctx.send("The pikachu of them all, someone who makes you wonder how the hell does he fight a dargon? Magic? Strength? Or is he just too damn cute that the dargon doesn't like to hurt him....the world may never know.")
