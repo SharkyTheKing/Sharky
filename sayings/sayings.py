@@ -115,6 +115,11 @@ class Sayings(commands.Cog):
     async def redbot(self, ctx):
         """Redbot"""
         await ctx.send("Should have, could have, would have*")
+    
+    @red.command()
+    async def neuro(self, ctx):
+        """Neuro"""
+        await ctx.send("Fuck.")
 
 
     #Offiical Group
@@ -142,6 +147,7 @@ class Sayings(commands.Cog):
     @fn.command()
     async def ePoC(self, ctx):
         """ePoC????? wut"""
-        await asyncio.sleep(60)
-        await ctx.send("wut...you waited a minute for this?")
+        async with ctx.typing():
+            await asyncio.sleep(60)
+            await ctx.send("wut...you waited a minute for this?")
     #adding more later
