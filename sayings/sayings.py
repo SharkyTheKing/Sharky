@@ -123,7 +123,7 @@ class Sayings(commands.Cog):
         """Official Fortnite People"""
     @fn.command(name="sharky") #a way to add multiple subcommands with the same name
     async def sharky_fn(self, ctx):
-        file = discord.File(str(bundled_data_path(self) / "sharky.gif"))
+        file = discord.File(str(bundled_data_path(self) / "sharky.png"))
         async with ctx.typing():
             await ctx.send("The fishy supermod", files=[file])
     
