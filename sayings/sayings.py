@@ -88,5 +88,5 @@ class Sayings(commands.Cog):
     @red.command()
     async def redbot(self, ctx):
         """Redbot"""
-        await ctx.send("Should have*", "could have*", "would have*")
+        await ctx.send("Should have, could have, would have*")
 
