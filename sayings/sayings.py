@@ -2,20 +2,16 @@ import discord
 from redbot.core import commands, checks
 from redbot.core.data_manager import bundled_data_path
 class Sayings(commands.Cog):
-#People Group
+    """A list of People, Phrases, People from Red and hopefully more!"""
+#People group
     @commands.group()
     async def people(self, ctx):
         """People"""
     
-    @people.command()
-    async def soul(self, ctx):
-        """A comment about Soul"""
-        await ctx.send("Soul is a troll, for he is the king of them all. He's also an asshole.")
-    
-    @people.command()
-    async def kowlin(self, ctx):
-        """A comment about the Wyvern"""
-        await ctx.send("Kowlin, for he is a lovely Wyvern who breaths fire, has your back and knows how to make shit look easy when it's really not.")
+    @people.group()
+    async def random(self, ctx):
+        """Nothing to see here""""
+        await ctx.send("What did I tell you? Nothing to see here!")
 
 #phrase group
     @commands.group()
@@ -90,3 +86,14 @@ class Sayings(commands.Cog):
         """Redbot"""
         await ctx.send("Should have, could have, would have*")
 
+
+    #Offiical Group
+    @commands.group()
+    async def fn(self, ctx):
+        """Official Fortnite People"""
+    @fn.command()
+    async def sharky(self, ctx):
+        file = discord.File(str(bundled_data_path(self) / "sharky.gif"))
+        async with ctx.typing()
+            await ctx.send("The fishy supermod", files=[file])
+    #adding more later
