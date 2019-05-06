@@ -77,3 +77,15 @@ class Sayings(commands.Cog):
         file = discord.File(str(bundled_data_path(self) / "seppuku.png"))
         async with ctx.typing():
             await ctx.send("The powerful and knowledgeable Jenn. This is all that needs to be said of the greatness.", files=[file])
+
+    @red.command()
+    async def aika(self, ctx):
+        """Aikaterna"""
+        file = discord.File(str(bundled_data_path(self) / "catban.png"))
+        async with ctx.typing():
+            await ctx.send("Aik, the most powerful of the cats. For Aik swings the banhammer on all of those who oppose them.", files=[file])
+
+    @red.command()
+    async def red(self, ctx):
+        async with ctx.typing():
+            await ctx.send("Should have*")
