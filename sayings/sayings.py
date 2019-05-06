@@ -37,7 +37,7 @@ class Sayings(commands.Cog):
         await ctx.send("Go fuck yourself")
 
 #Red group
-    @command.group()
+    @commands.group()
     async def red(self, ctx):
         """People from Red"""
     @red.command()
