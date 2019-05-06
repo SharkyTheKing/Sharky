@@ -53,4 +53,9 @@ class Sayings(commands.Cog):
     @red.command()
     async def trusty(self, ctx):
         """Trusty"""
-        await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. https://cdn.discordapp.com/attachments/133251234164375552/573587960855920661/V4OLA-trustymeme.png")
+        await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. His cogs also are known to break python itself, a true master of fucking with you.")
+
+    @red.command()
+    async def flame(self, ctx):
+        """Flame"""
+        await ctx.send("https://cdn.discordapp.com/emojis/455128425556869120.gif")
