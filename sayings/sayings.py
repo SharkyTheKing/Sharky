@@ -29,3 +29,9 @@ class Sayings(commands.Cog):
     async def sharky(self, ctx):
         """Sharky"""
         await ctx.send("I see you, I see all, I know where you are and I know who you are. I am <@223391425302102016>")
+
+    @phrase.command()
+    async def gofish(self, ctx):
+        """Definition of \"Go Fish\""""
+        await ctx.send("Go fuck yourself")
+        
