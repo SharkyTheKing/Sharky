@@ -49,3 +49,8 @@ class Sayings(commands.Cog):
     async def flare(self, ctx):
         """Flare"""
         await ctx.send("The pikachu of them all, someone who makes you wonder how the hell does he fight a dargon? Magic? Strength? Or is he just too damn cute that the dargon doesn't like to hurt him....the world may never know.")
+
+    @red.command()
+    async def trusty(self, ctx):
+        """Trusty"""
+        await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. https://cdn.discordapp.com/attachments/133251234164375552/573587960855920661/V4OLA-trustymeme.png")
