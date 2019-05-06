@@ -9,7 +9,7 @@ class Sayings(commands.Cog):
     async def people(self, ctx):
         """People"""
     
-    @people.group()
+    @people.command()
     async def random(self, ctx):
         """Nothing to see here"""
         await ctx.send("What did I tell you? Nothing to see here!")
@@ -35,28 +35,30 @@ class Sayings(commands.Cog):
         await ctx.send("Go fuck yourself")
     
     @phrase.command()
+    @checks.owner()
+    @checks.mod_or_permissions(manage_messages=True)
     async def error(self,ctx):
         """Don't use me!!"""
         async with ctx.typing():
             await ctx.send("Fuck, you broke me!")
             await asyncio.sleep(5)
             await ctx.send("Sike!")
-            await asyncio.sleep(2)
+            await asyncio.sleep(4)
             await ctx.send("Error: Sharky.exe Has Stopped Working")
-            await asyncio.sleep(2)
+            await asyncio.sleep(4)
             await ctx.send("....Adding fixes To Sharky.exe")
-            await asyncio.sleep(2)
+            await asyncio.sleep(4)
             await ctx.send("......Crash: Rebooting Sharky.exe")
-            await asyncio.sleep(2)
-            await ctx.send("......Failure Relaunching Sharky.exe")
-            await asyncio.sleep(2)
-            await ctx.send("......Failure:Closing Sharky.exe")
-            await asyncio.sleep(2)
+            await asyncio.sleep(4)
+            await ctx.send("....Failure Relaunching Sharky.exe")
+            await asyncio.sleep(4)
+            await ctx.send(".....Failure:Closing Sharky.exe")
+            await asyncio.sleep(4)
             await ctx.send(".....Rebooting Sharky.exe")
-            await asyncio.sleep(2)
-            await ctx.send("....Confirmed Launching Sharky.exe")
-            await asyncio.sleep(2)
-            await ctx.send(".......Failure ;aunching Sharky.exe")
+            await asyncio.sleep(4)
+            await ctx.send("...Confirmed Launching Sharky.exe")
+            await asyncio.sleep(4)
+            await ctx.send(".....Failure launching Sharky.exe")
             await asyncio.sleep(10)
             await ctx.send("...Launching Sharky.exe.....Failed: Exiting.")
 
