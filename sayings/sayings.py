@@ -24,3 +24,8 @@ class Sayings(commands.Cog):
     async def potato(self, ctx):
         """Potatos"""
         await ctx.send("You are a potato.")
+
+    @phrase.command()
+    async def sharky(self, ctx):
+        """Sharky"""
+        await ctx.send("I see you, I see all, I know where you are and I know who you are. I am <@223391425302102016>")
