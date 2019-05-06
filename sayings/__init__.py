@@ -1,4 +1,4 @@
-from .sayings import Sayings
+from .sayings import Sayings 
 
 def setup(bot):
     bot.add_cog(Sayings())
