@@ -95,7 +95,7 @@ class Sayings(commands.Cog):
     async def kowlin(self, ctx):
         """Kowlin"""
         async with ctx.typing():
-            await ctx.send("Awaiting input....")
+            await ctx.send("Truly a badass Wyvern. Someone who make such a code that implodes your computer.")
     
     @red.command()
     async def jenn(self, ctx):
@@ -121,6 +121,7 @@ class Sayings(commands.Cog):
     @commands.group()
     async def fn(self, ctx):
         """Official Fortnite People"""
+
     @fn.command(name="sharky") #a way to add multiple subcommands with the same name
     async def sharky_fn(self, ctx):
         file = discord.File(str(bundled_data_path(self) / "sharky.png"))
@@ -132,4 +133,15 @@ class Sayings(commands.Cog):
         file = discord.File(str(bundled_data_path(self) / "deadman.png"))
         async with ctx.typing():
             await ctx.send("The deadest of them all", files=[file])
+
+    @fn.command()
+    async def freak(self, ctx):
+        """Currently nothing here"""
+        await ctx.send("What did the info say? Nothing here you potato")
+    
+    @fn.command()
+    async def ePoC(self, ctx):
+        """ePoC????? wut"""
+        await asyncio.sleep(60)
+        await ctx.send("wut...you waited a minute for this?")
     #adding more later
