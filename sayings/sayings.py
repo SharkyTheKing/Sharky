@@ -10,7 +10,7 @@ class Sayings(commands.Cog):
     
     @people.group()
     async def random(self, ctx):
-        """Nothing to see here""""
+        """Nothing to see here"""
         await ctx.send("What did I tell you? Nothing to see here!")
 
 #phrase group
