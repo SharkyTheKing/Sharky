@@ -84,3 +84,10 @@ class Sayings(commands.Cog):
         file = discord.File(str(bundled_data_path(self) / "catban.png"))
         async with ctx.typing():
             await ctx.send("Aik, the most powerful of the cats. For Aik swings the banhammer on all of those who oppose them.", files=[file])
+
+    @red.command()
+    async def redbot(self, ctx):
+        """Redbot"""
+        await ctx.send("Should have*")
+
+        
