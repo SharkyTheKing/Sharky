@@ -55,7 +55,7 @@ class Sayings(commands.Cog):
     async def trusty(self, ctx):
         """Trusty"""
         await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. His cogs also are known to break python itself, a true master of fucking with you.")
-        file = discord.File(str(bundled_data_path(self) / "V40LA-trustymeme.png")) #line 2 import
+        file = discord.File(str(bundled_data_path(self) / "V4OLA-trustymeme.png")) #line 2 import
         await ctx.send(files=[file])
     @red.command()
     async def flame(self, ctx):
