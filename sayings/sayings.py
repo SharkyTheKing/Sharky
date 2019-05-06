@@ -1,3 +1,4 @@
+import discord
 from redbot.core import commands, checks
 from redbot.core.data_manager import bundled_data_path
 class Sayings(commands.Cog):
