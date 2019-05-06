@@ -87,5 +87,4 @@ class Sayings(commands.Cog):
 
     @red.command()
     async def red(self, ctx):
-        async with ctx.typing():
-            await ctx.send("Should have*")
+        await ctx.send("Should have*")
