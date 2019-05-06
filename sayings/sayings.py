@@ -1,5 +1,5 @@
 from redbot.core import commands, checks
-file = discord.File("C:\Users\nik\Pictures\FN Discord\V4OLA-trustymeme") #line 57
+file = discord.File("\Users\nik\Pictures\FN Discord\V4OLA-trustymeme") #line 57
 class Sayings(commands.Cog):
 #People Group
     @commands.group()
