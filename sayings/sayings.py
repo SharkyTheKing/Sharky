@@ -1,4 +1,5 @@
 import discord
+import asyncio
 from redbot.core import commands, checks
 from redbot.core.data_manager import bundled_data_path
 class Sayings(commands.Cog):
@@ -32,7 +33,15 @@ class Sayings(commands.Cog):
     async def gofish(self, ctx):
         """Definition of \"Go Fish\""""
         await ctx.send("Go fuck yourself")
+    
+    @phrase.command()
+    async def error(self,ctx):
+        async with ctx.typing():
+            await ctx.send("Fuck, you broke me!")
+            await asyncio.sleep(5)
+            await ctx.send("Sike!")
 
+            
 #Red group
     @commands.group()
     async def red(self, ctx):
@@ -94,6 +103,12 @@ class Sayings(commands.Cog):
     @fn.command()
     async def sharky(self, ctx):
         file = discord.File(str(bundled_data_path(self) / "sharky.gif"))
-        async with ctx.typing()
+        async with ctx.typing():
             await ctx.send("The fishy supermod", files=[file])
+    
+    @fn.command()
+    async def deadman(self, ctx):
+        file = discord.File(str(bundled_data_path(self) / "deadman.png"))
+        async with ctx.typing():
+            await ctx.send("The deadest of them all", files=[file])
     #adding more later
