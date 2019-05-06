@@ -54,10 +54,26 @@ class Sayings(commands.Cog):
     @red.command()
     async def trusty(self, ctx):
         """Trusty"""
-        await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. His cogs also are known to break python itself, a true master of fucking with you.")
-        file = discord.File(str(bundled_data_path(self) / "V4OLA-trustymeme.png")) #line 2 import
-        await ctx.send(files=[file])
+        file = discord.File(str(bundled_data_path(self) / "V4OLA-trustymeme.png")) #line 2 import, await ctx.send(files=[file]) is how it would send the file
+        async with ctx.typing():
+            await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. His cogs also are known to break python itself, a true master of fucking with you.", files=[file])
+        
     @red.command()
     async def flame(self, ctx):
         """Flame"""
-        await ctx.send("https://cdn.discordapp.com/emojis/455128425556869120.gif")
+        file = discord.File(str(bundled_data_path(self) / "flame.gif"))
+        async with ctx.typing():
+            await ctx.send("He's on fire!!!", files=[file])
+
+    @red.command()
+    async def kowlin(self, ctx):
+        """Kowlin"""
+        async with ctx.typing():
+            await ctx.send("Awaiting input....")
+    
+    @red.command()
+    async def jenn(self, ctx):
+        """JennJenn"""
+        file = discord.File(str(bundled_data_path(self) / "seppuku.png"))
+        async with ctx.typing():
+            await ctx.send("The powerful and knowledgeable Jenn. This is all that needs to be said of the greatness.", files=[file])
