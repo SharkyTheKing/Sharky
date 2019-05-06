@@ -1,5 +1,5 @@
 from redbot.core import commands, checks
-
+file = discord.File("C:\Users\nik\Pictures\FN Discord\V4OLA-trustymeme") #line 57
 class Sayings(commands.Cog):
 #People Group
     @commands.group()
@@ -54,7 +54,8 @@ class Sayings(commands.Cog):
     async def trusty(self, ctx):
         """Trusty"""
         await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. His cogs also are known to break python itself, a true master of fucking with you.")
-
+        #Line 2
+        await ctx.send(files=[file])
     @red.command()
     async def flame(self, ctx):
         """Flame"""
