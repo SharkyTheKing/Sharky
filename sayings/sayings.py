@@ -35,7 +35,8 @@ class Sayings(commands.Cog):
         await ctx.send("Go fuck yourself")
     
     @phrase.command()
-    @checks.owner()
+    @checks.is_owner()
+    @checks.admin()
     @checks.mod_or_permissions(manage_messages=True)
     async def error(self,ctx):
         """Don't use me!!"""
