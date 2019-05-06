@@ -44,19 +44,21 @@ class Sayings(commands.Cog):
             await asyncio.sleep(2)
             await ctx.send("Error: Sharky.exe Has Stopped Working")
             await asyncio.sleep(2)
-            await ctx.send("Limitation To Sharky.exe....")
+            await ctx.send("....Adding fixes To Sharky.exe")
             await asyncio.sleep(2)
-            await ctx.send("Crash Rebooting Sharky.exe......")
+            await ctx.send("......Crash: Rebooting Sharky.exe")
             await asyncio.sleep(2)
-            await ctx.send("Failure Relaunching Sharky.exe......")
+            await ctx.send("......Failure Relaunching Sharky.exe")
             await asyncio.sleep(2)
-            await ctx.send("Failure Closing Sharky.exe......")
+            await ctx.send("......Failure:Closing Sharky.exe")
             await asyncio.sleep(2)
-            await ctx.send("Confirmed Launching Sharky.exe....")
+            await ctx.send(".....Rebooting Sharky.exe")
             await asyncio.sleep(2)
-            await ctx.send("Failure Launching Sharky.exe.......")
+            await ctx.send("....Confirmed Launching Sharky.exe")
+            await asyncio.sleep(2)
+            await ctx.send(".......Failure ;aunching Sharky.exe")
             await asyncio.sleep(10)
-            await ctx.send("Failure Launching Sharky.exe.....Failed")
+            await ctx.send("...Launching Sharky.exe.....Failed: Exiting.")
 
 #Red group
     @commands.group()
@@ -116,8 +118,8 @@ class Sayings(commands.Cog):
     @commands.group()
     async def fn(self, ctx):
         """Official Fortnite People"""
-    @fn.command()
-    async def sharky(self, ctx):
+    @fn.command(name="sharky") #a way to add multiple subcommands with the same name
+    async def sharky_fn(self, ctx):
         file = discord.File(str(bundled_data_path(self) / "sharky.gif"))
         async with ctx.typing():
             await ctx.send("The fishy supermod", files=[file])
