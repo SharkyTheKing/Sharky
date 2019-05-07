@@ -136,16 +136,17 @@ class Sayings(commands.Cog):
             await ctx.send("and a really nice guy too")
     
     @red.command()
+    @checks.is_owner()
     async def meow(self, ctx):
         """Meow meow, meow meow"""
         async with ctx.typing():
-            await ctx.send("Meow")
+            await ctx.send("Meow! Meow moew.")
             await asyncio.sleep(5)
             await ctx.send("Meow, meow meow. Meow. Meow meow meow meow, meow meow meow.")
             await asyncio.sleep(5)
             await ctx.send("Meow.")
         
-    #Offiical Group
+#Offiical Group
     @commands.group()
     async def fn(self, ctx):
         """Official Fortnite People"""
