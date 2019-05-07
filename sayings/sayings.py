@@ -2,6 +2,11 @@ import discord
 import asyncio
 from redbot.core import commands, checks
 from redbot.core.data_manager import bundled_data_path
+
+#----To Do----
+#Add more people, add in the ability to set cooldown either incode or manully in Discord itself.
+
+
 class Sayings(commands.Cog):
     """A list of People, Phrases, People from Red and hopefully more!"""
 #People group
@@ -124,12 +129,12 @@ class Sayings(commands.Cog):
     @red.command()
     async def will(self, ctx):
         """Will"""
-        file = discord.File(str(bundle_data_path(self) / "WIll.png"))
+        file = discord.File(str(bundled_data_path(self) / "will.png"))
         async with ctx.typing():
             await ctx.send("Will, the true master in the arts of trolling.", files=[file])
             asyncio.sleep(5)
             await ctx.send("and a really nice guy too")
-
+        
     #Offiical Group
     @commands.group()
     async def fn(self, ctx):
