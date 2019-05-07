@@ -134,6 +134,15 @@ class Sayings(commands.Cog):
             await ctx.send("Will, the true master in the arts of trolling.", files=[file])
             asyncio.sleep(5)
             await ctx.send("and a really nice guy too")
+    
+    @red.command()
+    async def meow(self, ctx):
+        """meow moew, moew moew moew"""
+        await ctx.send("Meow")
+        asyncio.sleep(8)
+        await ctx.send("Meow, moew moew. Meow. Moew moew moew moew, moew moew moew.")
+        asyncio.sleep(8)
+        await ctx.send("Meow.")
         
     #Offiical Group
     @commands.group()
