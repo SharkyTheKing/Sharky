@@ -138,10 +138,11 @@ class Sayings(commands.Cog):
     @red.command()
     async def meow(self, ctx):
         """meow moew, moew moew moew"""
+        asyncio.sleep(2)
         await ctx.send("Meow")
-        asyncio.sleep(8)
+        asyncio.sleep(15)
         await ctx.send("Meow, moew moew. Meow. Moew moew moew moew, moew moew moew.")
-        asyncio.sleep(8)
+        asyncio.sleep(15)
         await ctx.send("Meow.")
         
     #Offiical Group
