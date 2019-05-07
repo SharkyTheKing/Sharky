@@ -137,13 +137,12 @@ class Sayings(commands.Cog):
     
     @red.command()
     async def meow(self, ctx):
-        """meow moew, moew moew moew"""
+        """Meow meow, meow meow"""
         async with ctx.typing():
-            asyncio.sleep(2)
             await ctx.send("Meow")
-            asyncio.sleep(15)
-            await ctx.send("Meow, moew moew. Meow. Moew moew moew moew, moew moew moew.")
-            asyncio.sleep(15)
+            await asyncio.sleep(5)
+            await ctx.send("Meow, meow meow. Meow. Meow meow meow meow, meow meow meow.")
+            await asyncio.sleep(5)
             await ctx.send("Meow.")
         
     #Offiical Group
