@@ -121,6 +121,14 @@ class Sayings(commands.Cog):
         """Neuro"""
         await ctx.send("Fuck.")
 
+    @red.command()
+    async def will(self, ctx):
+        """Will"""
+        file = discord.File(str(bundle_data_path(self) / "WIll.png"))
+        async with ctx.typing():
+            await ctx.send("Will, the true master in the arts of trolling.", files=[file])
+            asyncio.sleep(5)
+            await ctx.send("and a really nice guy too")
 
     #Offiical Group
     @commands.group()
