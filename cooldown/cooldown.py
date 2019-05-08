@@ -12,4 +12,4 @@ class Cooldown(commands.cog):
     @commands.group()
     async def cooldown(self,ctx):
         """Cooldown placement"""
-        await ctx.send("Nothing here. Curious what this is though? Working on learning cooldowns for commands.")
+        await ctx.send("Nothing here. Curious what this is though? Learning how to make cooldowns per commands and how to set cooldowns. :D")
