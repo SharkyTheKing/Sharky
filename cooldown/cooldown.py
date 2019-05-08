@@ -1,5 +1,4 @@
 import discord
-import datetime
 import asyncio
 from redbot.core import commands, checks
 from redbot.core.data_manager import bundled_data_path
@@ -8,7 +7,7 @@ class Cooldown(commands.Cog):
     """Testing Cooldowns out"""
 
 
-#Import datetime as seen on line 2, follow the command line below to cooldown default per command
+#Follow the command line below to cooldown default per command
 #For guide on BucketType types reference to https://discordpy.readthedocs.io/en/latest/ext/commands/api.html#discord.ext.commands.cooldown
     @commands.cooldown(1, 15, discord.ext.commands.BucketType.default)
     @commands.command()
