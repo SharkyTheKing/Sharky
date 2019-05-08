@@ -4,6 +4,8 @@ import asyncio
 from redbot.core import commands, checks
 from redbot.core.data_manager import bundled_data_path
 
+BaseCog = getattr(commands, "Cog", object)
+
 class Cooldown(Basecog):
     """Testing things out"""
 
