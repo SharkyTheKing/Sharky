@@ -1,4 +1,4 @@
-from .time import Time
+from .cooldown import Cooldown
 
 def setup(bot):
-    bot.add_cog(Testing())
+    bot.add_cog(Cooldown())
