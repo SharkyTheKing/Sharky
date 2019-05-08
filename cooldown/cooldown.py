@@ -45,7 +45,7 @@ class Cooldown(commands.Cog):
         await ctx.send("This is a cooldown per member BucketType")
 
 #Follow the command line below to cooldown a category per command
-    @command.cooldown(1, 15, discord.ext.commands.BucketType.category)
+    @commands.cooldown(1, 15, discord.ext.commands.BucketType.category)
     @commands.command()
     async def categorytest(self, ctx):
         """Cooldown for category"""
