@@ -1,7 +1,7 @@
 import discord
 import datetime
 import asyncio
-from redbot.core import commands, check
+from redbot.core import commands, checks
 from redbot.core.data_manager import bundled_data_path
 
 class Cooldown(Basecog):
