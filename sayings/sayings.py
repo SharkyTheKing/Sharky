@@ -13,7 +13,7 @@ class Sayings(commands.Cog):
     @commands.group()
     async def people(self, ctx):
         """People"""
-    
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @people.command()
     async def random(self, ctx):
         """Nothing to see here"""
@@ -23,22 +23,23 @@ class Sayings(commands.Cog):
     @commands.group()
     async def phrase(self, ctx):
         """Phrases"""
-
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @phrase.command()
     async def potato(self, ctx):
         """Potatos"""
         await ctx.send("You are a potato.")
-
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @phrase.command()
     async def sharky(self, ctx):
         """Sharky"""
         await ctx.send("I see you, I see all, I know where you are and I know who you are. I am <@223391425302102016>")
-
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @phrase.command()
     async def gofish(self, ctx):
         """Definition of \"Go Fish\""""
         await ctx.send("Go fuck yourself")
     
+    @commands.cooldown(1, 15, discord.ext.commands.BucketType.user)
     @phrase.command()
     @checks.is_owner()
     @checks.admin()
@@ -72,36 +73,45 @@ class Sayings(commands.Cog):
     @commands.group()
     async def red(self, ctx):
         """People from Red"""
+    
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @red.command()
     async def kenny(self, ctx):
         """Kenny"""
         await ctx.send("A lovely person, with the best profile picture ever. Though his name makes you question if you're accidentally going to ping everyone....all the damn time")
-
+    
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @red.command()
     async def flare(self, ctx):
         """Flare"""
         await ctx.send("The pikachu of them all, someone who makes you wonder how the hell does he fight a dargon? Magic? Strength? Or is he just too damn cute that the dargon doesn't like to hurt him....the world may never know.")
-
+    
+    
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @red.command()
     async def trusty(self, ctx):
         """Trusty"""
         file = discord.File(str(bundled_data_path(self) / "V4OLA-trustymeme.png")) #line 2 import, await ctx.send(files=[file]) is how it would send the file
         async with ctx.typing():
             await ctx.send("The type of guy who thought for some reason to put 'trust' in his name. Granted, everyone knows that doesn't make his trustworthy but it sure does make him a meme. His cogs also are known to break python itself, a true master of fucking with you.", files=[file])
-        
+    
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @red.command()
     async def flame(self, ctx):
         """Flame"""
         file = discord.File(str(bundled_data_path(self) / "flame.gif"))
         async with ctx.typing():
             await ctx.send("He's on fire!!!", files=[file])
-
+    
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)
     @red.command()
     async def kowlin(self, ctx):
         """Kowlin"""
         async with ctx.typing():
             await ctx.send("Truly a badass Wyvern. Someone who make such a code that implodes your computer.")
     
+
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @red.command()
     async def jenn(self, ctx):
         """JennJenn"""
@@ -109,6 +119,7 @@ class Sayings(commands.Cog):
         async with ctx.typing():
             await ctx.send("The powerful and knowledgeable Jenn. This is all that needs to be said of the greatness.", files=[file])
 
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @red.command()
     async def aika(self, ctx):
         """Aikaterna"""
@@ -116,16 +127,19 @@ class Sayings(commands.Cog):
         async with ctx.typing():
             await ctx.send("Aik, the most powerful of the cats. For Aik swings the banhammer on all of those who oppose them.", files=[file])
 
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @red.command()
     async def redbot(self, ctx):
         """Redbot"""
         await ctx.send("Should have, could have, would have*")
     
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @red.command()
     async def neuro(self, ctx):
         """Neuro"""
         await ctx.send("Fuck.")
 
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @red.command()
     async def will(self, ctx):
         """Will"""
@@ -135,6 +149,7 @@ class Sayings(commands.Cog):
             asyncio.sleep(5)
             await ctx.send("and a really nice guy too")
     
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @red.command()
     @checks.is_owner()
     async def meow(self, ctx):
@@ -151,23 +166,27 @@ class Sayings(commands.Cog):
     async def fn(self, ctx):
         """Official Fortnite People"""
 
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user)   
     @fn.command(name="sharky") #a way to add multiple subcommands with the same name
     async def sharky_fn(self, ctx):
         file = discord.File(str(bundled_data_path(self) / "sharky.png"))
         async with ctx.typing():
             await ctx.send("The fishy supermod", files=[file])
     
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user) 
     @fn.command()
     async def deadman(self, ctx):
         file = discord.File(str(bundled_data_path(self) / "deadman.png"))
         async with ctx.typing():
             await ctx.send("The deadest of them all", files=[file])
 
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user) 
     @fn.command()
     async def freak(self, ctx):
         """Currently nothing here"""
         await ctx.send("What did the info say? Nothing here you potato")
     
+    @commands.cooldown(1, 5, discord.ext.commands.BucketType.user) 
     @fn.command()
     async def ePoC(self, ctx):
         """ePoC????? wut"""

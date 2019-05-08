@@ -1,7 +1,5 @@
 import discord
-import asyncio
 from redbot.core import commands, checks
-from redbot.core.data_manager import bundled_data_path
 
 class Cooldown(commands.Cog):
     """Testing Cooldowns out"""
