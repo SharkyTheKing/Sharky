@@ -31,14 +31,14 @@ class Cooldown(commands.Cog):
         await ctx.send("This is a cooldown per guild BucketType")
 
 #Follow the command line below to cooldown a channel as a whole, per command
-    @command.cooldown(1, 15, discord.ext.commands.BucketType.channel)
+    @commands.cooldown(1, 15, discord.ext.commands.BucketType.channel)
     @commands.command()
     async def channeltest(self, ctx):
         """Cooldown for channel"""
         await ctx.send("This is a cooldown per channel BucketType")
 
 #Follow the command line below to cooldown a member(of a guild) per command
-    @command.cooldown(1, 15, discord.ext.commands.BucketType.member)
+    @commands.cooldown(1, 15, discord.ext.commands.BucketType.member)
     @commands.command()
     async def membertest(self, ctx):
         """Cooldown for member"""
