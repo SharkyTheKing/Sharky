@@ -8,15 +8,25 @@ class Cooldown(commands.Cog):
     """Testing things out"""
 
 
-#Import datetime as seen on line 2, follow the command line below to a command down for a user
+#Import datetime as seen on line 2, follow the command line below to cooldown default per command
+    @commands.cooldown(1, 15, discord.ext.commands.BucketType.default)
+    @commands.command()
+    async def defaulttest(self, ctx):
+        """Cooldown for default"""
+        await ctx.send("This is a cooldown for default BucketType")
+
+#Follow the command line below to cooldown a user per command
     @commands.cooldown(1, 15, discord.ext.commands.BucketType.user)
     @commands.command()
-    async def testing(self, ctx):
+    async def usertest(self, ctx):
         """Cooldown for user"""
-        await ctx.send("Nothing here. Curious what this is though? Learning how to make cooldowns per commands and how to set cooldowns. :D")
+        await ctx.send("This is a cooldown per users BucketType")
 
+#Follow the command line below to cooldown a guild as a whole, per command
     @commands.cooldown(1, 15, discord.ext.commands.BucketType.guild)
     @commands.command()
     async def guildtest(self, ctx):
         """Cool down for guild"""
-        await ctx.send("Let's see if this works")
+        await ctx.send("This is a cooldown per guild BucketType")
+
+    
