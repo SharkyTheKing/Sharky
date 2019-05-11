@@ -159,7 +159,7 @@ class Sayings(commands.Cog):
         async with ctx.typing():
             await ctx.send("Meow! Meow moew.")
             await asyncio.sleep(5)
-            await ctx.send("Meow, meow meow. n\Meow. Meow meow meow meow, meow meow meow.")
+            await ctx.send("Meow, meow meow. \nMeow. Meow meow meow meow, \nmeow meow meow.")
             await asyncio.sleep(5)
             await ctx.send("Meow.")
         
