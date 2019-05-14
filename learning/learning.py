@@ -120,13 +120,13 @@ class Learning(commands.Cog):
 
 #This command requires line 7, fromt redbot.core import bank to interact with the economy/bank
     @commands.command()
+    @commands.guild_only()
     async def richornah(self, ctx):
         """Are you rich? Are you poor? find out!"""
         balance = await bank.get_balance(ctx.author)
         currency_name = await bank.get_currency_name(ctx.guild)
         if balance > 10000:
-            await ctx.send("You are rich! ")
-            await ctx.send (f"You have {balance}{currency_name}! Congratulations!")
+            await ctx.send (f"You are rich!\nYou have {balance}{currency_name}! Congratulations!")
         else:
             await ctx.send(f"Looks like you are running low on funds. You have {balance}{currency_name}, you need 10k or more to be rich!")
         
