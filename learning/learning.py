@@ -91,7 +91,7 @@ class Learning(commands.Cog):
         """When someone joined"""
         joined = member.joined_at.strftime("%d %b %Y %H:%M")
         created = member.created_at.strftime("%d %b %Y %H:%M")
-        msg = (f'Join date for {member.name}: {joined}\n'
+        msg = (f'Join date for {member.mention}: {joined}\n'
             f'Account created on: {created}')
         await ctx.maybe_send_embed(msg) #Changed this into sending a embed, 'maybe_send_embed'
 
