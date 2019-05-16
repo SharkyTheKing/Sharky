@@ -40,7 +40,7 @@ class SharkyTools(commands.Cog):
                 inline=False)
 
     # Non-fielded embedsets    
-    #    embed.set_image(url=member_avatar)
+    #    embed.set_image(url=member_avatar) - Ignore this entirely, just something extra-
         embed.set_footer(text=f'{notice}')
         embed.set_thumbnail(url=member_avatar)
         embed.set_author(name=f'{member_name}#{member_disc}', icon_url=f'{member_avatar}')  
@@ -48,8 +48,8 @@ class SharkyTools(commands.Cog):
 
 #   Trying to find if user is banned in discord.
     @commands.command()
-#    @checks.mod_or_permissions(ban_members=True)
-    @commands.bot_has_permissions(ban_members=True)
+    @checks.mod_or_permissions(ban_members=True) # Makes sure they have to be a mod or person with ban permissions to check.
+    @commands.bot_has_permissions(ban_members=True) # Makes sure the bot *has* the ban permissions to search.
     @commands.guild_only()
     async def findban(self, ctx, *, banneduser):
         """Check if a user is banned"""
@@ -64,7 +64,7 @@ class SharkyTools(commands.Cog):
             return await ctx.send(f"{member} (<@{mid}>) is not banned.")
 #   Testing embeds - you can ignore this command entirely
     @commands.command()
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True) # Makes sure the bot has the proper permissions to do this command.
     @commands.guild_only()
     async def embedban(self, ctx, *, banneduser):
         """Check if a user is banned"""
