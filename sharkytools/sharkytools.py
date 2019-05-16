@@ -48,20 +48,29 @@ class SharkyTools(commands.Cog):
 
 #   Embed base = Trying to find if user is banned in Discord.
     @commands.command()
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True) # Makes sure the bot has the proper permissions to do this command.
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)  # Makes sure the bot has the proper permissions to do this command.
     @commands.guild_only()
     async def findban(self, ctx, *, banneduser):
         """Check if a user is banned"""
-        guild = ctx.guild
-        bot = ctx.bot
-        member = await bot.fetch_user(banneduser)
+        guild = ctx.guild  # Self explained
+        bot = ctx.bot  # Self explained
+        try:  # This tries to see if member works, if it doesn't it'll error out without this
+            member = await bot.fetch_user(banneduser)  # Contains the bot.fetch_user
+        except discord.NotFound:
+            embed = discord.Embed(color=0xEE2222, title='Unknown User')
+            embed.add_field(name=f'Not Valid', value=f'{banneduser} is not a Valid User\n Please make sure you\'re using a correct UserID.\nHow you ask? [Go here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)')
+            return await ctx.send(embed=embed)
+        except discord.HTTPException:
+            embed = discord.Embed(color=0xEE2222, title='Invalid Input')
+            embed.add_field(name=f'ID10T Error:', value=f'**{banneduser}** is not a valid input...but you knew that, didn\'t you?')
+            return await ctx.send(embed=embed)
         mid = banneduser
         hammer = 'https://cdn.discordapp.com/emojis/404084568354979845.png'
         try:
             tban = await guild.fetch_ban(await bot.fetch_user(banneduser))
             #   embeds
             embed = discord.Embed(color=0xEE2222, title='Ban Found')
-            embed.add_field(name=f'User Found Banned:', value=f'{member}\n({mid})', inline=True)
+            embed.add_field(name=f'User Found:', value=f'{member}\n({mid})', inline=True)
             embed.add_field(name=f'Ban reason:', value=f'{tban[0]}', inline=False)
             embed.set_thumbnail(url=hammer)
             return await ctx.send(embed=embed)
