@@ -1,6 +1,8 @@
 import discord
 from redbot.core import commands, checks
 import asyncio
+from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
+from redbot.core import bank
 
 
 class SharkyTools(commands.Cog):
@@ -24,7 +26,7 @@ class SharkyTools(commands.Cog):
         member_role = sorted(member.roles)[1:]  # this and line 35 are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
             member_role = ", ".join([x.name for x in member_role])     
-        notice = "Thank you for using Sharky's Tools"
+        notice = "Puppy Shark"
         
         #  Tie this together with created_on and joined_on
         #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
@@ -66,7 +68,7 @@ class SharkyTools(commands.Cog):
             name='Roles:',
             value=f'{member_role}',
             inline=False)
-        if member_voice and member_voice.channel: #this formats the voice call chunk into a proper message
+        if member_voice and member_voice.channel:  # this formats the voice call chunk into a proper message
             embed.add_field(
                 name=("Current voice channel"),
                 value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
@@ -219,7 +221,9 @@ class SharkyTools(commands.Cog):
         """Guild ID? No problem"""
         guildid = ctx.guild.id
         await ctx.send(f'Guild\'s ID: {guildid}')
+
 #   Format Bot Invites
+    @checks.is_owner()
     @commands.guild_only()
     @commands.command()
     async def binv(self, ctx, *, inv: discord.User):
@@ -232,17 +236,18 @@ class SharkyTools(commands.Cog):
             await ctx.message.delete()
             if bot_is is True:
                 return await author.send(f'https://discordapp.com/oauth2/authorize?client_id={bot_id}&scope=bot')
-            await author.send(f"Try again {am}")
+            if bot_is is False:
+                return await author.send(f"Try again {am}")
         except discord.errors.Forbidden:
-            await ctx.send("``Error in command 'binv'. Check your console or logs for details.``")
-            await asyncio.sleep(3)
-            await ctx.send("Sike. Just fix your permissions")
+            await ctx.send("Can't delete command message")
+
 #  Find a user's account age and join age.
     @commands.guild_only()
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    async def uage(self, ctx, *, user: discord.Member):
+    async def age(self, ctx, *, user: discord.Member):
         """Find out the person's account age and join date!"""
+        user_mention = user.mention
         user_name = user.name
         user_disc = user.discriminator
         user_av = user.avatar_url_as(static_format="png")
@@ -254,6 +259,7 @@ class SharkyTools(commands.Cog):
         created_on = ("{}\n({} days ago)").format(user_created, since_created)  # Formats when the account was created into a proper day message
         joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)  # Formats when the account joined the server into a proper day message
 
+        bot_is = user.bot
         embed = discord.Embed(
             color=0xEE2222,
             title=f"{user_name}#{user_disc}'s Account Date:"
@@ -266,5 +272,103 @@ class SharkyTools(commands.Cog):
             name=f'Join Date:',
             value=f'{joined_on}'
         )
+        if bot_is is True:
+            embed.add_field(
+                name=f'Bot Found:',
+                value=f'{user_mention} is a bot'
+            )
         embed.set_thumbnail(url=user_av)
         await ctx.send(embed=embed)
+
+    @commands.command(name="umenu", aliases=['usermenu', 'userm', 'um'])
+    @commands.guild_only()
+    async def _umenu(self, ctx, *, member: discord.Member):
+        """Ties all of the commands together, but in a menu! :D"""
+        embeds = []
+
+    # This is the list of definitions
+        member_mention = member.mention  # Mentions
+        member_disc = member.discriminator  # The four digits
+        member_name = member.name  # Default Discord name
+        member_id = member.id  # USERID
+        member_avatar = member.avatar_url_as(static_format="png")  # Avatar, static is formated as png
+        member_voice = member.voice  # Tells us the voice chat they're in
+        member_bot = member.bot
+
+        member_role = sorted(member.roles)[1:]  # this and if member_role are required for role formats
+        if member_role:  # this lets us format the roles properly so theyr'e named correctly
+            member_role = ", ".join([x.name for x in member_role])
+        
+        # bank stuff
+        credits_name = await bank.get_currency_name(ctx.guild)
+        bal = await bank.get_balance(member)
+        
+        #  Tie this together with created_on and joined_on
+        #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
+        joined_at = member.joined_at  # This is REQUIRED for 'since_joined`
+        member_joined = member.joined_at.strftime("%d %b %Y %H:%M")  # When the user joined the server
+        since_joined = (ctx.message.created_at - joined_at).days  # Since the user joined the server in days
+        member_created = member.created_at.strftime("%d %b %Y %H:%M")  # When the user account was created
+        since_created = (ctx.message.created_at - member.created_at).days  # Since the user account was created in days
+
+        created_on = ("{}\n({} days ago)").format(member_created, since_created)  # Formats when the account was created into a proper day message
+        joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)  # Formats when the account joined the server into a proper day message
+
+    # This is where the magic will hopefully happen
+        for x in map(str, range(1, 5)):
+            first = discord.Embed(
+                color=0xEE2222,
+                title=f'{member_name}\'s information')
+            first.add_field(
+                name='Name:',
+                value=f'{member_mention}\n{member_name}#{member_disc}',
+                inline=True)
+            first.add_field(
+                name='ID:',
+                value=f'{member_id}',
+                inline=True)
+            if member_bot is True:  # this is to define if a person is...well...a bot
+                first.add_field(
+                    name=('Bot:'),
+                    value=(f"{member_mention} is a bot"),
+                    inline=False)
+            if member_voice and member_voice.channel:  # this formats the voice call chunk into a proper message
+                first.add_field(
+                    name=("Current voice channel"),
+                    value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
+                    inline=False)
+            first.set_thumbnail(url=member_avatar)
+            embeds.append(first)
+            second = discord.Embed(
+                color=0xEE2222,
+                title=f'{member_name}\'s information')
+            second.add_field(
+                name="Account Creation:",
+                value=f'{created_on}',
+                inline=True)
+            second.add_field(
+                name="Joined Date:",
+                value=f'{joined_on}',
+                inline=True)
+            second.add_field(
+                name='Roles:',
+                value=f'{member_role}',
+                inline=False)
+            second.set_thumbnail(url=member_avatar)
+            embeds.append(second)
+            third = discord.Embed(
+                color=0xEE2222,
+                title=f'{member_name}\'s Avatar')
+            third.set_image(url=member_avatar)
+            embeds.append(third)
+            forth = discord.Embed(
+                color=0XEE2222,
+                title=f'Bank Balance'
+            )
+            forth.add_field(
+                name=f"{member_name}'s Bank Statement",
+                value=f'They have {bal}{credits_name} in their bank!'
+            )
+            forth.set_thumbnail(url=member_avatar)
+            embeds.append(forth)
+        await menu(ctx, embeds, DEFAULT_CONTROLS)
