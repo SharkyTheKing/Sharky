@@ -299,7 +299,7 @@ class SharkyTools(commands.Cog):
         member_role = sorted(member.roles)[1:]  # this and if member_role are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
             member_role = ", ".join([x.mention for x in member_role])  # changed x.name to x.mention to make it ping the roles
-
+        
         # bank stuff
         credits_name = await bank.get_currency_name(ctx.guild)
         bal = await bank.get_balance(member)
@@ -376,4 +376,37 @@ class SharkyTools(commands.Cog):
 
 #   Display Roles
 
-#   if guild.roles =< 21 
+    @commands.command()
+    @commands.guild_only()
+    async def rolelist(self, ctx):
+        """Role list command"""
+        r = sorted(guild.roles)[1:20]
+        r2 = sorted(guild.roles)[21:]
+        s = ", \n".join([x.mention for x in r])
+        s2 = ", \n".join([x.mention for x in r2])
+        if len(guild.roles) < 20:
+            await ctx.maybe_send_embed(s)
+        elif len(guild.roles) > 21:
+            embeds = []
+            for x in map(str, range(1, 4)):
+
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                embeds.append(d)
+
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                embeds.append(f)
+        await menu(ctx, embeds, DEFAULT_CONTROLS)
