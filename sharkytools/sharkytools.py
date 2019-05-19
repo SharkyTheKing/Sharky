@@ -382,32 +382,44 @@ class SharkyTools(commands.Cog):
         """Role list command"""
         guild = ctx.guild
         r = sorted(guild.roles)[1:20]
-        r2 = sorted(guild.roles)[21:]
+        r2 = sorted(guild.roles)[21:40]
+        r3 = sorted(guild.roles)[41:]
         s = ", \n".join([x.mention for x in r])
         s2 = ", \n".join([x.mention for x in r2])
+        s3 = ", \n".join([x.mention for x in r3])
         if len(guild.roles) < 20:
             await ctx.maybe_send_embed(s)
         elif len(guild.roles) > 21:
             embeds = []
             for x in map(str, range(1, 4)):
 
-                d = discord.Embed(
+                1 = discord.Embed(
                     color=0xEE2222,
                     title=f'Server\'s Info'
                 )
-                d.add_field(
+                1.add_field(
                     name='Guild\'s Roles',
                     value=f'{s}'
                 )
-                embeds.append(d)
+                embeds.append(1)
 
-                f = discord.Embed(
+                2 = discord.Embed(
                     color=0xEE2222,
                     title=f'Server\'s Info'
                 )
-                f.add_field(
+                2.add_field(
                     name="Guild's Roles",
                     value=f'{s2}'
                 )
-                embeds.append(f)
+                embeds.append(2)
+
+                3 = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                3.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                embeds.append(3)
         await menu(ctx, embeds, DEFAULT_CONTROLS)
