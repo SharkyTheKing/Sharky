@@ -374,52 +374,1106 @@ class SharkyTools(commands.Cog):
             embeds.append(forth)
         await menu(ctx, embeds, DEFAULT_CONTROLS)
 
-#   Display Roles
+#   Display Roles *This took over 1k lines to account for max discord limits*
 
     @commands.command()
     @commands.guild_only()
     async def rolelist(self, ctx):
-        """Role list command"""
+        """Role list command 255 cap """
         guild = ctx.guild
         r = sorted(guild.roles)[1:20]
         r2 = sorted(guild.roles)[21:40]
-        r3 = sorted(guild.roles)[41:]
+        r3 = sorted(guild.roles)[41:60]
+        r4 = sorted(guild.roles)[61:80]
+        r5 = sorted(guild.roles)[81:100]
+        r6 = sorted(guild.roles)[101:120]
+        r7 = sorted(guild.roles)[121:140]
+        r8 = sorted(guild.roles)[141:160]
+        r9 = sorted(guild.roles)[161:180]
+        r10 = sorted(guild.roles)[181:200]
+        r11 = sorted(guild.roles)[201:220]
+        r12 = sorted(guild.roles)[221:240]
+        r13 = sorted(guild.roles)[241:260]
         s = ", \n".join([x.mention for x in r])
         s2 = ", \n".join([x.mention for x in r2])
         s3 = ", \n".join([x.mention for x in r3])
+        s4 = ", \n".join([x.mention for x in r4])
+        s5 = ", \n".join([x.mention for x in r5])
+        s6 = ", \n".join([x.mention for x in r6])
+        s7 = ", \n".join([x.mention for x in r7])
+        s8 = ", \n".join([x.mention for x in r8])
+        s9 = ", \n".join([x.mention for x in r9])
+        s10 = ", \n".join([x.mention for x in r10])
+        s11 = ", \n".join([x.mention for x in r11])
+        s12 = ", \n".join([x.mention for x in r12])
+        s13 = ", \n".join([x.mention for x in r13])
         if len(guild.roles) < 20:
             await ctx.maybe_send_embed(s)
-        elif len(guild.roles) > 21:
+        elif 21 < len(guild.roles) < 40:
             embeds = []
             for x in map(str, range(1, 4)):
 
-                1 = discord.Embed(
+                a = discord.Embed(
                     color=0xEE2222,
                     title=f'Server\'s Info'
                 )
-                1.add_field(
+                a.add_field(
                     name='Guild\'s Roles',
                     value=f'{s}'
                 )
-                embeds.append(1)
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
 
-                2 = discord.Embed(
+                b = discord.Embed(
                     color=0xEE2222,
                     title=f'Server\'s Info'
                 )
-                2.add_field(
+                b.add_field(
                     name="Guild's Roles",
                     value=f'{s2}'
                 )
-                embeds.append(2)
-
-                3 = discord.Embed(
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 41 < len(guild.roles) < 60:
+            embeds = []
+            for x in map(str, range(1, 4)):
+                a = discord.Embed(
                     color=0xEE2222,
                     title=f'Server\'s Info'
                 )
-                3.add_field(
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
                     name="Guild's Roles",
                     value=f'{s3}'
                 )
-                embeds.append(3)
-        await menu(ctx, embeds, DEFAULT_CONTROLS)
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        #   Seperation
+        elif 61 < len(guild.roles) < 80:
+            embeds = []
+            for x in map(str, range(1, 4)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 81 < len(guild.roles) < 100:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 101 < len(guild.roles) < 120:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 121 < len(guild.roles) < 140:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+                g = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                g.add_field(
+                    name="Guild's Roles",
+                    value=f'{s7}'
+                )
+                g.set_footer(
+                    text="Page 7")
+                embeds.append(g)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 141 < len(guild.roles) < 160:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+                g = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                g.add_field(
+                    name="Guild's Roles",
+                    value=f'{s7}'
+                )
+                g.set_footer(
+                    text="Page 7")
+                embeds.append(g)
+                h = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                h.add_field(
+                    name="Guild's Roles",
+                    value=f'{s8}'
+                )
+                h.set_footer(
+                    text="Page 8")
+                embeds.append(h)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 161 < len(guild.roles) < 180:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+                g = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                g.add_field(
+                    name="Guild's Roles",
+                    value=f'{s7}'
+                )
+                g.set_footer(
+                    text="Page 7")
+                embeds.append(g)
+                h = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                h.add_field(
+                    name="Guild's Roles",
+                    value=f'{s8}'
+                )
+                h.set_footer(
+                    text="Page 8")
+                embeds.append(h)
+                i = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                i.add_field(
+                    name="Guild's Roles",
+                    value=f'{s9}'
+                )
+                i.set_footer(
+                    text="Page 9"
+                )
+                embeds.append(i)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 181 < len(guild.roles) < 200:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+                g = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                g.add_field(
+                    name="Guild's Roles",
+                    value=f'{s7}'
+                )
+                g.set_footer(
+                    text="Page 7")
+                embeds.append(g)
+                h = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                h.add_field(
+                    name="Guild's Roles",
+                    value=f'{s8}'
+                )
+                h.set_footer(
+                    text="Page 8")
+                embeds.append(h)
+                i = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                i.add_field(
+                    name="Guild's Roles",
+                    value=f'{s9}'
+                )
+                i.set_footer(
+                    text="Page 9"
+                )
+                embeds.append(i)
+                j = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                j.add_field(
+                    name="Guild's Roles",
+                    value=f'{s10}'
+                )
+                j.set_footer(
+                    text="Page 10"
+                )
+                embeds.append(j)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 201 < len(guild.roles) < 220:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+                g = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                g.add_field(
+                    name="Guild's Roles",
+                    value=f'{s7}'
+                )
+                g.set_footer(
+                    text="Page 7")
+                embeds.append(g)
+                h = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                h.add_field(
+                    name="Guild's Roles",
+                    value=f'{s8}'
+                )
+                h.set_footer(
+                    text="Page 8")
+                embeds.append(h)
+                i = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                i.add_field(
+                    name="Guild's Roles",
+                    value=f'{s9}'
+                )
+                i.set_footer(
+                    text="Page 9"
+                )
+                embeds.append(i)
+                j = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                j.add_field(
+                    name="Guild's Roles",
+                    value=f'{s10}'
+                )
+                j.set_footer(
+                    text="Page 10"
+                )
+                embeds.append(j)
+                k = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                k.add_field(
+                    name="Guild's Roles",
+                    value=f'{s11}'
+                )
+                k.set_footer(
+                    text="Page 11"
+                )
+                embeds.append(k)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 221 < len(guild.roles) < 240:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+                g = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                g.add_field(
+                    name="Guild's Roles",
+                    value=f'{s7}'
+                )
+                g.set_footer(
+                    text="Page 7")
+                embeds.append(g)
+                h = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                h.add_field(
+                    name="Guild's Roles",
+                    value=f'{s8}'
+                )
+                h.set_footer(
+                    text="Page 8")
+                embeds.append(h)
+                i = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                i.add_field(
+                    name="Guild's Roles",
+                    value=f'{s9}'
+                )
+                i.set_footer(
+                    text="Page 9"
+                )
+                embeds.append(i)
+                j = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                j.add_field(
+                    name="Guild's Roles",
+                    value=f'{s10}'
+                )
+                j.set_footer(
+                    text="Page 10"
+                )
+                embeds.append(j)
+                k = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                k.add_field(
+                    name="Guild's Roles",
+                    value=f'{s11}'
+                )
+                k.set_footer(
+                    text="Page 11"
+                )
+                embeds.append(k)
+                l = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                l.add_field(
+                    name="Guild's Roles",
+                    value=f'{s12}'
+                )
+                l.set_footer(
+                    text="Page 12"
+                )
+                embeds.append(l)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        elif 241 < len(guild.roles) < 260:
+            embeds = []
+            for x in map(str, range(1, 10)):
+                a = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                a.add_field(
+                    name='Guild\'s Roles',
+                    value=f'{s}'
+                )
+                a.set_footer(
+                    text="Page 1")
+                embeds.append(a)
+
+                b = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                b.add_field(
+                    name="Guild's Roles",
+                    value=f'{s2}'
+                )
+                b.set_footer(
+                    text="Page 2")
+                embeds.append(b)
+                c = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                c.add_field(
+                    name="Guild's Roles",
+                    value=f'{s3}'
+                )
+                c.set_footer(
+                    text="Page 3")
+                embeds.append(c)
+                d = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                d.add_field(
+                    name="Guild's Roles",
+                    value=f'{s4}'
+                )
+                d.set_footer(
+                    text="Page 4")
+                embeds.append(d)
+                e = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                e.add_field(
+                    name="Guild's Roles",
+                    value=f'{s5}'
+                )
+                e.set_footer(
+                    text="Page 5")
+                embeds.append(e)
+                f = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                f.add_field(
+                    name="Guild's Roles",
+                    value=f'{s6}'
+                )
+                f.set_footer(
+                    text="Page 6")
+                embeds.append(f)
+                g = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                g.add_field(
+                    name="Guild's Roles",
+                    value=f'{s7}'
+                )
+                g.set_footer(
+                    text="Page 7")
+                embeds.append(g)
+                h = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                h.add_field(
+                    name="Guild's Roles",
+                    value=f'{s8}'
+                )
+                h.set_footer(
+                    text="Page 8")
+                embeds.append(h)
+                i = discord.Embed(
+                    color=0xEE2222,
+                    title=f'Server\'s Info'
+                )
+                i.add_field(
+                    name="Guild's Roles",
+                    value=f'{s9}'
+                )
+                i.set_footer(
+                    text="Page 9"
+                )
+                embeds.append(i)
+                j = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                j.add_field(
+                    name="Guild's Roles",
+                    value=f'{s10}'
+                )
+                j.set_footer(
+                    text="Page 10"
+                )
+                embeds.append(j)
+                k = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                k.add_field(
+                    name="Guild's Roles",
+                    value=f'{s11}'
+                )
+                k.set_footer(
+                    text="Page 11"
+                )
+                embeds.append(k)
+                l = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                l.add_field(
+                    name="Guild's Roles",
+                    value=f'{s12}'
+                )
+                l.set_footer(
+                    text="Page 12"
+                )
+                embeds.append(l)
+                
+                m = discord.Embed(
+                    color=0xEE2222,
+                    title="Server's Info"
+                )
+                m.add_field(
+                    name="Guild's Roles",
+                    value=f'{s13}'
+                )              
+                m.set_footer(
+                    text="Page 13"
+                )
+                embeds.append(m)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+    #   If you somehow got down here. Why? Don't ever do this.
