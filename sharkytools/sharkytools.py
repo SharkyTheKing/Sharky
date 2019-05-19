@@ -1476,4 +1476,4 @@ class SharkyTools(commands.Cog):
                 )
                 embeds.append(m)
             await menu(ctx, embeds, DEFAULT_CONTROLS)
-    #   If you somehow got down here. Why? Don't ever do this.
+    #   If you somehow got down here. Why? Don't ever do this. Don't be like sharky.
