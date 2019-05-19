@@ -380,6 +380,7 @@ class SharkyTools(commands.Cog):
     @commands.guild_only()
     async def rolelist(self, ctx):
         """Role list command"""
+        guild = ctx.guild
         r = sorted(guild.roles)[1:20]
         r2 = sorted(guild.roles)[21:]
         s = ", \n".join([x.mention for x in r])
