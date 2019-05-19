@@ -25,7 +25,7 @@ class SharkyTools(commands.Cog):
 
         member_role = sorted(member.roles)[1:]  # this and line 35 are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
-            member_role = ", ".join([x.name for x in member_role])     
+            member_role = ", ".join([x.mention for x in member_role])  # Changed x.name to x.mention to ping the roles for color
         notice = "Puppy Shark"
         
         #  Tie this together with created_on and joined_on
@@ -112,6 +112,7 @@ class SharkyTools(commands.Cog):
             return await ctx.send(embed=embed)
         mid = banneduser
         hammer = 'https://cdn.discordapp.com/attachments/575846797709279262/578793294897741835/ban.png'
+        x_emote = 'https://media.discordapp.net/attachments/541131861687009296/579467209676554240/emoji.png'
         #  This is where the command actually works. If a ban is found it'll output that it was found
         #   If the ban isn't found, it'll error and thus cause the discord.NotFound exception
         try:
@@ -134,8 +135,9 @@ class SharkyTools(commands.Cog):
         except discord.NotFound:
             embed = discord.Embed(color=0xEE2222, title='Ban **NOT** Found')
             embed.add_field(
-                name=f'They are not banned from the server.', 
+                name=f'They are not banned from the server.',
                 value=f'{member} ({mid})')
+            embed.set_thumbnail(url=x_emote)
             return await ctx.send(embed=embed)
 
 #   User Avatar
@@ -212,8 +214,7 @@ class SharkyTools(commands.Cog):
     async def uid(self, ctx, *, user: discord.Member):
         """Get a user's ID"""
         u_id = user.id
-        u_name = user.name
-        await ctx.send(f'{u_name}\'s ID: {u_id}')
+        await ctx.send(f'{u_id}')
 #   Guild ID
     @commands.command()
     @commands.guild_only()
@@ -279,8 +280,8 @@ class SharkyTools(commands.Cog):
             )
         embed.set_thumbnail(url=user_av)
         await ctx.send(embed=embed)
-
-    @commands.command(name="umenu", aliases=['usermenu', 'userm', 'um'])
+#   User menu, combinds most if not all of the commands together
+    @commands.command(name="usermenu", aliases=['umenu', 'userm', 'um'])
     @commands.guild_only()
     async def _umenu(self, ctx, *, member: discord.Member):
         """Ties all of the commands together, but in a menu! :D"""
@@ -297,8 +298,8 @@ class SharkyTools(commands.Cog):
 
         member_role = sorted(member.roles)[1:]  # this and if member_role are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
-            member_role = ", ".join([x.name for x in member_role])
-        
+            member_role = ", ".join([x.mention for x in member_role])  # changed x.name to x.mention to make it ping the roles
+
         # bank stuff
         credits_name = await bank.get_currency_name(ctx.guild)
         bal = await bank.get_balance(member)
@@ -315,7 +316,7 @@ class SharkyTools(commands.Cog):
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)  # Formats when the account joined the server into a proper day message
 
     # This is where the magic will hopefully happen
-        for x in map(str, range(1, 5)):
+        for x in map(str, range(1, 4)):
             first = discord.Embed(
                 color=0xEE2222,
                 title=f'{member_name}\'s information')
@@ -372,3 +373,7 @@ class SharkyTools(commands.Cog):
             forth.set_thumbnail(url=member_avatar)
             embeds.append(forth)
         await menu(ctx, embeds, DEFAULT_CONTROLS)
+
+#   Display Roles
+
+#   if guild.roles =< 21 
