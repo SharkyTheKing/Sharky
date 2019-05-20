@@ -3,7 +3,7 @@ from redbot.core import commands, checks
 import asyncio
 from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
 from redbot.core import bank
-
+from typing import Sequence
 
 class SharkyTools(commands.Cog):
     """Sharky Tools"""
@@ -86,7 +86,7 @@ class SharkyTools(commands.Cog):
 #   Embed base = Trying to find if user is banned in Discord.
     @commands.command()
     @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)  # Makes sure the bot has the proper permissions to do this command.
-    @checks.mod_or_permissions(ban_members=True)  #  This makes sure a person has to be a mod or have ban_members permission to use.
+    @checks.mod_or_permissions(send_messages=True)  #  This makes sure a person has to be a mod or have ban_members permission to use.
     @commands.guild_only()
     async def findban(self, ctx, *, banneduser):
         """Check if a user is banned"""
@@ -282,6 +282,7 @@ class SharkyTools(commands.Cog):
         await ctx.send(embed=embed)
 #   User menu, combinds most if not all of the commands together
     @commands.command(name="usermenu", aliases=['umenu', 'userm', 'um'])
+    @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
     @commands.guild_only()
     async def _umenu(self, ctx, *, member: discord.Member):
         """Ties all of the commands together, but in a menu! :D"""
@@ -373,13 +374,15 @@ class SharkyTools(commands.Cog):
             forth.set_thumbnail(url=member_avatar)
             embeds.append(forth)
         await menu(ctx, embeds, DEFAULT_CONTROLS)
+#   Marking where TO PUT THE NEXT COMMAND. NOT DOWN THERE
 
 #   Display Roles *This took over 1k lines to account for max discord limits*
 
     @commands.command()
     @commands.guild_only()
+    @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
     async def rolelist(self, ctx):
-        """Role list command 255 cap """
+        """Role list command! \nActually accounts for Discord's maxium role creation limit.\n\n\nIf you complain about how it looks, you can fix it yourself this entire command alone took 1101 for this."""
         guild = ctx.guild
         r = sorted(guild.roles)[1:20]
         r2 = sorted(guild.roles)[21:40]
@@ -415,7 +418,7 @@ class SharkyTools(commands.Cog):
 
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -427,7 +430,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -442,7 +445,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 4)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -453,7 +456,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(a)
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -464,7 +467,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -480,7 +483,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 4)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -492,7 +495,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -503,7 +506,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -514,7 +517,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -529,7 +532,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -541,7 +544,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -552,7 +555,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -563,7 +566,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -574,7 +577,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -589,7 +592,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -601,7 +604,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -612,7 +615,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -623,7 +626,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -634,7 +637,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -645,7 +648,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -660,7 +663,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -672,7 +675,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -683,7 +686,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -694,7 +697,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -705,7 +708,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -716,7 +719,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -727,7 +730,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(f)
                 g = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 g.add_field(
                     name="Guild's Roles",
@@ -742,7 +745,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -754,7 +757,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -765,7 +768,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -776,7 +779,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -787,7 +790,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -798,7 +801,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -809,7 +812,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(f)
                 g = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 g.add_field(
                     name="Guild's Roles",
@@ -820,7 +823,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(g)
                 h = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 h.add_field(
                     name="Guild's Roles",
@@ -835,7 +838,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -847,7 +850,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -858,7 +861,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -869,7 +872,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -880,7 +883,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -891,7 +894,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -902,7 +905,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(f)
                 g = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 g.add_field(
                     name="Guild's Roles",
@@ -913,7 +916,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(g)
                 h = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 h.add_field(
                     name="Guild's Roles",
@@ -924,7 +927,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(h)
                 i = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 i.add_field(
                     name="Guild's Roles",
@@ -940,7 +943,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -952,7 +955,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -963,7 +966,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -974,7 +977,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -985,7 +988,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -996,7 +999,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -1007,7 +1010,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(f)
                 g = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 g.add_field(
                     name="Guild's Roles",
@@ -1018,7 +1021,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(g)
                 h = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 h.add_field(
                     name="Guild's Roles",
@@ -1029,7 +1032,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(h)
                 i = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 i.add_field(
                     name="Guild's Roles",
@@ -1057,7 +1060,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -1069,7 +1072,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -1080,7 +1083,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -1091,7 +1094,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -1102,7 +1105,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -1113,7 +1116,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -1124,7 +1127,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(f)
                 g = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 g.add_field(
                     name="Guild's Roles",
@@ -1135,7 +1138,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(g)
                 h = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 h.add_field(
                     name="Guild's Roles",
@@ -1146,7 +1149,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(h)
                 i = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 i.add_field(
                     name="Guild's Roles",
@@ -1186,7 +1189,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -1198,7 +1201,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -1209,7 +1212,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -1220,7 +1223,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -1231,7 +1234,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -1242,7 +1245,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -1253,7 +1256,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(f)
                 g = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 g.add_field(
                     name="Guild's Roles",
@@ -1264,7 +1267,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(g)
                 h = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 h.add_field(
                     name="Guild's Roles",
@@ -1275,7 +1278,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(h)
                 i = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 i.add_field(
                     name="Guild's Roles",
@@ -1303,7 +1306,7 @@ class SharkyTools(commands.Cog):
                 )
                 k.add_field(
                     name="Guild's Roles",
-                    value=f'{s11}'
+                    value=f"{s11}"
                 )
                 k.set_footer(
                     text="Page 11"
@@ -1327,7 +1330,7 @@ class SharkyTools(commands.Cog):
             for x in map(str, range(1, 10)):
                 a = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 a.add_field(
                     name='Guild\'s Roles',
@@ -1339,7 +1342,7 @@ class SharkyTools(commands.Cog):
 
                 b = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 b.add_field(
                     name="Guild's Roles",
@@ -1350,7 +1353,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(b)
                 c = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 c.add_field(
                     name="Guild's Roles",
@@ -1361,7 +1364,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(c)
                 d = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 d.add_field(
                     name="Guild's Roles",
@@ -1372,7 +1375,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(d)
                 e = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 e.add_field(
                     name="Guild's Roles",
@@ -1383,7 +1386,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(e)
                 f = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 f.add_field(
                     name="Guild's Roles",
@@ -1394,7 +1397,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(f)
                 g = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 g.add_field(
                     name="Guild's Roles",
@@ -1405,7 +1408,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(g)
                 h = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 h.add_field(
                     name="Guild's Roles",
@@ -1416,7 +1419,7 @@ class SharkyTools(commands.Cog):
                 embeds.append(h)
                 i = discord.Embed(
                     color=0xEE2222,
-                    title=f'Server\'s Info'
+                    title="Server's Info"
                 )
                 i.add_field(
                     name="Guild's Roles",

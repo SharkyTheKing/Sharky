@@ -151,6 +151,25 @@ class Learning(commands.Cog):
         msg = 'I am over 2000 characters' * 100
         await ctx.send_interactive(pagify(msg))
 
+    @commands.command(name="roles", hidden=True)
+    async def _roles(self, ctx):
+        """Testing"""
+        guild = ctx.guild
+        r = sorted(guild.roles)[1:]
+        s = ", \n".join([x.mention for x in r])
+        embeds = []
+        embed = discord.Embed(
+                color=0xEE2222,
+                description=f'information\n{s}')
+        embeds.append(embed)
+        shits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        curpage = 0
+        for shit in shits:
+            curpage += 1
+            embed = discord.Embed(description=f"Page {curpage}/{len(shits)}")
+        embeds.append(embed)
+        await ctx.send(embed=embed)
+
 
 #How to add aliases to commands
     #@commands.command(name="list", aliases=['ls', 'data', 'total'])
