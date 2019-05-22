@@ -228,7 +228,9 @@ class SharkyTools(commands.Cog):
 
         member_role = sorted(member.roles, reverse=True)[:-1]  # this and if member_role are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
-            member_role = ", ".join([x.mention for x in member_role])  # changed x.name to x.mention to make it ping the roles
+            member_role = ", ".join([x.mention for x in member_role])
+        else:
+            member_role = None  # changed x.name to x.mention to make it ping the roles
         
         # bank stuff
         credits_name = await bank.get_currency_name(ctx.guild)
@@ -270,7 +272,8 @@ class SharkyTools(commands.Cog):
             second = discord.Embed(color=0xEE2222, title=f'{member_name}\'s information')
             second.add_field(name="Account Creation:", value=f'{created_on}', inline=True)
             second.add_field(name="Joined Date:", value=f'{joined_on}', inline=True)
-            second.add_field(name='Roles:', value=f'{member_role}', inline=False)
+            if member_role is not None:
+                second.add_field(name='Roles:', value=f'{member_role}', inline=False)
             second.set_thumbnail(url=member_avatar)
             embeds.append(second)
             third = discord.Embed(
