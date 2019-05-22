@@ -5,6 +5,7 @@ from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
 from redbot.core import bank
 from typing import Sequence
 
+
 class SharkyTools(commands.Cog):
     """Sharky Tools"""
 #  Sharky's Userinfo twist
@@ -40,53 +41,26 @@ class SharkyTools(commands.Cog):
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)  # Formats when the account joined the server into a proper day message
 
     #   Embeds
-        embed = discord.Embed(
-            color=0xEE2222,
-            title=f'{member_name}\'s information')
-        embed.add_field(
-            name='Name:',
-            value=f'{member_mention}\n{member_name}#{member_disc}',
-            inline=True)
-        embed.add_field(
-            name='ID:',
-            value=f'{member_id}',
-            inline=True)
+        embed = discord.Embed(color=0xEE2222, title=f'{member_name}\'s information')
+        embed.add_field(name='Name:', value=f'{member_mention}\n{member_name}#{member_disc}', inline=True)
+        embed.add_field(name='ID:', value=f'{member_id}', inline=True)
         if member_bot is True:  # this is to define if a person is...well...a bot
-            embed.add_field(
-                name=('Bot:'),
-                value=(f"{member_mention} is a bot"),
-                inline=False)
-        embed.add_field(
-            name="Account Creation:",
-            value=f'{created_on}',
-            inline=True)
-        embed.add_field(
-            name="Joined Date:",
-            value=f'{joined_on}',
-            inline=True)
-        embed.add_field(
-            name='Roles:',
-            value=f'{member_role}',
-            inline=False)
+            embed.add_field(name='Bot:', value=f"{member_mention} is a bot", inline=False)
+        embed.add_field(name="Account Creation:", value=f'{created_on}', inline=True)
+        embed.add_field(name="Joined Date:", value=f'{joined_on}', inline=True)
+        embed.add_field(name='Roles:', value=f'{member_role}', inline=False)
         if member_voice and member_voice.channel:  # this formats the voice call chunk into a proper message
-            embed.add_field(
-                name=("Current voice channel"),
-                value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
-                inline=False)
+            embed.add_field(name="Current voice channel", value="<#{0.id}> (ID: {0.id})".format(member_voice.channel), inline=False)
     # Non-fielded embedsets
-        embed.set_footer(
-            text=f'{notice}')
-        embed.set_thumbnail(
-            url=member_avatar)
-        embed.set_author(
-            name=f'{member_name}#{member_disc}',
-            icon_url=f'{member_avatar}')  
+        embed.set_footer(text=f'{notice}')
+        embed.set_thumbnail(url=member_avatar)
+        embed.set_author(name=f'{member_name}#{member_disc}', icon_url=f'{member_avatar}')  
         await ctx.send(embed=embed)
 
 #   Embed base = Trying to find if user is banned in Discord.
     @commands.command()
     @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)  # Makes sure the bot has the proper permissions to do this command.
-    @checks.mod_or_permissions(send_messages=True)  #  This makes sure a person has to be a mod or have ban_members permission to use.
+    @checks.mod_or_permissions(manage_messages=True)  #  This makes sure a person has to be a mod or have ban_members permission to use.
     @commands.guild_only()
     async def findban(self, ctx, *, banneduser):
         """Check if a user is banned"""
@@ -95,20 +69,12 @@ class SharkyTools(commands.Cog):
         try:  # This tries to see if member works, if it doesn't it'll error out without this
             member = await bot.fetch_user(banneduser)  # Contains the bot.fetch_user
         except discord.NotFound:
-            embed = discord.Embed(
-                color=0xEE2222,
-                title='Unknown User')
-            embed.add_field(
-                name=f'Not Valid',
-                value=f'{banneduser} is not a Valid User\n Please make sure you\'re using a correct UserID.\nHow you ask? [Go here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)')
+            embed = discord.Embed(color=0xEE2222, title='Unknown User')
+            embed.add_field(name=f'Not Valid', value=f'{banneduser} is not a Valid User\n Please make sure you\'re using a correct UserID.\nHow you ask? [Go here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)')
             return await ctx.send(embed=embed)
         except discord.HTTPException:
-            embed = discord.Embed(
-                color=0xEE2222,
-                title='Invalid Input')
-            embed.add_field(
-                name=f'ID10T Error:',
-                value=f'**{banneduser}** is not a valid input...but you knew that, didn\'t you?')
+            embed = discord.Embed(color=0xEE2222, title='Invalid Input')
+            embed.add_field(name='ID10T Error:', value=f'**{banneduser}** is not a valid input...but you knew that, didn\'t you?')
             return await ctx.send(embed=embed)
         mid = banneduser
         hammer = 'https://cdn.discordapp.com/attachments/575846797709279262/578793294897741835/ban.png'
@@ -118,17 +84,9 @@ class SharkyTools(commands.Cog):
         try:
             tban = await guild.fetch_ban(await bot.fetch_user(banneduser))
             #   embeds
-            embed = discord.Embed(
-                color=0xEE2222,
-                title='Ban Found')
-            embed.add_field(
-                name=f'User Found:',
-                value=f'{member}\n({mid})',
-                inline=True)
-            embed.add_field(
-                name=f'Ban reason:',
-                value=f'{tban[0]}',
-                inline=False)
+            embed = discord.Embed(color=0xEE2222, title='Ban Found')
+            embed.add_field(name=f'User Found:', value=f'{member}\n({mid})', inline=True)
+            embed.add_field(name=f'Ban reason:', value=f'{tban[0]}', inline=False)
             embed.set_thumbnail(url=hammer)
             return await ctx.send(embed=embed)
         # Exception that if the person isn't found banned
@@ -143,6 +101,7 @@ class SharkyTools(commands.Cog):
 #   User Avatar
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
+    @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     async def av(self, ctx, *, user: discord.Member):
         """A user's avatar"""
@@ -163,26 +122,11 @@ class SharkyTools(commands.Cog):
         created_on = ("{}\n({} days ago)").format(user_created, since_created)  # Formats when the account was created into a proper day message
         joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)  # Formats when the account joined the server into a proper day message
 
-        embed = discord.Embed(
-            color=0xEE2222,
-            title=f'Avatar Info'
-        )
-        embed.add_field(
-            name=f'User Info:',
-            value=f'{user_mention}\n({user_id})'
-        )
-        embed.add_field(
-            name=f'Discord Name:',
-            value=f'{user_name}#{user_disc}'
-        )
-        embed.add_field(
-            name=f'Account Age:',
-            value=f'{created_on}'
-        )
-        embed.add_field(
-            name=f'Join Date:',
-            value=f'{joined_on}'
-        )
+        embed = discord.Embed(color=0xEE2222, title=f'Avatar Info')
+        embed.add_field(name=f'User Info:', value=f'{user_mention}\n({user_id})')
+        embed.add_field(name=f'Discord Name:', value=f'{user_name}#{user_disc}')
+        embed.add_field(name=f'Account Age:', value=f'{created_on}')
+        embed.add_field(name=f'Join Date:', value=f'{joined_on}')
         embed.set_image(url=user_av)
         await ctx.send(embed=embed)
 
@@ -199,10 +143,7 @@ class SharkyTools(commands.Cog):
             user_name = user_acc.name
             user_disc = user_acc.discriminator
             #  embed
-            embed = discord.Embed(
-                color=0xEE2222,
-                title=f'Avatar Info: {user_name}#{user_disc}'
-            )
+            embed = discord.Embed(color=0xEE2222, title=f'Avatar Info: {user_name}#{user_disc}')
             embed.set_image(url=user_av)
             await ctx.send(embed=embed)
         except discord.HTTPException:
@@ -261,23 +202,11 @@ class SharkyTools(commands.Cog):
         joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)  # Formats when the account joined the server into a proper day message
 
         bot_is = user.bot
-        embed = discord.Embed(
-            color=0xEE2222,
-            title=f"{user_name}#{user_disc}'s Account Date:"
-        )
-        embed.add_field(
-            name=f'Account Age:',
-            value=f'{created_on}'
-        )
-        embed.add_field(
-            name=f'Join Date:',
-            value=f'{joined_on}'
-        )
+        embed = discord.Embed(color=0xEE2222, title=f"{user_name}#{user_disc}'s Account Date:")
+        embed.add_field(name=f'Account Age:', value=f'{created_on}')
+        embed.add_field(name=f'Join Date:', value=f'{joined_on}')
         if bot_is is True:
-            embed.add_field(
-                name=f'Bot Found:',
-                value=f'{user_mention} is a bot'
-            )
+            embed.add_field(name=f'Bot Found:', value=f'{user_mention} is a bot')
         embed.set_thumbnail(url=user_av)
         await ctx.send(embed=embed)
 #   User menu, combinds most if not all of the commands together
@@ -297,7 +226,7 @@ class SharkyTools(commands.Cog):
         member_voice = member.voice  # Tells us the voice chat they're in
         member_bot = member.bot
 
-        member_role = sorted(member.roles)[1:]  # this and if member_role are required for role formats
+        member_role = sorted(member.roles, reverse=True)[:-1]  # this and if member_role are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
             member_role = ", ".join([x.mention for x in member_role])  # changed x.name to x.mention to make it ping the roles
         
@@ -335,27 +264,13 @@ class SharkyTools(commands.Cog):
                     value=(f"{member_mention} is a bot"),
                     inline=False)
             if member_voice and member_voice.channel:  # this formats the voice call chunk into a proper message
-                first.add_field(
-                    name=("Current voice channel"),
-                    value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
-                    inline=False)
+                first.add_field(name="Current voice channel", value="<#{0.id}> (ID: {0.id})".format(member_voice.channel), inline=False)
             first.set_thumbnail(url=member_avatar)
             embeds.append(first)
-            second = discord.Embed(
-                color=0xEE2222,
-                title=f'{member_name}\'s information')
-            second.add_field(
-                name="Account Creation:",
-                value=f'{created_on}',
-                inline=True)
-            second.add_field(
-                name="Joined Date:",
-                value=f'{joined_on}',
-                inline=True)
-            second.add_field(
-                name='Roles:',
-                value=f'{member_role}',
-                inline=False)
+            second = discord.Embed(color=0xEE2222, title=f'{member_name}\'s information')
+            second.add_field(name="Account Creation:", value=f'{created_on}', inline=True)
+            second.add_field(name="Joined Date:", value=f'{joined_on}', inline=True)
+            second.add_field(name='Roles:', value=f'{member_role}', inline=False)
             second.set_thumbnail(url=member_avatar)
             embeds.append(second)
             third = discord.Embed(
@@ -1461,22 +1376,12 @@ class SharkyTools(commands.Cog):
                     name="Guild's Roles",
                     value=f'{s12}'
                 )
-                l.set_footer(
-                    text="Page 12"
-                )
+                l.set_footer(text="Page 12")
                 embeds.append(l)
-                
-                m = discord.Embed(
-                    color=0xEE2222,
-                    title="Server's Info"
-                )
-                m.add_field(
-                    name="Guild's Roles",
-                    value=f'{s13}'
-                )              
-                m.set_footer(
-                    text="Page 13"
-                )
+
+                m = discord.Embed(color=0xEE2222, title="Server's Info")
+                m.add_field(name="Guild's Roles", value=f'{s13}')
+                m.set_footer(text="Page 13")
                 embeds.append(m)
             await menu(ctx, embeds, DEFAULT_CONTROLS)
     #   If you somehow got down here. Why? Don't ever do this. Don't be like sharky.
