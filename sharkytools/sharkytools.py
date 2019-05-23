@@ -8,6 +8,10 @@ from typing import Sequence
 
 class SharkyTools(commands.Cog):
     """Sharky Tools"""
+
+    __author__ = "Sharky"
+    __version__ = "2.0.0"
+
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
     @commands.guild_only()
@@ -57,7 +61,7 @@ class SharkyTools(commands.Cog):
         embed.set_author(name=f'{member_name}#{member_disc}', icon_url=f'{member_avatar}')  
         await ctx.send(embed=embed)
 
-#   Embed base = Trying to find if user is banned in Discord.
+#   Trying to find if user is banned in Discord.
     @commands.command()
     @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)  # Makes sure the bot has the proper permissions to do this command.
     @checks.mod_or_permissions(manage_messages=True)  #  This makes sure a person has to be a mod or have ban_members permission to use.
@@ -209,6 +213,7 @@ class SharkyTools(commands.Cog):
             embed.add_field(name=f'Bot Found:', value=f'{user_mention} is a bot')
         embed.set_thumbnail(url=user_av)
         await ctx.send(embed=embed)
+        
 #   User menu, combinds most if not all of the commands together
     @commands.command(name="usermenu", aliases=['umenu', 'userm', 'um'])
     @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
