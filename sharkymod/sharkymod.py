@@ -3,11 +3,11 @@ from redbot.core import commands, checks
 from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
 
 
-class SharkyMod(commands.cog):
+class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
