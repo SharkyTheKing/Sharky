@@ -1,0 +1,9 @@
+{
+    "author": [
+        "Sharky The King"
+    ],
+    "description": "A bit like SharkyTools but locked down for moderation",
+    "short": "Moderation Tool Cog for Sharky",
+    "tags": [],
+    "type": "COG"
+}
