@@ -7,11 +7,12 @@ class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "1.0.1"
+    __version__ = "1.0.2"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
     @commands.guild_only()
+    @checks.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
     async def sharkinfo(self, ctx, *, member: discord.Member):
         """
@@ -134,6 +135,7 @@ class SharkyMod(commands.Cog):
 #   User menu, combinds most if not all of the commands together
     @commands.command(name="usermenu", aliases=['umenu', 'userm', 'um'])
     @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
+    @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     async def _umenu(self, ctx, *, member: discord.Member):
         """Ties all of the commands together, but in a menu! :D"""
