@@ -101,11 +101,11 @@ class SharkyMod(commands.Cog):
             return await ctx.send(embed=embed)
 
 #   User Avatar
-    @commands.command()
+    @commands.command(name="avatar", aliases=['av', 'picture'])
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
     @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
-    async def av(self, ctx, *, user: discord.Member):
+    async def _avatar(self, ctx, *, user: discord.Member):
         """A user's avatar"""
         user_mention = user.mention  # Mentions
         user_disc = user.discriminator  # The four digits
