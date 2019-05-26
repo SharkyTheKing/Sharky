@@ -11,7 +11,7 @@ class SharkyTools(commands.Cog):
     """Sharky Tools"""
 
     __author__ = "Sharky"
-    __version__ = "2.0.4"
+    __version__ = "2.1.0"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
@@ -147,9 +147,6 @@ class SharkyTools(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
     async def uav(self, ctx, *, user):
         """Get a user's avatar even if they aren't on the server"""
-        author = ctx.author
-        if not user:
-            user = author
         try:
             #  argument setups
             user_acc = await ctx.bot.fetch_user(user)

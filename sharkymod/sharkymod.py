@@ -8,7 +8,7 @@ class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "1.0.4"
+    __version__ = "1.0.5"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
