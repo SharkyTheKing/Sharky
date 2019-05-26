@@ -7,7 +7,7 @@ class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "1.0.2"
+    __version__ = "1.0.4"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
@@ -27,7 +27,7 @@ class SharkyMod(commands.Cog):
         member_voice = member.voice  # Tells us the voice chat they're in
         member_bot = member.bot
 
-        member_role = sorted(member.roles)[1:]  # this and line 35 are required for role formats
+        member_role = sorted(member.roles, reverse=True)[:-1]  # this and line 35 are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
             member_role = ", ".join([x.mention for x in member_role])  # Changed x.name to x.mention to ping the roles for color
 
