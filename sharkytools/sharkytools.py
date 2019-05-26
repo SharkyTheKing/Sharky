@@ -145,7 +145,7 @@ class SharkyTools(commands.Cog):
 # Grabbing ANY user's avatar. This is hidden on purpose
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    async def uav(self, ctx, *, user = None):
+    async def uav(self, ctx, *, user):
         """Get a user's avatar even if they aren't on the server"""
         author = ctx.author
         if not user:

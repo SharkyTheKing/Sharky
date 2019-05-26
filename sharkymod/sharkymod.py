@@ -15,10 +15,13 @@ class SharkyMod(commands.Cog):
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    async def sharkinfo(self, ctx, *, member: discord.Member):
+    async def sharkinfo(self, ctx, *, member: discord.Member = None):
         """
         User information with Sharky's twist
         """
+        author = ctx.author
+        if not member:
+            member = author
         guild = ctx.guild
         member_mention = member.mention  # Mentions
         member_disc = member.discriminator  # The four digits
@@ -109,8 +112,11 @@ class SharkyMod(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
     @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
-    async def _avatar(self, ctx, *, user: discord.Member):
+    async def _avatar(self, ctx, *, user: discord.Member = None):
         """A user's avatar"""
+        author = ctx.author
+        if not user:
+            user = author
         user_mention = user.mention  # Mentions
         user_disc = user.discriminator  # The four digits
         user_name = user.name  # Default Discord name
@@ -141,10 +147,12 @@ class SharkyMod(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
     @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
-    async def _umenu(self, ctx, *, member: discord.Member):
+    async def _umenu(self, ctx, *, member: discord.Member = None):
         """Ties all of the commands together, but in a menu! :D"""
         embeds = []
-
+        author = ctx.author
+        if not member:
+            member = author
     # This is the list of definitions
         guild = ctx.guild
         member_mention = member.mention  # Mentions
