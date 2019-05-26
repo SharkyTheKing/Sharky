@@ -224,6 +224,7 @@ class SharkyTools(commands.Cog):
         embeds = []
 
     # This is the list of definitions
+        guild = ctx.gulid
         member_mention = member.mention  # Mentions
         member_disc = member.discriminator  # The four digits
         member_name = member.name  # Default Discord name
