@@ -316,7 +316,7 @@ class SharkyTools(commands.Cog):
         guild = ctx.guild
         msg = ""
         for role in sorted(guild.roles, reverse=True):
-            msg += f"{role.mention}\n"
+            msg += f"{role.mention} ({len(role.members)})\n"
             msg_list = []
         for page in pagify(msg, ["\n"]):
             if ctx.channel.permissions_for(ctx.me).embed_links:
