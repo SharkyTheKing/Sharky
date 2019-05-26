@@ -252,7 +252,8 @@ class SharkyTools(commands.Cog):
 
         created_on = ("{}\n({} days ago)").format(member_created, since_created)  # Formats when the account was created into a proper day message
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)  # Formats when the account joined the server into a proper day message
-
+        member_number = (sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(member) + 1)
+        notice = f"Member #{member_number}"
     # This is where the magic will hopefully happen
         for x in map(str, range(1, 4)):
             first = discord.Embed(
@@ -274,6 +275,7 @@ class SharkyTools(commands.Cog):
             if member_voice and member_voice.channel:  # this formats the voice call chunk into a proper message
                 first.add_field(name="Current voice channel", value="<#{0.id}> (ID: {0.id})".format(member_voice.channel), inline=False)
             first.set_thumbnail(url=member_avatar)
+            first.set_footer(text=f'{notice}')
             embeds.append(first)
             second = discord.Embed(color=0xEE2222, title=f'{member_name}\'s information')
             second.add_field(name="Account Creation:", value=f'{created_on}', inline=True)
@@ -281,11 +283,13 @@ class SharkyTools(commands.Cog):
             if member_role is not None:
                 second.add_field(name='Roles:', value=f'{member_role}', inline=False)
             second.set_thumbnail(url=member_avatar)
+            second.set_footer(text=f'{notice}')
             embeds.append(second)
             third = discord.Embed(
                 color=0xEE2222,
                 title=f'{member_name}\'s Avatar')
             third.set_image(url=member_avatar)
+            third.set_footer(text=f'{notice}')
             embeds.append(third)
             forth = discord.Embed(
                 color=0XEE2222,
@@ -296,6 +300,7 @@ class SharkyTools(commands.Cog):
                 value=f'They have {bal}{credits_name} in their bank!'
             )
             forth.set_thumbnail(url=member_avatar)
+            forth.set_footer(text=f'{notice}')
             embeds.append(forth)
         await menu(ctx, embeds, DEFAULT_CONTROLS)
 #   Marking where TO PUT THE NEXT COMMAND. NOT DOWN THERE
