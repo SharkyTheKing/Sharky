@@ -240,7 +240,7 @@ class SharkyTools(commands.Cog):
             member_role = None  # changed x.name to x.mention to make it ping the roles
         
         # bank stuff
-        credits_name = await bank.get_currency_name(ctx.guild)
+        credits_name = await bank.get_currency_name(guild)
         bal = await bank.get_balance(member)
         
         #  Tie this together with created_on and joined_on
