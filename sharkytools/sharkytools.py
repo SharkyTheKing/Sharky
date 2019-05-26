@@ -17,10 +17,13 @@ class SharkyTools(commands.Cog):
     @commands.command(name="sharkinfo", aliases=['pinfo'])
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    async def sharkinfo(self, ctx, *, member: discord.Member):
+    async def sharkinfo(self, ctx, *, member: discord.Member = None):
         """
         User information with Sharky's twist
         """
+        author = ctx.author
+        if not member:
+            member = author
         guild = ctx.guild
         member_mention = member.mention  # Mentions
         member_disc = member.discriminator  # The four digits
@@ -109,8 +112,11 @@ class SharkyTools(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
     @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
-    async def av(self, ctx, *, user: discord.Member):
+    async def av(self, ctx, *, user: discord.Member = None):
         """A user's avatar"""
+        author = ctx.author
+        if not user:
+            user = author
         user_mention = user.mention  # Mentions
         user_disc = user.discriminator  # The four digits
         user_name = user.name  # Default Discord name
@@ -139,9 +145,11 @@ class SharkyTools(commands.Cog):
 # Grabbing ANY user's avatar. This is hidden on purpose
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    async def uav(self, ctx, *, user):
+    async def uav(self, ctx, *, user = None):
         """Get a user's avatar even if they aren't on the server"""
-
+        author = ctx.author
+        if not user:
+            user = author
         try:
             #  argument setups
             user_acc = await ctx.bot.fetch_user(user)
@@ -158,8 +166,11 @@ class SharkyTools(commands.Cog):
 #   Fetching UserIDs for mobile users.
     @commands.command()
     @commands.guild_only()
-    async def uid(self, ctx, *, user: discord.Member):
+    async def uid(self, ctx, *, user: discord.Member = None):
         """Get a user's ID"""
+        author = ctx.author
+        if not user:
+            user = author
         u_id = user.id
         await ctx.send(f'{u_id}')
 #   Guild ID
@@ -193,8 +204,11 @@ class SharkyTools(commands.Cog):
     @commands.guild_only()
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    async def age(self, ctx, *, user: discord.Member):
+    async def age(self, ctx, *, user: discord.Member = None):
         """Find out the person's account age and join date!"""
+        author = ctx.author
+        if not user:
+            user = author
         user_mention = user.mention
         user_name = user.name
         user_disc = user.discriminator
@@ -220,12 +234,15 @@ class SharkyTools(commands.Cog):
     @commands.command(name="usermenu", aliases=['umenu', 'userm', 'um'])
     @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
     @commands.guild_only()
-    async def _umenu(self, ctx, *, member: discord.Member):
+    async def _umenu(self, ctx, *, member: discord.Member = None):
         """Ties all of the commands together, but in a menu! :D"""
         embeds = []
 
     # This is the list of definitions
         guild = ctx.guild
+        author = ctx.author
+        if not member:
+            member = author
         member_mention = member.mention  # Mentions
         member_disc = member.discriminator  # The four digits
         member_name = member.name  # Default Discord name
