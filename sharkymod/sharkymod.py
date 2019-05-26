@@ -1,6 +1,7 @@
 import discord
 from redbot.core import commands, checks
-from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
+from redbot.core.utils.chat_formatting import pagify
+from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
 
 class SharkyMod(commands.Cog):
@@ -210,3 +211,22 @@ class SharkyMod(commands.Cog):
             third.set_footer(text=f'{notice}')
             embeds.append(third)
         await menu(ctx, embeds, DEFAULT_CONTROLS)
+
+#   Display Roles
+
+    @commands.command()
+    @commands.guild_only()
+    async def roles(self, ctx):
+        """Get the roles of the server\n\nCredit goes to [Trusty's Repo for SeverStats](https://github.com/TrustyJAID/Trusty-cogs) for the code"""
+        guild = ctx.guild
+        msg = ""
+        for role in sorted(guild.roles, reverse=True):
+            msg += f"{role.mention}\n"
+            msg_list = []
+        for page in pagify(msg, ["\n"]):
+            if ctx.channel.permissions_for(ctx.me).embed_links:
+                embed = discord.Embed(color=0xEE2222)
+                embed.description = page
+                embed.set_author(name=guild.name + ("Roles"), icon_url=guild.icon_url)
+                msg_list.append(embed)
+        await menu(ctx, msg_list, DEFAULT_CONTROLS)
