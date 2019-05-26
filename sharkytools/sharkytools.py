@@ -232,7 +232,7 @@ class SharkyTools(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
     @commands.guild_only()
     async def _umenu(self, ctx, *, member: discord.Member = None):
-        """Ties all of the commands together, but in a menu! :D"""
+        """All the information you may want/need but in a menu!"""
         embeds = []
 
     # This is the list of definitions
