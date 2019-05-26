@@ -41,11 +41,12 @@ class SharkyMod(commands.Cog):
 
         created_on = ("{}\n({} days ago)").format(member_created, since_created)  # Formats when the account was created into a proper day message
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)  # Formats when the account joined the server into a proper day message
-
+        member_number = (sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(user) + 1)
+        # This is to calculate the member count for the user
     #   Embeds
         embed = discord.Embed(color=0xEE2222, title=f'{member_name}\'s information')
         embed.add_field(name='Name:', value=f'{member_mention}\n{member_name}#{member_disc}', inline=True)
-        embed.add_field(name='ID:', value=f'{member_id}', inline=True)
+        embed.add_field(name='ID:', value=f'{member_id}\n"Member #{member_number}', inline=True)
         if member_bot is True:  # this is to define if a person is...well...a bot
             embed.add_field(name='Bot:', value=f"{member_mention} is a bot", inline=False)
         embed.add_field(name="Account Creation:", value=f'{created_on}', inline=True)
