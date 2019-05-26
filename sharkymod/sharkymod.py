@@ -155,9 +155,9 @@ class SharkyMod(commands.Cog):
 
         member_role = sorted(member.roles, reverse=True)[:-1]  # this and if member_role are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
-            member_role = ", ".join([x.mention for x in member_role])
+            member_role = ", ".join([x.mention for x in member_role]) # changed x.name to x.mention to make it ping the roles
         else:
-            member_role = None  # changed x.name to x.mention to make it ping the roles
+            member_role = None
 
         #  Tie this together with created_on and joined_on
         #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
