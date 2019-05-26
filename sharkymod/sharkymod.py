@@ -30,7 +30,7 @@ class SharkyMod(commands.Cog):
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
             member_role = ", ".join([x.mention for x in member_role])  # Changed x.name to x.mention to ping the roles for color
         notice = "Puppy Shark"
-        
+
         #  Tie this together with created_on and joined_on
         #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
         joined_at = member.joined_at  # This is REQUIRED for 'since_joined`
@@ -79,8 +79,8 @@ class SharkyMod(commands.Cog):
             embed.add_field(name='ID10T Error:', value=f'**{banneduser}** is not a valid input...but you knew that, didn\'t you?')
             return await ctx.send(embed=embed)
         mid = banneduser
-        hammer = 'https://cdn.discordapp.com/attachments/575846797709279262/578793294897741835/ban.png'
-        x_emote = 'https://media.discordapp.net/attachments/541131861687009296/579467209676554240/emoji.png'
+        hammer = 'https://photos.kstj.us/TartPuzzlingKusimanse.png'
+        x_emote = 'https://photos.kstj.us/GiddyDizzyIvorybilledwoodpecker.png'
         #  This is where the command actually works. If a ban is found it'll output that it was found
         #   If the ban isn't found, it'll error and thus cause the discord.NotFound exception
         try:

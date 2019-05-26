@@ -81,8 +81,8 @@ class SharkyTools(commands.Cog):
             embed.add_field(name='ID10T Error:', value=f'**{banneduser}** is not a valid input...but you knew that, didn\'t you?')
             return await ctx.send(embed=embed)
         mid = banneduser
-        hammer = 'https://cdn.discordapp.com/attachments/575846797709279262/578793294897741835/ban.png'
-        x_emote = 'https://media.discordapp.net/attachments/541131861687009296/579467209676554240/emoji.png'
+        hammer = 'https://photos.kstj.us/TartPuzzlingKusimanse.png'
+        x_emote = 'https://photos.kstj.us/GiddyDizzyIvorybilledwoodpecker.png'
         #  This is where the command actually works. If a ban is found it'll output that it was found
         #   If the ban isn't found, it'll error and thus cause the discord.NotFound exception
         try:
