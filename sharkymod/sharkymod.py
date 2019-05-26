@@ -30,7 +30,7 @@ class SharkyMod(commands.Cog):
         member_role = sorted(member.roles)[1:]  # this and line 35 are required for role formats
         if member_role:  # this lets us format the roles properly so theyr'e named correctly
             member_role = ", ".join([x.mention for x in member_role])  # Changed x.name to x.mention to ping the roles for color
-        notice = "Puppy Shark"
+
 
         #  Tie this together with created_on and joined_on
         #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
@@ -42,12 +42,13 @@ class SharkyMod(commands.Cog):
 
         created_on = ("{}\n({} days ago)").format(member_created, since_created)  # Formats when the account was created into a proper day message
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)  # Formats when the account joined the server into a proper day message
-        member_number = (sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(user) + 1)
+        member_number = (sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(member) + 1)
+        notice = f"Member #{member_number}"
         # This is to calculate the member count for the user
     #   Embeds
         embed = discord.Embed(color=0xEE2222, title=f'{member_name}\'s information')
         embed.add_field(name='Name:', value=f'{member_mention}\n{member_name}#{member_disc}', inline=True)
-        embed.add_field(name='ID:', value=f'{member_id}\n"Member #{member_number}', inline=True)
+        embed.add_field(name='ID:', value=f'{member_id}', inline=True)
         if member_bot is True:  # this is to define if a person is...well...a bot
             embed.add_field(name='Bot:', value=f"{member_mention} is a bot", inline=False)
         embed.add_field(name="Account Creation:", value=f'{created_on}', inline=True)
