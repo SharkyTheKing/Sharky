@@ -18,6 +18,7 @@ class SharkyMod(commands.Cog):
         """
         User information with Sharky's twist
         """
+        guild = ctx.guild
         member_mention = member.mention  # Mentions
         member_disc = member.discriminator  # The four digits
         member_name = member.name  # Default Discord name
