@@ -339,3 +339,12 @@ class SharkyTools(commands.Cog):
                 embed.set_author(name=guild.name + ("Roles"), icon_url=guild.icon_url)
                 msg_list.append(embed)
         await menu(ctx, msg_list, DEFAULT_CONTROLS)
+
+#   Message Link
+    @commands.command()
+    @commands.guild_only()
+    async def msglink(self, ctx, Channel: discord.TextChannel, Message: int):
+        """A way for Mobile Users to create a Message Link in the Server"""
+        guild = ctx.guild.id
+        c_id = Channel.id
+        await ctx.send(f"https://discordapp.com/channels/{guild}/{c_id}/{Message}")
