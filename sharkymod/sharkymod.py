@@ -243,7 +243,139 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def msglink(self, ctx, Channel: discord.TextChannel, Message: int):
-        """A way for Mobile Users to create a Message Link in the Server"""
+        """Praying this somehow works?"""
         guild = ctx.guild.id
         c_id = Channel.id
         await ctx.send(f"https://discordapp.com/channels/{guild}/{c_id}/{Message}")
+
+#   Warn testing
+    @commands.command()
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_messages=True)
+    async def sharkywarn(self, ctx, Member: discord.Member, *, Reason: str = None):
+        """Uh. Fawk you?"""
+        author = ctx.author
+        guild = ctx.guild
+        guild_ic = guild.icon_url
+        guild_name = guild.name
+        bot = ctx.bot
+        embed = discord.Embed(
+            color=0xEE2222)
+        embed.add_field(
+            name=f'Reason:',
+            value=f"{Reason}"
+        )
+        embed.add_field(
+            name=f'Warned By:',
+            value=f'{author.mention}'
+        )
+        embed.set_thumbnail(url=guild_ic)
+        try:
+            await Member.send(f"You've been warned from {guild_name}", embed=embed)
+            await ctx.send(f"Perfectio! Warned {Member} for {Reason}")
+        except discord.errors.Forbidden:
+            await ctx.send("Can't send to user")
+        await modlog.create_case(
+            bot,
+            ctx.guild,
+            ctx.message.created_at,
+            "warning",
+            Member,
+            ctx.message.author,
+            Reason,
+            until=None,
+            channel=None,)
+
+#   Kick Testing
+    @commands.command()
+    @commands.guild_only()
+    @checks.mod_or_permissions(kick_members=True)
+    async def sharkykick(self, ctx, Member: discord.Member, *, Reason: str = None):
+        """Uh, Double Fawk you?"""
+        author = ctx.author
+        guild = ctx.guild
+        guild_ic = guild.icon_url
+        guild_name = guild.name
+        bot = ctx.bot
+        audit_reason = get_audit_reason(author, Reason)
+        embed = discord.Embed(
+            color=0xEE2222)
+        embed.add_field(
+            name=f'Reason:',
+            value=f"{Reason}"
+        )
+        embed.add_field(
+            name=f'Warned By:',
+            value=f'{author.mention}'
+        )
+        embed.set_thumbnail(url=guild_ic)
+        try:
+            await guild.kick(Member, reason=audit_reason)
+        except discord.errors.Forbidden:
+            await ctx.send(_("I'm not allowed to do that."))
+        except Exception as e:
+            print(e)
+        else:
+            await modlog.create_case(
+                bot,
+                ctx.guild,
+                ctx.message.created_at,
+                "kick",
+                Member,
+                ctx.message.author,
+                Reason,
+                until=None,
+                channel=None,)
+        try:
+            await Member.send(f"You've been kicked from {guild_name}", embed=embed)
+            await ctx.send(f"Perfectio! Kicked {Member} for {Reason}")
+        except discord.errors.Forbidden:
+            await ctx.send("Can't send to user")
+#   Softban Testing
+    @commands.command()
+    @commands.guild_only()
+    @checks.mod_or_permissions(ban_members=True)
+    async def sharkysoftban(self, ctx, Member: discord.Member, *, Reason: str = None):
+        """Triple Fawk you"""
+        author = ctx.author
+        guild = ctx.guild
+        guild_ic = guild.icon_url
+        guild_name = guild.name
+        bot = ctx.bot
+        audit_reason = get_audit_reason(author, Reason)
+        embed = discord.Embed(
+            color=0xEE2222)
+        embed.add_field(
+            name=f'Reason:',
+            value=f"{Reason}"
+        )
+        embed.add_field(
+            name=f'Warned By:',
+            value=f'{author.mention}'
+        )
+        embed.set_thumbnail(url=guild_ic)
+
+        try:
+            await modlog.create_case(
+                bot,
+                ctx.guild,
+                ctx.message.created_at,
+                "softban",0
+                Member,
+                ctx.message.author,
+                Reason,
+                until=None,
+                channel=None,)
+        
+            await Member.send(f"You've been banned and unbanned from {guild_name} to purge your messages", embed=embed)
+            await ctx.send(f"Perfectio! Softbanned {Member} for {Reason}")
+        except discord.errors.Forbidden:
+            await ctx.send("Can't send to user")
+
+        try:
+            await guild.ban(Member, reason=audit_reason)
+            await guild.unban(Member)
+        except discord.errors.Forbidden:
+            await ctx.send("I'm not allowed to do that.")
+        except Exception as e:
+            print(e)
