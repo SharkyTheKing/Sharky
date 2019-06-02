@@ -379,3 +379,52 @@ class SharkyMod(commands.Cog):
             await ctx.send("I'm not allowed to do that.")
         except Exception as e:
             print(e)
+            
+#   Ban Testing
+    @commands.command()
+    @commands.guild_only()
+    @checks.mod_or_permissions(ban_members=True)
+    async def sharkyban(self, ctx, Member: discord.Member, *, Reason: str = None):
+        """Mega Fawk you"""
+        author = ctx.author
+        guild = ctx.guild
+        guild_ic = guild.icon_url
+        guild_name = guild.name
+        bot = ctx.bot
+        audit_reason = get_audit_reason(author, Reason)
+        embed = discord.Embed(
+            color=0xEE2222)
+        embed.add_field(
+            name=f'Reason:',
+            value=f"{Reason}"
+        )
+        embed.add_field(
+            name=f'Warned By:',
+            value=f'{author.mention}'
+        )
+        embed.set_thumbnail(url=guild_ic)
+
+        try:
+            await modlog.create_case(
+                bot,
+                ctx.guild,
+                ctx.message.created_at,
+                "ban",
+                Member,
+                ctx.message.author,
+                Reason,
+                until=None,
+                channel=None,)
+        
+            await Member.send(f"You've been banned from {guild_name} forever.", embed=embed)
+            await ctx.send(f"Perfectio! Banned {Member} for {Reason}")
+        except discord.errors.Forbidden:
+            await ctx.send("Can't send to user")
+
+        try:
+            await guild.ban(Member, reason=audit_reason)
+        except discord.errors.Forbidden:
+            await ctx.send("I'm not allowed to do that.")
+        except Exception as e:
+            print(e)
+        
