@@ -252,6 +252,7 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkywarn(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Uh. Fawk you?"""
         author = ctx.author
@@ -290,6 +291,7 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(kick_members=True)
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkykick(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Uh, Double Fawk you?"""
         author = ctx.author
@@ -335,6 +337,7 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkysoftban(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Triple Fawk you"""
         author = ctx.author
@@ -384,6 +387,7 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkyban(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Mega Fawk you"""
         author = ctx.author
