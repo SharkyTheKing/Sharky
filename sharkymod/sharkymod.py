@@ -1,5 +1,5 @@
 import discord
-from redbot.core import commands, checks
+from redbot.core import commands, checks, modlog
 from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
