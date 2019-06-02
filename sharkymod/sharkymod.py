@@ -360,7 +360,7 @@ class SharkyMod(commands.Cog):
                 bot,
                 ctx.guild,
                 ctx.message.created_at,
-                "softban",0
+                "softban",
                 Member,
                 ctx.message.author,
                 Reason,
