@@ -264,7 +264,8 @@ class SharkyMod(commands.Cog):
         guild_ic = guild.icon_url
         guild_name = guild.name
         bot = ctx.bot
-        inv = bot.get_guild(guild)
+        inv_setup = bot.get_guild(guild)
+        inv = inv_setup.invites()
         embed = discord.Embed(
             color=0xEE2222)
         embed.add_field(
@@ -277,7 +278,7 @@ class SharkyMod(commands.Cog):
         )
         embed.add_field(
             name="Invite Link:",
-            value=f"{inv.create_invite}"
+            value=f"{inv}"
         )
         embed.set_thumbnail(url=guild_ic)
         try:
