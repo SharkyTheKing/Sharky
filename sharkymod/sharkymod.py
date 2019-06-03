@@ -431,7 +431,7 @@ class SharkyMod(commands.Cog):
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
                 # guild has a vanity url so use it as the one to send
-                return embed.add_field(
+                return await embed.add_field(
                         name="Invite Link:",
                         value=f"{guild.vanity_invite()}"
                     )
