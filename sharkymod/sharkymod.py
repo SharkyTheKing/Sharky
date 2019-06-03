@@ -2,13 +2,14 @@ import discord
 from redbot.core import commands, checks, modlog
 from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
+from redbot.core.utils.mod import is_allowed_by_hierarchy, get_audit_reason
 
 
 class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "1.0.5"
+    __version__ = "1.1.0"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
@@ -248,7 +249,7 @@ class SharkyMod(commands.Cog):
         c_id = Channel.id
         await ctx.send(f"https://discordapp.com/channels/{guild}/{c_id}/{Message}")
 
-#   Warn testing
+#   Warn Command
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
@@ -287,7 +288,7 @@ class SharkyMod(commands.Cog):
             until=None,
             channel=None,)
 
-#   Kick Testing
+#   Kick Command
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(kick_members=True)
@@ -333,7 +334,7 @@ class SharkyMod(commands.Cog):
             await ctx.send(f"Perfectio! Kicked {Member} for {Reason}")
         except discord.errors.Forbidden:
             await ctx.send("Can't send to user")
-#   Softban Testing
+#   Softban Command
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(ban_members=True)
@@ -382,8 +383,8 @@ class SharkyMod(commands.Cog):
             await ctx.send("I'm not allowed to do that.")
         except Exception as e:
             print(e)
-            
-#   Ban Testing
+
+#   Ban Command
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(ban_members=True)
