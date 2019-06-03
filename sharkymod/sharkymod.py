@@ -264,8 +264,7 @@ class SharkyMod(commands.Cog):
         guild_ic = guild.icon_url
         guild_name = guild.name
         bot = ctx.bot
-        inv_setup = bot.get_guild(guild)
-        inv = inv_setup.invites()
+        inv = guild.invites()
         embed = discord.Embed(
             color=0xEE2222)
         embed.add_field(
