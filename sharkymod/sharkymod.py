@@ -428,13 +428,13 @@ class SharkyMod(commands.Cog):
             value=f'{author.mention}'
         )
         #   Full credit to Trusty - > https://github.com/TrustyJAID/Trusty-cogs/tree/master/serverstats
-        vanity = guild.vanity_invite()
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
+                vanity = await guild.vanity_invite()
                 # guild has a vanity url so use it as the one to send
                 embed.add_field(
                     name="Invite Link:",
-                    value=vanity
+                    value=f"{vanity}"
                 )
             invites = await guild.invites()
         else:
