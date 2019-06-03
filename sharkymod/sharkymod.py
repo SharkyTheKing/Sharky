@@ -440,12 +440,12 @@ class SharkyMod(commands.Cog):
             invites = await guild.invites()
         else:
             invites = []
-        for inv in invites:  # Loop through the invites for the guild
-            if not (inv.max_uses or inv.max_age or inv.temporary):
-                embed.add_field(
-                    name="Invite Link:",
-                    value=inv
-                    )
+            for inv in invites:  # Loop through the invites for the guild
+                if not (inv.max_uses or inv.max_age or inv.temporary):
+                    embed.add_field(
+                        name="Invite Link:",
+                        value=inv
+                        )
         embed.set_thumbnail(url=guild_ic)
         try:
             await Member.send(
