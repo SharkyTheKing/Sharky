@@ -428,6 +428,7 @@ class SharkyMod(commands.Cog):
             value=f'{author.mention}'
         )
         #   Full credit to Trusty - > https://github.com/TrustyJAID/Trusty-cogs/tree/master/serverstats
+        # TODO fix up issue with posting vanity + normal
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
                 vanity = await guild.vanity_invite()
@@ -443,7 +444,7 @@ class SharkyMod(commands.Cog):
             if not (inv.max_uses or inv.max_age or inv.temporary):
                 embed.add_field(
                     name="Invite Link:",
-                    value=f"{inv}"
+                    value=inv
                     )
         embed.set_thumbnail(url=guild_ic)
         try:
