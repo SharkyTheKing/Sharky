@@ -253,7 +253,10 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
+    @commands.bot_has_permissions(
+        ban_members=True,
+        embed_links=True,
+        send_messages=True)
     async def sharkywarn(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Uh. Fawk you?"""
         author = ctx.author
@@ -261,6 +264,7 @@ class SharkyMod(commands.Cog):
         guild_ic = guild.icon_url
         guild_name = guild.name
         bot = ctx.bot
+        inv = bot.get_guild(guild)
         embed = discord.Embed(
             color=0xEE2222)
         embed.add_field(
@@ -270,6 +274,10 @@ class SharkyMod(commands.Cog):
         embed.add_field(
             name=f'Warned By:',
             value=f'{author.mention}'
+        )
+        embed.add_field(
+            name="Invite Link:",
+            value=f"{inv.create_invite}"
         )
         embed.set_thumbnail(url=guild_ic)
         try:
