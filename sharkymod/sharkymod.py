@@ -9,7 +9,7 @@ class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "2.0.0"
+    __version__ = "2.0.1"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
@@ -366,7 +366,9 @@ class SharkyMod(commands.Cog):
     @commands.guild_only()
     async def roles(self, ctx):
         """
-        Get the roles of the server\n\nCredit goes to [Trusty's ServerStats](https://github.com/TrustyJAID/Trusty-cogs) for the code
+        Get the roles of the server\n\nCredit goes to
+            [Trusty's ServerStats](https://github.com/TrustyJAID/Trusty-cogs)
+            for the code
         """
         guild = ctx.guild
         msg = ""
@@ -391,7 +393,9 @@ class SharkyMod(commands.Cog):
         """Praying this somehow works?"""
         guild = ctx.guild.id
         c_id = Channel.id
-        await ctx.send(f"https://discordapp.com/channels/{guild}/{c_id}/{Message}")
+        await ctx.send(
+            f"https://discordapp.com/channels/{guild}/{c_id}/{Message}"
+        )
 
 #   Warn Command
     @commands.command()
@@ -427,8 +431,6 @@ class SharkyMod(commands.Cog):
             name=f'Warned By:',
             value=f'{author.mention}'
         )
-        #   Full credit to Trusty - > https://github.com/TrustyJAID/Trusty-cogs/tree/master/serverstats
-        # TODO fix up issue with posting vanity + normal
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
                 vanity = await guild.vanity_invite()
@@ -500,7 +502,6 @@ class SharkyMod(commands.Cog):
             name=f'Warned By:',
             value=f'{author.mention}'
         )
-        #   Full credit to Trusty - > https://github.com/TrustyJAID/Trusty-cogs/tree/master/serverstats
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
                 # guild has a vanity url so use it as the one to send
@@ -576,7 +577,8 @@ class SharkyMod(commands.Cog):
             name=f'Warned By:',
             value=f'{author.mention}'
         )
-        #   Full credit to Trusty - > https://github.com/TrustyJAID/Trusty-cogs/tree/master/serverstats
+        #   Full credit to Trusty
+        #   https://github.com/TrustyJAID/Trusty-cogs/tree/master/serverstats
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
                 # guild has a vanity url so use it as the one to send
@@ -674,10 +676,10 @@ class SharkyMod(commands.Cog):
             await ctx.send(f"Perfectio! Banned {Member} for {Reason}")
         except discord.errors.Forbidden:
             await ctx.send("Can't send to user")
-
         try:
             await guild.ban(Member, reason=audit_reason)
         except discord.errors.Forbidden:
             await ctx.send("Yeah, I can't.")
         except Exception as e:
             print(e)
+#   TODO Fix softban, fix ban so it doesn't double post modlogs
