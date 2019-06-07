@@ -9,7 +9,7 @@ class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "2.0.1"
+    __version__ = "2.0.0"
 
 #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=['pinfo'])
@@ -367,8 +367,8 @@ class SharkyMod(commands.Cog):
     async def roles(self, ctx):
         """
         Get the roles of the server\n\nCredit goes to
-            [Trusty's ServerStats](https://github.com/TrustyJAID/Trusty-cogs)
-            for the code
+        [Trusty's ServerStats](https://github.com/TrustyJAID/Trusty-cogs)
+        for the code
         """
         guild = ctx.guild
         msg = ""
@@ -385,6 +385,34 @@ class SharkyMod(commands.Cog):
                 )
                 msg_list.append(embed)
         await menu(ctx, msg_list, DEFAULT_CONTROLS)
+
+#   inroles command
+    @commands.command()
+    @commands.guild_only()
+    async def inroles(self, ctx, *, role: discord.Role):
+        """
+        Curious?
+
+        Well use this to find out who's in what role
+        """
+        member = discord.Member
+        from redbot.core.utils.chat_formatting import pagify
+        from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
+        guild = ctx.guild
+        msg = ""
+        for member in role.members:
+            msg += f"{member.mention} - {member.name}#{member.discriminator}\n"
+            msg_list = []
+        for page in pagify(msg, ["\n"]):
+            embed = discord.Embed(color=0xEE2222)
+            embed.description = page
+            embed.set_author(name=guild.name + (
+                f" Users in {role}"),
+                icon_url=guild.icon_url
+            )
+            msg_list.append(embed)
+        await menu(ctx, msg_list, DEFAULT_CONTROLS)
+
 
 #   Message Link
     @commands.command()
