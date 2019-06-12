@@ -16,17 +16,18 @@ class Silence(commands.Cog):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=12343221)
 
-        def_guilds = {
-            "mrole": 69696969,
-            "vcrole": 68686868,
-        }
+        def_guilds = {"mrole": 69696969, "vcrole": 68686868}
         self.config.register_guild(**def_guilds)
 
-    @commands.group(aliases=['scs'])
+    @commands.group(aliases=["scs"])
     @commands.bot_has_permissions(manage_roles=True)
     @checks.admin_or_permissions(manage_roles=True)
     async def silenceset(self, ctx):
-        """Adjust mute role for Text and Voice"""
+        """
+        Adjust mute role for Text and Voice
+
+        Remember to allow for Voice mutes and Channel mutes in modlog
+        """
         pass
 
     @silenceset.command()
@@ -71,11 +72,11 @@ class Silence(commands.Cog):
         else:
             vcrole = discord.utils.get(ctx.guild.roles, id=int(vvcrole))
         e = discord.Embed(color=int("0xEE2222", 16))
-        e.title = f'Moderation settings for {ctx.guild.name}'
-        e.description = f'**Text Role**: {mrole}\n **Voice Role**: {vcrole}'
+        e.title = f"Moderation settings for {ctx.guild.name}"
+        e.description = f"**Text Role**: {mrole}\n **Voice Role**: {vcrole}"
         await ctx.send(embed=e)
 
-    @commands.command(aliases=["scr"])
+    @silenceset.command(aliases=["scr"])
     @commands.bot_has_permissions(manage_roles=True)
     @checks.mod_or_permissions(manage_messages=True)
     async def silencerole(self, ctx):
@@ -118,7 +119,7 @@ class Silence(commands.Cog):
         else:
             role = discord.utils.get(ctx.guild.roles, id=int(role_id))
         try:
-            await user.add_roles(role, reason=f'[{ctx.author}] {reason}')
+            await user.add_roles(role, reason=f"[{ctx.author}] {reason}")
             await ctx.send(f"Muted {user.name}")
             await modlog.create_case(
                 bot,
@@ -129,11 +130,12 @@ class Silence(commands.Cog):
                 ctx.message.author,
                 reason,
                 until=None,
-                channel=None,)
+                channel=None,
+            )
         except AttributeError:
             await ctx.send(
-                "Yeah, you need to setup the roles with {}silenceset".format(
-                    ctx.prefix))
+                "Yeah, you need to setup the roles with {}silenceset".format(ctx.prefix)
+            )
         except discord.Forbidden:
             await ctx.send("wot")
 
@@ -152,7 +154,7 @@ class Silence(commands.Cog):
         else:
             role = discord.utils.get(ctx.guild.roles, id=int(role_id))
         try:
-            await user.add_roles(role, reason=f'[{ctx.author}] {reason}')
+            await user.add_roles(role, reason=f"[{ctx.author}] {reason}")
             await ctx.send(f"Muted {user.name}")
             await modlog.create_case(
                 bot,
@@ -163,11 +165,12 @@ class Silence(commands.Cog):
                 ctx.message.author,
                 reason,
                 until=None,
-                channel=None,)
+                channel=None,
+            )
         except AttributeError:
             await ctx.send(
-                "Yeah, you need to setup the roles with {}silenceset".format(
-                    ctx.prefix))
+                "Yeah, you need to setup the roles with {}silenceset".format(ctx.prefix)
+            )
         except discord.Forbidden:
             await ctx.send("wot")
 
@@ -186,7 +189,7 @@ class Silence(commands.Cog):
         else:
             role = discord.utils.get(ctx.guild.roles, id=int(role_id))
         try:
-            await user.remove_roles(role, reason=f'[{ctx.author}] {reason}')
+            await user.remove_roles(role, reason=f"[{ctx.author}] {reason}")
             await ctx.send(f"Unmuted {user.name}")
             await modlog.create_case(
                 bot,
@@ -197,11 +200,12 @@ class Silence(commands.Cog):
                 ctx.message.author,
                 reason,
                 until=None,
-                channel=None,)
+                channel=None,
+            )
         except AttributeError:
             await ctx.send(
-                "Yeah, you need to setup the roles with {}silenceset".format(
-                    ctx.prefix))
+                "Yeah, you need to setup the roles with {}silenceset".format(ctx.prefix)
+            )
         except discord.Forbidden:
             await ctx.send("wot")
 
@@ -220,7 +224,7 @@ class Silence(commands.Cog):
         else:
             role = discord.utils.get(ctx.guild.roles, id=int(role_id))
         try:
-            await user.remove_roles(role, reason=f'[{ctx.author}] {reason}')
+            await user.remove_roles(role, reason=f"[{ctx.author}] {reason}")
             await ctx.send(f"Unmuted {user.name}")
             await modlog.create_case(
                 bot,
@@ -231,15 +235,16 @@ class Silence(commands.Cog):
                 ctx.message.author,
                 reason,
                 until=None,
-                channel=None,)
+                channel=None,
+            )
         except AttributeError:
             await ctx.send(
-                "Yeah, you need to setup the roles with {}silenceset".format(
-                    ctx.prefix))
+                "Yeah, you need to setup the roles with {}silenceset".format(ctx.prefix)
+            )
         except discord.Forbidden:
             await ctx.send("wot")
 
-    @commands.command(aliases=['mutes'])
+    @commands.command(aliases=["mutes"])
     @commands.bot_has_permissions(manage_roles=True)
     @checks.mod_or_permissions(manage_messages=True)
     async def silences(self, ctx, user: discord.Member, *, reason=None):
@@ -263,11 +268,7 @@ class Silence(commands.Cog):
         else:
             role2 = discord.utils.get(ctx.guild.roles, id=int(role_id2))
         try:
-            await user.add_roles(
-                role1,
-                role2,
-                reason=f'[{ctx.author}] {reason}'
-            )
+            await user.add_roles(role1, role2, reason=f"[{ctx.author}] {reason}")
             await ctx.send(f"Muted {user.name}")
             await modlog.create_case(
                 bot,
@@ -278,15 +279,16 @@ class Silence(commands.Cog):
                 ctx.message.author,
                 "Voice muted and Channel muted:\n" + reason,
                 until=None,
-                channel=None,)
+                channel=None,
+            )
         except AttributeError:
             await ctx.send(
-                "Yeah, you need to setup the roles with {}silenceset".format(
-                    ctx.prefix))
+                "Yeah, you need to setup the roles with {}silenceset".format(ctx.prefix)
+            )
         except discord.Forbidden:
             await ctx.send("wot")
 
-    @commands.command(aliases=['unmutes'])
+    @commands.command(aliases=["unmutes"])
     @commands.bot_has_permissions(manage_roles=True)
     @checks.mod_or_permissions(manage_messages=True)
     async def unsilences(self, ctx, user: discord.Member, *, reason=None):
@@ -310,11 +312,7 @@ class Silence(commands.Cog):
         else:
             role2 = discord.utils.get(ctx.guild.roles, id=int(role_id2))
         try:
-            await user.remove_roles(
-                role1,
-                role2,
-                reason=f'[{ctx.author}] {reason}'
-            )
+            await user.remove_roles(role1, role2, reason=f"[{ctx.author}] {reason}")
             await ctx.send(f"Unmuted {user.name}")
             await modlog.create_case(
                 bot,
@@ -325,10 +323,12 @@ class Silence(commands.Cog):
                 ctx.message.author,
                 "Voice unmute and Channel unmute:\n" + reason,
                 until=None,
-                channel=None,)
+                channel=None,
+            )
         except AttributeError:
             await ctx.send(
-                "Yeah, you need to setup the roles with {}silenceset".format(
-                    ctx.prefix))
+                "Yeah, you need to setup the roles with {}silenceset".format(ctx.prefix)
+            )
         except discord.Forbidden:
             await ctx.send("wot")
+
