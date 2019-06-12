@@ -76,10 +76,10 @@ class Silence(commands.Cog):
         e.description = f"**Text Role**: {mrole}\n **Voice Role**: {vcrole}"
         await ctx.send(embed=e)
 
-    @silenceset.command(aliases=["scr"])
+    @silenceset.command()
     @commands.bot_has_permissions(manage_roles=True)
     @checks.mod_or_permissions(manage_messages=True)
-    async def silencerole(self, ctx):
+    async def role(self, ctx):
         """
         Gets the list of users in the roles
 
