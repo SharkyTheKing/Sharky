@@ -23,7 +23,11 @@ class Silence(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @checks.admin_or_permissions(manage_roles=True)
     async def silenceset(self, ctx):
-        """Adjust mute role for Text and Voice"""
+        """
+        Adjust mute role for Text and Voice
+
+        Remember to allow for Voice mutes and Channel mutes in modlog
+        """
         pass
 
     @silenceset.command()
@@ -72,7 +76,7 @@ class Silence(commands.Cog):
         e.description = f"**Text Role**: {mrole}\n **Voice Role**: {vcrole}"
         await ctx.send(embed=e)
 
-    @commands.command(aliases=["scr"])
+    @silenceset.command(aliases=["scr"])
     @commands.bot_has_permissions(manage_roles=True)
     @checks.mod_or_permissions(manage_messages=True)
     async def silencerole(self, ctx):
