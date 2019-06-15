@@ -93,16 +93,23 @@ class Silence(commands.Cog):
         msg = ""
         msgs = ""
         try:
-            for member in asf.members:
-                msg += f"{member.mention}\n"
-            for members in avf.members:
-                msgs += f"{members.mention}\n"
-            e = discord.Embed(color=int("0xEE2222", 16))
-            e.title = "People in Text role:"
-            e.description = f"\n{msg}\n **People in Voice Role:**\n{msgs}"
-            await ctx.send(embed=e)
+            if get_text is None:
+                msg = "No roles selected"
+            else:
+                for member in asf.members:
+                    msg += f"{member.mention}\n"
+            if get_vc is None:
+                msgs = "No roles selected"
+            else:
+                for members in avf.members:
+                    msgs += f"{members.mention}\n"
         except AttributeError:
-            await ctx.send("You should prob make sure you have roles set")
+            await ctx.send("Right, this didn't work. I don't know why, I'm sorry?")
+        e = discord.Embed(color=int("0xEE2222", 16))
+        e.title = "People in Muted Roles"
+        e.add_field(name="Text Role:", value=msg, inline=False)
+        e.add_field(name="Voice Role:", value=msgs, inline=False)
+        await ctx.send(embed=e)
 
     @commands.command()
     @commands.bot_has_permissions(manage_roles=True)
