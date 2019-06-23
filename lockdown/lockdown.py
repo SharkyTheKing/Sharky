@@ -39,27 +39,30 @@ class Lockdown(BaseCog):
                         await guild_channel.send(msg)
         else:
             server = ctx.bot.get_guild(guild)
-            role = server.default_role
-            msg = await self.config.guild(server).lockmsg()
-            channel_ids = await self.config.guild(server).channels()
-            for guild_channel in server.channels:
-                if guild_channel.id in channel_ids:
-                    overwrite = guild_channel.overwrites_for(role)
-                    overwrite.update(send_messages=False)
-                    await guild_channel.set_permissions(
-                        role, overwrite=overwrite, reason="Lockdown in effect. Requested by {} ({})".format(
-                            ctx.author, ctx.author.id
+            if server is None:
+                await ctx.send("Please use a correct Guild ID")
+            else:
+                role = server.default_role
+                msg = await self.config.guild(server).lockmsg()
+                channel_ids = await self.config.guild(server).channels()
+                for guild_channel in server.channels:
+                    if guild_channel.id in channel_ids:
+                        overwrite = guild_channel.overwrites_for(role)
+                        overwrite.update(send_messages=False)
+                        await guild_channel.set_permissions(
+                            role, overwrite=overwrite, reason="Lockdown in effect. Requested by {} ({})".format(
+                                ctx.author, ctx.author.id
+                            )
                         )
+                        if msg is None:
+                            pass
+                        else:
+                            await guild_channel.send(msg)
+                await ctx.send(
+                    "Server is locked down. You can unlock the server by doing {}unlockdown".format(
+                        ctx.prefix
                     )
-                    if msg is None:
-                        pass
-                    else:
-                        await guild_channel.send(msg)
-        await ctx.send(
-            "Server is locked down. You can unlock the server by doing {}unlockdown".format(
-                ctx.prefix
-            )
-        )
+                )
 
     #   Full Unlockdown
     @commands.command(pass_context=True, no_pm=True)
@@ -85,23 +88,26 @@ class Lockdown(BaseCog):
                         await guild_channel.send(msg)
         else:
             server = ctx.bot.get_guild(guild)
-            role = server.default_role
-            msg = await self.config.guild(server).unlockmsg()
-            channel_ids = await self.config.guild(server).channels()
-            for guild_channel in server.channels:
-                if guild_channel.id in channel_ids:
-                    overwrite = guild_channel.overwrites_for(role)
-                    overwrite.update(send_messages=None)
-                    await guild_channel.set_permissions(
-                        role, overwrite=overwrite, reason="Lockdown ended. Requested by {} ({})".format(
-                            ctx.author.name, ctx.author.id
+            if server is None:
+                await ctx.send("Please use a correct Guild ID")
+            else:
+                role = server.default_role
+                msg = await self.config.guild(server).unlockmsg()
+                channel_ids = await self.config.guild(server).channels()
+                for guild_channel in server.channels:
+                    if guild_channel.id in channel_ids:
+                        overwrite = guild_channel.overwrites_for(role)
+                        overwrite.update(send_messages=None)
+                        await guild_channel.set_permissions(
+                            role, overwrite=overwrite, reason="Lockdown ended. Requested by {} ({})".format(
+                                ctx.author.name, ctx.author.id
+                            )
                         )
-                    )
-                    if msg is None:
-                        pass
-                    else:
-                        await guild_channel.send(msg)
-        await ctx.send("Server has been unlocked!")
+                        if msg is None:
+                            pass
+                        else:
+                            await guild_channel.send(msg)
+                await ctx.send("Server has been unlocked!")
 
     #   Lockdownset group
     @commands.group(pass_context=True, no_pm=True)
