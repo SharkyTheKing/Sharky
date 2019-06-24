@@ -18,33 +18,75 @@ class Lockdown(BaseCog):
     #   Full Lockdown
     @commands.command(pass_context=True, no_pm=True)
     @checks.mod_or_permissions(manage_messages=True)
-    async def lockdown(self, ctx):
+    async def lockdown(self, ctx, guild: int = None):
         "Toggles the lockdown mode"
-        role = ctx.guild.default_role
-        msg = await self.config.guild(ctx.guild).lockmsg()
-        channel_ids = await self.config.guild(ctx.guild).channels()
-        voice_ids = await self.config.guild(ctx.guild).voices()
-        for guild_channel in ctx.guild.channels:
-            if guild_channel.id in channel_ids:
-                overwrite = guild_channel.overwrites_for(role)
-                overwrite.update(send_messages=False)
-                await guild_channel.set_permissions(
-                    role, overwrite=overwrite, reason="Lockdown in effect. Requested by {} ({})".format(
-                        ctx.author.name, ctx.author.id
+        if guild is None:
+            role = ctx.guild.default_role
+            msg = await self.config.guild(ctx.guild).lockmsg()
+            channel_ids = await self.config.guild(ctx.guild).channels()
+            voice_ids = await self.config.guild(ctx.guild).voices()
+            for guild_channel in ctx.guild.channels:
+                if guild_channel.id in channel_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(send_messages=False)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown in effect. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
+                        ),
                     )
-                )
-                if msg is None:
-                    pass
-                else:
-                    await guild_channel.send(msg)
-            if guild_channel.id in voice_ids:
-                overwrite = guild_channel.overwrites_for(role)
-                overwrite.update(connect=False)
-                await guild_channel.set_permissions(
-                    role, overwrite=overwrite, reason="Lockdown in effect. Requested by {} ({})".format(
-                        ctx.author.name, ctx.author.id
+                    if msg is None:
+                        pass
+                    else:
+                        await guild_channel.send(msg)
+                if guild_channel.id in voice_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(connect=False)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown in effect. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
+                        ),
                     )
-                )
+        else:
+            guild = ctx.bot.get_guild(guild)
+            if guild is None:
+                return await ctx.send("Server not found. Please double check your ID.")
+            author_targeted_guild = guild.get_member(ctx.author.id)
+            if author_targeted_guild.guild_permissions.manage_channels is False:
+                return await ctx.send("Yeah...You don't have correct perms in that Discord Server.")
+
+            role = guild.default_role
+            msg = await self.config.guild(guild).lockmsg()
+            channel_ids = await self.config.guild(guild).channels()
+            voice_ids = await self.config.guild(guild).voices()
+            for guild_channel in guild.channels:
+                if guild_channel.id in channel_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(send_messages=False)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown in effect. Requested by {} ({})".format(
+                            ctx.author, ctx.author.id
+                        ),
+                    )
+                    if msg is None:
+                        pass
+                    else:
+                        await guild_channel.send(msg)
+                if guild_channel.id in voice_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(connect=False)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown in effect. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
+                        ),
+                    )
         await ctx.send(
             "Server is locked down. You can unlock the server by doing {}unlockdown".format(
                 ctx.prefix
@@ -54,33 +96,75 @@ class Lockdown(BaseCog):
     #   Full Unlockdown
     @commands.command(pass_context=True, no_pm=True)
     @checks.mod_or_permissions(manage_messages=True)
-    async def unlockdown(self, ctx):
+    async def unlockdown(self, ctx, guild: int = None):
         """Ends the lockdown for this server"""
-        role = ctx.guild.default_role
-        msg = await self.config.guild(ctx.guild).unlockmsg()
-        channel_ids = await self.config.guild(ctx.guild).channels()
-        voice_ids = await self.config.guild(ctx.guild).voices()
-        for guild_channel in ctx.guild.channels:
-            if guild_channel.id in channel_ids:
-                overwrite = guild_channel.overwrites_for(role)
-                overwrite.update(send_messages=None)
-                await guild_channel.set_permissions(
-                    role, overwrite=overwrite, reason="Lockdown ended. Requested by {} ({})".format(
-                        ctx.author.name, ctx.author.id
+        if guild is None:
+            role = ctx.guild.default_role
+            msg = await self.config.guild(ctx.guild).unlockmsg()
+            channel_ids = await self.config.guild(ctx.guild).channels()
+            voice_ids = await self.config.guild(ctx.guild).voices()
+            for guild_channel in ctx.guild.channels:
+                if guild_channel.id in channel_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(send_messages=None)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown ended. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
+                        ),
                     )
-                )
-                if msg is None:
-                    pass
-                else:
-                    await guild_channel.send(msg)
-            if guild_channel.id in voice_ids:
-                overwrite = guild_channel.overwrites_for(role)
-                overwrite.update(connect=None)
-                await guild_channel.set_permissions(
-                    role, overwrite=overwrite, reason="Lockdown over. Requested by {} ({})".format(
-                        ctx.author.name, ctx.author.id
+                    if msg is None:
+                        pass
+                    else:
+                        await guild_channel.send(msg)
+                if guild_channel.id in voice_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(connect=None)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown over. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
+                        ),
                     )
-                )
+        else:
+            guild = ctx.bot.get_guild(guild)
+            if guild is None:
+                return await ctx.send("Server not found. Please double check your ID.")
+            author_targeted_guild = guild.get_member(ctx.author.id)
+            if author_targeted_guild.guild_permissions.manage_channels is False:
+                return await ctx.send("Yeah...You don't have correct perms in that Discord Server.")
+
+            role = guild.default_role
+            msg = await self.config.guild(guild).unlockmsg()
+            channel_ids = await self.config.guild(guild).channels()
+            voice_ids = await self.config.guild(guild).voices()
+            for guild_channel in guild.channels:
+                if guild_channel.id in channel_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(send_messages=None)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown ended. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
+                        ),
+                    )
+                    if msg is None:
+                        pass
+                    else:
+                        await guild_channel.send(msg)
+                if guild_channel.id in voice_ids:
+                    overwrite = guild_channel.overwrites_for(role)
+                    overwrite.update(connect=None)
+                    await guild_channel.set_permissions(
+                        role,
+                        overwrite=overwrite,
+                        reason="Lockdown over. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
+                        ),
+                    )
         await ctx.send("Server has been unlocked!")
 
     #   Lockdownset group
@@ -182,9 +266,11 @@ class Lockdown(BaseCog):
         overwrite = guild_channel.overwrites_for(role)
         overwrite.update(send_messages=False)
         await guild_channel.set_permissions(
-            role, overwrite=overwrite, reason="Lockdown in effect. Requested by {} ({})".format(
+            role,
+            overwrite=overwrite,
+            reason="Lockdown in effect. Requested by {} ({})".format(
                 ctx.author.name, ctx.author.id
-            )
+            ),
         )
         await ctx.send("Locked {}".format(text.mention))
 
@@ -197,7 +283,11 @@ class Lockdown(BaseCog):
         guild_channel = text
         overwrite = guild_channel.overwrites_for(role)
         overwrite.update(send_messages=None)
-        await guild_channel.set_permissions(role, overwrite=overwrite, reason="Lockdown over. Requested by {} ({})".format(ctx.author.name, ctx.author.id))
+        await guild_channel.set_permissions(
+            role,
+            overwrite=overwrite,
+            reason="Lockdown over. Requested by {} ({})".format(ctx.author.name, ctx.author.id),
+        )
         await ctx.send("Unlocked {}".format(text.mention))
 
     #   Locking Voice Channel
@@ -209,7 +299,13 @@ class Lockdown(BaseCog):
         guild_channel = voice
         overwrite = guild_channel.overwrites_for(role)
         overwrite.update(connect=False)
-        await guild_channel.set_permissions(role, overwrite=overwrite, reason="Lockdown in effect. Requested by {} ({})".format(ctx.author.name, ctx.author.id))
+        await guild_channel.set_permissions(
+            role,
+            overwrite=overwrite,
+            reason="Lockdown in effect. Requested by {} ({})".format(
+                ctx.author.name, ctx.author.id
+            ),
+        )
         await ctx.send("Locked {}".format(voice.mention))
 
     #   Unlocking Voice Channel
@@ -221,5 +317,9 @@ class Lockdown(BaseCog):
         guild_channel = voice
         overwrite = guild_channel.overwrites_for(role)
         overwrite.update(connect=None)
-        await guild_channel.set_permissions(role, overwrite=overwrite, reason="Lockdown over. Requested by {} ({})".format(ctx.author.name, ctx.author.id))
+        await guild_channel.set_permissions(
+            role,
+            overwrite=overwrite,
+            reason="Lockdown over. Requested by {} ({})".format(ctx.author.name, ctx.author.id),
+        )
         await ctx.send("Unlocked {}".format(voice.mention))
