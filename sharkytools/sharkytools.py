@@ -25,101 +25,63 @@ class SharkyTools(commands.Cog):
         if not member:
             member = author
         guild = ctx.guild
-        member_mention = member.mention  # Mentions
-        member_disc = member.discriminator  # The four digits
-        member_name = member.name  # Default Discord name
-        member_id = member.id  # USERID
-        member_avatar = member.avatar_url_as(
-            static_format="png"
-        )  # Avatar, static is formated as png
-        member_voice = member.voice  # Tells us the voice chat they're in
+        member_mention = member.mention
+        member_disc = member.discriminator
+        member_name = member.name
+        member_id = member.id
+        member_avatar = member.avatar_url_as(static_format="png")
+        member_voice = member.voice
         member_bot = member.bot
-        member_role = sorted(member.roles, reverse=True)[
-            :-1
-        ]  # this and line 35 are required for role formats
-        if (
-            member_role
-        ):  # this lets us format the roles properly so theyr'e named correctly
-            member_role = ", ".join(
-                [x.mention for x in member_role]
-            )  # Changed x.name to x.mention to ping the roles for color
+        member_role = sorted(member.roles, reverse=True)[:-1]
+        if member_role:
+            member_role = ", ".join([x.mention for x in member_role])
+        joined_at = member.joined_at
+        member_joined = member.joined_at.strftime("%d %b %Y %H:%M")
+        since_joined = (ctx.message.created_at - joined_at).days
+        member_created = member.created_at.strftime("%d %b %Y %H:%M")
+        since_created = (ctx.message.created_at - member.created_at).days
 
-        #  Tie this together with created_on and joined_on
-        #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
-        joined_at = member.joined_at  # This is REQUIRED for 'since_joined`
-        member_joined = member.joined_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user joined the server
-        since_joined = (
-            ctx.message.created_at - joined_at
-        ).days  # Since the user joined the server in days
-        member_created = member.created_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user account was created
-        since_created = (
-            ctx.message.created_at - member.created_at
-        ).days  # Since the user account was created in days
-
-        created_on = ("{}\n({} days ago)").format(
-            member_created, since_created
-        )  # Formats when the account was created into a proper day message
-        joined_on = ("{}\n({} days ago)").format(
-            member_joined, since_joined
-        )  # Formats when the account joined the server into a proper day message
+        created_on = ("{}\n({} days ago)").format(member_created, since_created)
+        joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)
         member_number = (
-            sorted(
-                guild.members, key=lambda m: m.joined_at or ctx.message.created_at
-            ).index(member)
+            sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(
+                member
+            )
             + 1
         )
         notice = f"Member #{member_number}"
-        # This is to calculate the member count for the user
-        #   Embeds
         embed = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
         embed.add_field(
-            name="Name:",
-            value=f"{member_mention}\n{member_name}#{member_disc}",
-            inline=True,
+            name="Name:", value=f"{member_mention}\n{member_name}#{member_disc}", inline=True
         )
         embed.add_field(name="ID:", value=f"{member_id}", inline=True)
-        if member_bot is True:  # this is to define if a person is...well...a bot
-            embed.add_field(
-                name="Bot:", value=f"{member_mention} is a bot", inline=False
-            )
+        if member_bot is True:
+            embed.add_field(name="Bot:", value=f"{member_mention} is a bot", inline=False)
         embed.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
         embed.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
         embed.add_field(name="Roles:", value=f"{member_role}", inline=False)
-        if (
-            member_voice and member_voice.channel
-        ):  # this formats the voice call chunk into a proper message
+        if member_voice and member_voice.channel:
             embed.add_field(
                 name="Current voice channel",
                 value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
                 inline=False,
             )
-        # Non-fielded embedsets
         embed.set_footer(text=f"{notice}")
         embed.set_thumbnail(url=member_avatar)
-        embed.set_author(
-            name=f"{member_name}#{member_disc}", icon_url=f"{member_avatar}"
-        )
+        embed.set_author(name=f"{member_name}#{member_disc}", icon_url=f"{member_avatar}")
         await ctx.send(embed=embed)
 
     #   Trying to find if user is banned in Discord.
     @commands.command()
-    @commands.bot_has_permissions(
-        ban_members=True, embed_links=True, send_messages=True
-    )  # Makes sure the bot has the proper permissions to do this command.
-    @checks.mod_or_permissions(
-        manage_messages=True
-    )  #  This makes sure a person has to be a mod or have ban_members permission to use.
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
+    @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     async def findban(self, ctx, *, banneduser):
         """Check if a user is banned"""
-        guild = ctx.guild  # Self explained
-        bot = ctx.bot  # Self explained
-        try:  # This tries to see if member works, if it doesn't it'll error out without this
-            member = await bot.fetch_user(banneduser)  # Contains the bot.fetch_user
+        guild = ctx.guild
+        bot = ctx.bot
+        try:
+            member = await bot.fetch_user(banneduser)
         except discord.NotFound:
             embed = discord.Embed(color=0xEE2222, title="Unknown User")
             embed.add_field(
@@ -137,19 +99,13 @@ class SharkyTools(commands.Cog):
         mid = banneduser
         hammer = "https://photos.kstj.us/TartPuzzlingKusimanse.png"
         x_emote = "https://photos.kstj.us/GiddyDizzyIvorybilledwoodpecker.png"
-        #  This is where the command actually works. If a ban is found it'll output that it was found
-        #   If the ban isn't found, it'll error and thus cause the discord.NotFound exception
         try:
             tban = await guild.fetch_ban(await bot.fetch_user(banneduser))
-            #   embeds
             embed = discord.Embed(color=0xEE2222, title="Ban Found")
-            embed.add_field(
-                name=f"User Found:", value=f"{member}\n({mid})", inline=True
-            )
+            embed.add_field(name=f"User Found:", value=f"{member}\n({mid})", inline=True)
             embed.add_field(name=f"Ban reason:", value=f"{tban[0]}", inline=False)
             embed.set_thumbnail(url=hammer)
             return await ctx.send(embed=embed)
-        # Exception that if the person isn't found banned
         except discord.NotFound:
             embed = discord.Embed(color=0xEE2222, title="Ban **NOT** Found")
             embed.add_field(
@@ -168,36 +124,19 @@ class SharkyTools(commands.Cog):
         author = ctx.author
         if not user:
             user = author
-        user_mention = user.mention  # Mentions
-        user_disc = user.discriminator  # The four digits
-        user_name = user.name  # Default Discord name
-        user_id = user.id  # USERID
-        user_av = user.avatar_url_as(
-            static_format="png"
-        )  # Avatar, static is formated as png
+        user_mention = user.mention
+        user_disc = user.discriminator
+        user_name = user.name
+        user_id = user.id
+        user_av = user.avatar_url_as(static_format="png")
+        joined_at = user.joined_at
+        user_joined = user.joined_at.strftime("%d %b %Y %H:%M")
+        since_joined = (ctx.message.created_at - joined_at).days
+        user_created = user.created_at.strftime("%d %b %Y %H:%M")
+        since_created = (ctx.message.created_at - user.created_at).days
 
-        #  Tie this together with created_on and joined_on
-        #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
-        joined_at = user.joined_at  # This is REQUIRED for 'since_joined`
-        user_joined = user.joined_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user joined the server
-        since_joined = (
-            ctx.message.created_at - joined_at
-        ).days  # Since the user joined the server in days
-        user_created = user.created_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user account was created
-        since_created = (
-            ctx.message.created_at - user.created_at
-        ).days  # Since the user account was created in days
-
-        created_on = ("{}\n({} days ago)").format(
-            user_created, since_created
-        )  # Formats when the account was created into a proper day message
-        joined_on = ("{}\n({} days ago)").format(
-            user_joined, since_joined
-        )  # Formats when the account joined the server into a proper day message
+        created_on = ("{}\n({} days ago)").format(user_created, since_created)
+        joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
 
         embed = discord.Embed(color=0xEE2222, title=f"Avatar Info")
         embed.add_field(name=f"User Info:", value=f"{user_mention}\n({user_id})")
@@ -207,21 +146,16 @@ class SharkyTools(commands.Cog):
         embed.set_image(url=user_av)
         await ctx.send(embed=embed)
 
-    # Grabbing ANY user's avatar. This is hidden on purpose
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
     async def uav(self, ctx, *, user):
         """Get a user's avatar even if they aren't on the server"""
         try:
-            #  argument setups
             user_acc = await ctx.bot.fetch_user(user)
             user_av = user_acc.avatar_url_as(static_format="png")
             user_name = user_acc.name
             user_disc = user_acc.discriminator
-            #  embed
-            embed = discord.Embed(
-                color=0xEE2222, title=f"Avatar Info: {user_name}#{user_disc}"
-            )
+            embed = discord.Embed(color=0xEE2222, title=f"Avatar Info: {user_name}#{user_disc}")
             embed.set_image(url=user_av)
             await ctx.send(embed=embed)
         except discord.HTTPException:
@@ -280,30 +214,16 @@ class SharkyTools(commands.Cog):
         user_name = user.name
         user_disc = user.discriminator
         user_av = user.avatar_url_as(static_format="png")
-        joined_at = user.joined_at  # This is REQUIRED for 'since_joined`
-        user_joined = user.joined_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user joined the server
-        since_joined = (
-            ctx.message.created_at - joined_at
-        ).days  # Since the user joined the server in days
-        user_created = user.created_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user account was created
-        since_created = (
-            ctx.message.created_at - user.created_at
-        ).days  # Since the user account was created in days
-        created_on = ("{}\n({} days ago)").format(
-            user_created, since_created
-        )  # Formats when the account was created into a proper day message
-        joined_on = ("{}\n({} days ago)").format(
-            user_joined, since_joined
-        )  # Formats when the account joined the server into a proper day message
+        joined_at = user.joined_at
+        user_joined = user.joined_at.strftime("%d %b %Y %H:%M")
+        since_joined = (ctx.message.created_at - joined_at).days
+        user_created = user.created_at.strftime("%d %b %Y %H:%M")
+        since_created = (ctx.message.created_at - user.created_at).days
+        created_on = ("{}\n({} days ago)").format(user_created, since_created)
+        joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
 
         bot_is = user.bot
-        embed = discord.Embed(
-            color=0xEE2222, title=f"{user_name}#{user_disc}'s Account Date:"
-        )
+        embed = discord.Embed(color=0xEE2222, title=f"{user_name}#{user_disc}'s Account Date:")
         embed.add_field(name=f"Account Age:", value=f"{created_on}")
         embed.add_field(name=f"Join Date:", value=f"{joined_on}")
         if bot_is is True:
@@ -313,88 +233,57 @@ class SharkyTools(commands.Cog):
 
     #   User menu, combinds most if not all of the commands together
     @commands.command(name="usermenu", aliases=["umenu", "userm", "um"])
-    @commands.bot_has_permissions(
-        embed_links=True, send_messages=True, add_reactions=True
-    )
+    @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
     @commands.guild_only()
     async def _umenu(self, ctx, *, member: discord.Member = None):
         """All the information you may want/need but in a menu!"""
         embeds = []
-
-        # This is the list of definitions
         guild = ctx.guild
         author = ctx.author
         if not member:
             member = author
-        member_mention = member.mention  # Mentions
-        member_disc = member.discriminator  # The four digits
-        member_name = member.name  # Default Discord name
-        member_id = member.id  # USERID
-        member_avatar = member.avatar_url_as(
-            static_format="png"
-        )  # Avatar, static is formated as png
-        member_voice = member.voice  # Tells us the voice chat they're in
+        member_mention = member.mention
+        member_disc = member.discriminator
+        member_name = member.name
+        member_id = member.id
+        member_avatar = member.avatar_url_as(static_format="png")
+        member_voice = member.voice
         member_bot = member.bot
 
-        member_role = sorted(member.roles, reverse=True)[
-            :-1
-        ]  # this and if member_role are required for role formats
-        if (
-            member_role
-        ):  # this lets us format the roles properly so theyr'e named correctly
+        member_role = sorted(member.roles, reverse=True)[:-1]
+        if member_role:
             member_role = ", ".join([x.mention for x in member_role])
         else:
-            member_role = None  # changed x.name to x.mention to make it ping the roles
+            member_role = None
 
         # bank stuff
         credits_name = await bank.get_currency_name(guild)
         bal = await bank.get_balance(member)
 
-        #  Tie this together with created_on and joined_on
-        #  Credit to Red Core Userinfo command: I am not this smart yet :eyes:
-        joined_at = member.joined_at  # This is REQUIRED for 'since_joined`
-        member_joined = member.joined_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user joined the server
-        since_joined = (
-            ctx.message.created_at - joined_at
-        ).days  # Since the user joined the server in days
-        member_created = member.created_at.strftime(
-            "%d %b %Y %H:%M"
-        )  # When the user account was created
-        since_created = (
-            ctx.message.created_at - member.created_at
-        ).days  # Since the user account was created in days
+        joined_at = member.joined_at
+        member_joined = member.joined_at.strftime("%d %b %Y %H:%M")
+        since_joined = (ctx.message.created_at - joined_at).days
+        member_created = member.created_at.strftime("%d %b %Y %H:%M")
+        since_created = (ctx.message.created_at - member.created_at).days
 
-        created_on = ("{}\n({} days ago)").format(
-            member_created, since_created
-        )  # Formats when the account was created into a proper day message
-        joined_on = ("{}\n({} days ago)").format(
-            member_joined, since_joined
-        )  # Formats when the account joined the server into a proper day message
+        created_on = ("{}\n({} days ago)").format(member_created, since_created)
+        joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)
         member_number = (
-            sorted(
-                guild.members, key=lambda m: m.joined_at or ctx.message.created_at
-            ).index(member)
+            sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(
+                member
+            )
             + 1
         )
         notice = f"Member #{member_number}"
-        # This is where the magic will hopefully happen
         for x in map(str, range(1, 4)):
             first = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
             first.add_field(
-                name="Name:",
-                value=f"{member_mention}\n{member_name}#{member_disc}",
-                inline=True,
+                name="Name:", value=f"{member_mention}\n{member_name}#{member_disc}", inline=True
             )
             first.add_field(name="ID:", value=f"{member_id}", inline=True)
-            if member_bot is True:  # this is to define if a person is...well...a bot
-                first.add_field(
-                    name=("Bot:"), value=(f"{member_mention} is a bot"), inline=False
-                )
-            if (
-                member_voice and member_voice.channel
-            ):  # this formats the voice call chunk into a proper message
+            if member_bot is True:
+                first.add_field(name=("Bot:"), value=(f"{member_mention} is a bot"), inline=False)
+            if member_voice and member_voice.channel:
                 first.add_field(
                     name="Current voice channel",
                     value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
@@ -404,9 +293,7 @@ class SharkyTools(commands.Cog):
             first.set_footer(text=f"{notice}")
             embeds.append(first)
             second = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
-            second.add_field(
-                name="Account Creation:", value=f"{created_on}", inline=True
-            )
+            second.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
             second.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
             if member_role is not None:
                 second.add_field(name="Roles:", value=f"{member_role}", inline=False)
@@ -427,10 +314,7 @@ class SharkyTools(commands.Cog):
             embeds.append(forth)
         await menu(ctx, embeds, DEFAULT_CONTROLS)
 
-    #   Marking where TO PUT THE NEXT COMMAND. NOT DOWN THERE
-
     #   Display Roles
-
     @commands.command()
     @commands.guild_only()
     async def roles(self, ctx):
