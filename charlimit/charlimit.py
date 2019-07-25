@@ -38,7 +38,6 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
             await self.config.channel(channel).character_limit.set(characters)
             await ctx.send(f"Done, {channel.mention} is now set to {toggle} characters")
 
-    #   The list of channels and their settings
     @charlimit.command()
     async def list(self, ctx):
         """
@@ -55,7 +54,6 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
             e.description = f"{count}"
         return await ctx.send(embed=e)
 
-    #   Don't ask me how this works, I don't know, it's magic.
     @commands.Cog.listener()
     async def on_message(self, message):
         current = message.channel
@@ -63,12 +61,10 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         if c_conf is None:
             return False
         else:
-            #   This has to be here or else it'll error out whenever someone DMs the bot. Stupid, I know.
             reason = f"Hey there, {message.author.name}.\n\nYour message in {current.mention} has been deleted due to you exceeding the {c_conf} character limit."
             if len(message.content) > c_conf:
 
                 #   Check if the author is some sort of moderator.
-                #   Yes I stole this from you Kowlin. Love you boo.
                 if (
                     current.permissions_for(message.author).manage_messages is True
                     or message.author.bot is True

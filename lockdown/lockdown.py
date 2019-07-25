@@ -56,7 +56,9 @@ class Lockdown(BaseCog):
                 return await ctx.send("Server not found. Please double check your ID.")
             author_targeted_guild = guild.get_member(ctx.author.id)
             if author_targeted_guild.guild_permissions.manage_channels is False:
-                return await ctx.send("Yeah...You don't have correct perms in that Discord Server.")
+                return await ctx.send(
+                    "Yeah...You don't have correct perms in that Discord Server."
+                )
 
             role = guild.default_role
             msg = await self.config.guild(guild).lockmsg()
@@ -134,7 +136,9 @@ class Lockdown(BaseCog):
                 return await ctx.send("Server not found. Please double check your ID.")
             author_targeted_guild = guild.get_member(ctx.author.id)
             if author_targeted_guild.guild_permissions.manage_channels is False:
-                return await ctx.send("Yeah...You don't have correct perms in that Discord Server.")
+                return await ctx.send(
+                    "Yeah...You don't have correct perms in that Discord Server."
+                )
 
             role = guild.default_role
             msg = await self.config.guild(guild).unlockmsg()

@@ -20,7 +20,6 @@ class SharkyMod(commands.Cog):
         """
         User information with Sharky's twist
         """
-        #   Arguments setup
         author = ctx.author
         if not member:
             member = author
@@ -36,38 +35,27 @@ class SharkyMod(commands.Cog):
         member_role = sorted(member.roles, reverse=True)[:-1]
         if member_role:
             member_role = ", ".join([x.mention for x in member_role])
-
-        #  Tie this together with created_on and joined_on
-        #  Credit to Red Core Userinfo command
-        joined_at = member.joined_at  # This is REQUIRED for 'since_joined`
+        joined_at = member.joined_at
         member_joined = member.joined_at.strftime("%d %b %Y %H:%M")
         since_joined = (ctx.message.created_at - joined_at).days
         member_created = member.created_at.strftime("%d %b %Y %H:%M")
         since_created = (ctx.message.created_at - member.created_at).days
-        #   Account creation
         created_on = ("{}\n({} days ago)").format(member_created, since_created)
-        #   Joined Date
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)
         member_number = (
-            sorted(
-                guild.members, key=lambda m: m.joined_at or ctx.message.created_at
-            ).index(member)
+            sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(
+                member
+            )
             + 1
         )
         notice = f"Member #{member_number}"
-        # This is to calculate the member count for the user
-        #   Embeds - Where the magic works
         embed = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
         embed.add_field(
-            name="Name:",
-            value=f"{member_mention}\n{member_name}#{member_disc}",
-            inline=True,
+            name="Name:", value=f"{member_mention}\n{member_name}#{member_disc}", inline=True
         )
         embed.add_field(name="ID:", value=f"{member_id}", inline=True)
-        if member_bot is True:  # this is to define if a person is a bot
-            embed.add_field(
-                name="Bot:", value=f"{member_mention} is a bot", inline=False
-            )
+        if member_bot is True:
+            embed.add_field(name="Bot:", value=f"{member_mention} is a bot", inline=False)
         embed.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
         embed.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
         embed.add_field(name="Roles:", value=f"{member_role}", inline=False)
@@ -77,25 +65,20 @@ class SharkyMod(commands.Cog):
                 value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
                 inline=False,
             )
-        # Non-fielded embedsets
         embed.set_footer(text=f"{notice}")
         embed.set_thumbnail(url=member_avatar)
-        embed.set_author(
-            name=f"{member_name}#{member_disc}", icon_url=f"{member_avatar}"
-        )
+        embed.set_author(name=f"{member_name}#{member_disc}", icon_url=f"{member_avatar}")
         await ctx.send(embed=embed)
 
     #   Trying to find if user is banned in Discord.
     @commands.command()
-    @commands.bot_has_permissions(
-        ban_members=True, embed_links=True, send_messages=True
-    )
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     async def findban(self, ctx, *, banneduser):
         """Check if a user is banned"""
-        guild = ctx.guild  # Self explained
-        bot = ctx.bot  # Self explained
+        guild = ctx.guild
+        bot = ctx.bot
         try:
             member = await bot.fetch_user(banneduser)
         except discord.NotFound:
@@ -117,15 +100,11 @@ class SharkyMod(commands.Cog):
         x_emote = "https://photos.kstj.us/GiddyDizzyIvorybilledwoodpecker.png"
         try:
             tban = await guild.fetch_ban(await bot.fetch_user(banneduser))
-            #   embeds
             embed = discord.Embed(color=0xEE2222, title="Ban Found")
-            embed.add_field(
-                name=f"User Found:", value=f"{member}\n({mid})", inline=True
-            )
+            embed.add_field(name=f"User Found:", value=f"{member}\n({mid})", inline=True)
             embed.add_field(name=f"Ban reason:", value=f"{tban[0]}", inline=False)
             embed.set_thumbnail(url=hammer)
             return await ctx.send(embed=embed)
-        # Exception that if the person isn't found banned
         except discord.NotFound:
             embed = discord.Embed(color=0xEE2222, title="Ban **NOT** Found")
             embed.add_field(
@@ -149,10 +128,7 @@ class SharkyMod(commands.Cog):
         user_name = user.name
         user_id = user.id
         user_av = user.avatar_url_as(static_format="png")
-
-        #  Tie this together with created_on and joined_on
-        #  Credit to Red Core Userinfo command
-        joined_at = user.joined_at  # This is REQUIRED for 'since_joined`
+        joined_at = user.joined_at
         user_joined = user.joined_at.strftime("%d %b %Y %H:%M")
         since_joined = (ctx.message.created_at - joined_at).days
         user_created = user.created_at.strftime("%d %b %Y %H:%M")
@@ -171,9 +147,7 @@ class SharkyMod(commands.Cog):
 
     #   User menu, combinds most if not all of the commands together
     @commands.command(name="usermenu", aliases=["umenu", "userm", "um"])
-    @commands.bot_has_permissions(
-        embed_links=True, send_messages=True, add_reactions=True
-    )
+    @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
     @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     async def _umenu(self, ctx, *, member: discord.Member = None):
@@ -182,7 +156,6 @@ class SharkyMod(commands.Cog):
         author = ctx.author
         if not member:
             member = author
-        # This is the list of definitions
         guild = ctx.guild
         member_mention = member.mention
         member_disc = member.discriminator
@@ -197,10 +170,7 @@ class SharkyMod(commands.Cog):
             member_role = ", ".join([x.mention for x in member_role])
         else:
             member_role = None
-
-        #  Tie this together with created_on and joined_on
-        #  Credit to Red Core Userinfo command
-        joined_at = member.joined_at  # This is REQUIRED for 'since_joined`
+        joined_at = member.joined_at
         member_joined = member.joined_at.strftime("%d %b %Y %H:%M")
         since_joined = (ctx.message.created_at - joined_at).days
         member_created = member.created_at.strftime("%d %b %Y %H:%M")
@@ -209,25 +179,20 @@ class SharkyMod(commands.Cog):
         created_on = ("{}\n({} days ago)").format(member_created, since_created)
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)
         member_number = (
-            sorted(
-                guild.members, key=lambda m: m.joined_at or ctx.message.created_at
-            ).index(member)
+            sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(
+                member
+            )
             + 1
         )
         notice = f"Member #{member_number}"
-        # This is where the magic will hopefully happen
         for x in map(str, range(1, 4)):
             first = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
             first.add_field(
-                name="Name:",
-                value=f"{member_mention}\n{member_name}#{member_disc}",
-                inline=True,
+                name="Name:", value=f"{member_mention}\n{member_name}#{member_disc}", inline=True
             )
             first.add_field(name="ID:", value=f"{member_id}", inline=True)
             if member_bot is True:
-                first.add_field(
-                    name=("Bot:"), value=(f"{member_mention} is a bot"), inline=False
-                )
+                first.add_field(name=("Bot:"), value=(f"{member_mention} is a bot"), inline=False)
             if member_voice and member_voice.channel:
                 first.add_field(
                     name="Current voice channel",
@@ -238,9 +203,7 @@ class SharkyMod(commands.Cog):
             first.set_footer(text=f"{notice}")
             embeds.append(first)
             second = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
-            second.add_field(
-                name="Account Creation:", value=f"{created_on}", inline=True
-            )
+            second.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
             second.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
             if member_role is not None:
                 second.add_field(name="Roles:", value=f"{member_role}", inline=False)
@@ -254,7 +217,6 @@ class SharkyMod(commands.Cog):
         await menu(ctx, embeds, DEFAULT_CONTROLS)
 
     #   Display Roles
-
     @commands.command()
     @commands.guild_only()
     async def roles(self, ctx):
@@ -297,9 +259,7 @@ class SharkyMod(commands.Cog):
         for page in pagify(msg, ["\n"]):
             embed = discord.Embed(color=0xEE2222)
             embed.description = page
-            embed.set_author(
-                name=guild.name + (f" Users in {role}"), icon_url=guild.icon_url
-            )
+            embed.set_author(name=guild.name + (f" Users in {role}"), icon_url=guild.icon_url)
             msg_list.append(embed)
         await menu(ctx, msg_list, DEFAULT_CONTROLS)
 
@@ -316,31 +276,26 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
-    @commands.bot_has_permissions(
-        ban_members=True, embed_links=True, send_messages=True
-    )
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkywarn(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Uh. Fawk you?"""
-        #   Arguments setup
         author = ctx.author
         guild = ctx.guild
         guild_ic = guild.icon_url
         guild_name = guild.name
         bot = ctx.bot
         my_perms: discord.Permissions = guild.me.guild_permissions
-        #   Code line
         embed = discord.Embed(color=0xEE2222)
         embed.add_field(name=f"Reason:", value=f"{Reason}")
         embed.add_field(name=f"Warned By:", value=f"{author.mention}")
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
                 vanity = await guild.vanity_invite()
-                # guild has a vanity url so use it as the one to send
                 embed.add_field(name="Invite Link:", value=f"{vanity}")
             invites = await guild.invites()
         else:
             invites = []
-            for inv in invites:  # Loop through the invites for the guild
+            for inv in invites:
                 if not (inv.max_uses or inv.max_age or inv.temporary):
                     embed.add_field(name="Invite Link:", value=inv)
         embed.set_thumbnail(url=guild_ic)
@@ -365,9 +320,7 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(kick_members=True)
-    @commands.bot_has_permissions(
-        ban_members=True, embed_links=True, send_messages=True
-    )
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkykick(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Uh, Double Fawk you?"""
         author = ctx.author
@@ -382,12 +335,11 @@ class SharkyMod(commands.Cog):
         embed.add_field(name=f"Warned By:", value=f"{author.mention}")
         if my_perms.manage_guild or my_perms.administrator:
             if "VANITY_URL" in guild.features:
-                # guild has a vanity url so use it as the one to send
                 return await guild.vanity_invite()
             invites = await guild.invites()
         else:
             invites = []
-        for inv in invites:  # Loop through the invites for the guild
+        for inv in invites:
             if not (inv.max_uses or inv.max_age or inv.temporary):
                 embed.add_field(name="Invite Link:", value=f"{inv}")
         embed.set_thumbnail(url=guild_ic)
@@ -420,9 +372,7 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(ban_members=True)
-    @commands.bot_has_permissions(
-        ban_members=True, embed_links=True, send_messages=True
-    )
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkysoftban(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Triple Fawk you"""
         author = ctx.author
@@ -444,7 +394,7 @@ class SharkyMod(commands.Cog):
             invites = await guild.invites()
         else:
             invites = []
-        for inv in invites:  # Loop through the invites for the guild
+        for inv in invites:
             if not (inv.max_uses or inv.max_age or inv.temporary):
                 embed.add_field(name="Invite Link:", value=f"{inv}")
         embed.set_thumbnail(url=guild_ic)
@@ -462,9 +412,7 @@ class SharkyMod(commands.Cog):
                 channel=None,
             )
 
-            await Member.send(
-                f"You've been banned and unbanned from {guild_name}", embed=embed
-            )
+            await Member.send(f"You've been banned and unbanned from {guild_name}", embed=embed)
             await ctx.send(f"Perfectio! Softbanned {Member} for {Reason}")
         except discord.errors.Forbidden:
             await ctx.send("Can't send to user")
@@ -481,9 +429,7 @@ class SharkyMod(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(ban_members=True)
-    @commands.bot_has_permissions(
-        ban_members=True, embed_links=True, send_messages=True
-    )
+    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
     async def sharkyban(self, ctx, Member: discord.Member, *, Reason: str = None):
         """Mega Fawk you"""
         author = ctx.author
@@ -510,9 +456,7 @@ class SharkyMod(commands.Cog):
                 channel=None,
             )
 
-            await Member.send(
-                f"You've been banned from {guild_name} forever.", embed=embed
-            )
+            await Member.send(f"You've been banned from {guild_name} forever.", embed=embed)
             await ctx.send(f"Perfectio! Banned {Member} for {Reason}")
         except discord.errors.Forbidden:
             await ctx.send("Can't send to user")
