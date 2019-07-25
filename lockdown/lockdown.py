@@ -6,7 +6,11 @@ BaseCog = getattr(commands, "Cog", object)
 
 
 class Lockdown(BaseCog):
-    """Locks down the current server"""
+    """
+    Locks down the current guild or specific channels
+    
+    Make sure you use `[p]lockdownset` to adjust your settings first!
+    """
 
     def __init__(self, bot):
         self.bot = bot
@@ -19,7 +23,12 @@ class Lockdown(BaseCog):
     @commands.command(pass_context=True, no_pm=True)
     @checks.mod_or_permissions(manage_messages=True)
     async def lockdown(self, ctx, guild: int = None):
-        "Toggles the lockdown mode"
+        """
+        Toggles the lockdown mode
+
+        If you do `[p]lockdown` it'll default to the current guild/server
+        If you do `[p]lockdown 133049272517001216` it'll lockdown that specific guild if you have `Manage_Channels` permissions there
+        """
         if guild is None:
             role = ctx.guild.default_role
             msg = await self.config.guild(ctx.guild).lockmsg()
@@ -99,7 +108,12 @@ class Lockdown(BaseCog):
     @commands.command(pass_context=True, no_pm=True)
     @checks.mod_or_permissions(manage_messages=True)
     async def unlockdown(self, ctx, guild: int = None):
-        """Ends the lockdown for this server"""
+        """
+        Ends the lockdown for this server
+
+        If you do `[p]unlockdown` it'll default to the current guild/server
+        If you do `[p]unlockdown 133049272517001216` it'll unlock that specific guild if you have `Manage_Channels` permissions there
+        """
         if guild is None:
             role = ctx.guild.default_role
             msg = await self.config.guild(ctx.guild).unlockmsg()
@@ -181,7 +195,12 @@ class Lockdown(BaseCog):
     #   Adding channel to config
     @lockdownset.command(pass_context=True, no_pm=True)
     async def channel(self, ctx, channel: discord.TextChannel):
-        """Toggles lockdown status for a particular channel"""
+        """
+        Toggles lockdown status for a particular channel
+
+        Doing this will also remove the channel from the list as well
+        `Example: [p]lockdownset channel #general`
+        """
         guild = ctx.message.guild
         status = "Error"
         if channel.id not in await self.config.guild(guild).channels():
@@ -198,7 +217,12 @@ class Lockdown(BaseCog):
     #   Adding voice channel to config
     @lockdownset.command(pass_context=True, no_pm=True)
     async def voice(self, ctx, channel: discord.VoiceChannel):
-        """Toggles lockdown status for a particular channel"""
+        """
+        Toggles lockdown status for a particular channel
+
+        Doing this will also remove the channel form the list as well
+        `Example: [p]lockdownset voice Gaming` or you can use a channel ID
+        """
         guild = ctx.message.guild
         status = "Error"
         if channel.id not in await self.config.guild(guild).voices():
@@ -214,8 +238,12 @@ class Lockdown(BaseCog):
 
     #   Setting Lockdown message
     @lockdownset.command(pass_context=True, no_pm=True)
-    async def lockmsg(self, ctx, *, text=None):
-        """What lockdown message you want to put"""
+    async def lock(self, ctx, *, text=None):
+        """
+        The message you want the bot to send when it locks
+
+        `Example: [p]lockdownset lock Server Locked for the time being, sorry for the inconvience!`
+        """
         guild = ctx.guild
         if text is None:
             await self.config.guild(guild).lockmsg.set(None)
@@ -226,8 +254,12 @@ class Lockdown(BaseCog):
 
     #   Setting Unlockdown message
     @lockdownset.command(pass_context=True, no_pm=True)
-    async def unlockmsg(self, ctx, *, text=None):
-        """What unlockdown message you want to put"""
+    async def unlock(self, ctx, *, text=None):
+        """
+        The message you want the bot to send when it unlocks
+
+        `Example: [p]lockdownset unlock Server Unlocked! Thank you for waiting.`
+        """
         guild = ctx.guild
         if text is None:
             await self.config.guild(guild).unlockmsg.set(None)
@@ -239,7 +271,7 @@ class Lockdown(BaseCog):
     #   List of all channels in config
     @lockdownset.command(pass_context=True, no_pm=True)
     async def list(self, ctx):
-        """Lists what channel is under the settings"""
+        """Displays the list of everything in settings"""
         guild = ctx.guild
         bot = ctx.bot
         get_channel = await self.config.guild(guild).channels()
@@ -264,7 +296,11 @@ class Lockdown(BaseCog):
     @commands.command()
     @checks.mod_or_permissions(manage_messages=True)
     async def locktext(self, ctx, text: discord.TextChannel):
-        """Locking down selected text channel"""
+        """
+        Locking down selected text channel
+        
+        `Example: [p]locktext #general`
+        """
         role = ctx.guild.default_role
         guild_channel = text
         overwrite = guild_channel.overwrites_for(role)
@@ -282,7 +318,11 @@ class Lockdown(BaseCog):
     @commands.command()
     @checks.mod_or_permissions(manage_messages=True)
     async def unlocktext(self, ctx, text: discord.TextChannel):
-        """Unlocking down selected text channel"""
+        """
+        Unlocks selected text channel
+        
+        `Example: [p]unlocktext #general`
+        """
         role = ctx.guild.default_role
         guild_channel = text
         overwrite = guild_channel.overwrites_for(role)
@@ -298,7 +338,11 @@ class Lockdown(BaseCog):
     @commands.command()
     @checks.mod_or_permissions(manage_messages=True)
     async def lockvoice(self, ctx, *, voice: discord.VoiceChannel):
-        """Locking down selected voice channel"""
+        """
+        Locking down selected voice channel
+
+        `Example: [p]lockvoice Gaming Voice Call` or you can use a channel ID
+        """
         role = ctx.guild.default_role
         guild_channel = voice
         overwrite = guild_channel.overwrites_for(role)
@@ -316,7 +360,11 @@ class Lockdown(BaseCog):
     @commands.command()
     @checks.mod_or_permissions(manage_messages=True)
     async def unlockvoice(self, ctx, *, voice: discord.VoiceChannel):
-        """Unlocking down selected voice channel"""
+        """
+        Unlocking down selected voice channel
+        
+        `Example: [p]unlockvoice Gaming Voice Call` or you can use a channel ID
+        """
         role = ctx.guild.default_role
         guild_channel = voice
         overwrite = guild_channel.overwrites_for(role)
