@@ -11,7 +11,7 @@ class SharkyTools(commands.Cog):
     """Sharky Tools"""
 
     __author__ = "Sharky"
-    __version__ = "2.1.0"
+    __version__ = "2.1.1"
 
     #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=["pinfo"])
@@ -50,7 +50,7 @@ class SharkyTools(commands.Cog):
             + 1
         )
         notice = f"Member #{member_number}"
-        embed = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
+        embed = discord.Embed(color=await ctx.embed_color(), title=f"{member_name}'s information")
         embed.add_field(
             name="Name:", value=f"{member_mention}\n{member_name}#{member_disc}", inline=True
         )
@@ -83,7 +83,7 @@ class SharkyTools(commands.Cog):
         try:
             member = await bot.fetch_user(banneduser)
         except discord.NotFound:
-            embed = discord.Embed(color=0xEE2222, title="Unknown User")
+            embed = discord.Embed(color=await ctx.embed_color(), title="Unknown User")
             embed.add_field(
                 name=f"Not Valid",
                 value=f"{banneduser} is not a Valid User\n Please make sure you're using a correct UserID.\nHow you ask? [Go here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)",
@@ -138,7 +138,7 @@ class SharkyTools(commands.Cog):
         created_on = ("{}\n({} days ago)").format(user_created, since_created)
         joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
 
-        embed = discord.Embed(color=0xEE2222, title=f"Avatar Info")
+        embed = discord.Embed(color=await ctx.embed_color(), title=f"Avatar Info")
         embed.add_field(name=f"User Info:", value=f"{user_mention}\n({user_id})")
         embed.add_field(name=f"Discord Name:", value=f"{user_name}#{user_disc}")
         embed.add_field(name=f"Account Age:", value=f"{created_on}")
@@ -155,7 +155,9 @@ class SharkyTools(commands.Cog):
             user_av = user_acc.avatar_url_as(static_format="png")
             user_name = user_acc.name
             user_disc = user_acc.discriminator
-            embed = discord.Embed(color=0xEE2222, title=f"Avatar Info: {user_name}#{user_disc}")
+            embed = discord.Embed(
+                color=await ctx.embed_color(), title=f"Avatar Info: {user_name}#{user_disc}"
+            )
             embed.set_image(url=user_av)
             await ctx.send(embed=embed)
         except discord.HTTPException:
@@ -223,7 +225,9 @@ class SharkyTools(commands.Cog):
         joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
 
         bot_is = user.bot
-        embed = discord.Embed(color=0xEE2222, title=f"{user_name}#{user_disc}'s Account Date:")
+        embed = discord.Embed(
+            color=await ctx.embed_color(), title=f"{user_name}#{user_disc}'s Account Date:"
+        )
         embed.add_field(name=f"Account Age:", value=f"{created_on}")
         embed.add_field(name=f"Join Date:", value=f"{joined_on}")
         if bot_is is True:
@@ -276,7 +280,9 @@ class SharkyTools(commands.Cog):
         )
         notice = f"Member #{member_number}"
         for x in map(str, range(1, 4)):
-            first = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
+            first = discord.Embed(
+                color=await ctx.embed_color(), title=f"{member_name}'s information"
+            )
             first.add_field(
                 name="Name:", value=f"{member_mention}\n{member_name}#{member_disc}", inline=True
             )
@@ -292,7 +298,9 @@ class SharkyTools(commands.Cog):
             first.set_thumbnail(url=member_avatar)
             first.set_footer(text=f"{notice}")
             embeds.append(first)
-            second = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
+            second = discord.Embed(
+                color=await ctx.embed_color(), title=f"{member_name}'s information"
+            )
             second.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
             second.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
             if member_role is not None:
@@ -300,11 +308,11 @@ class SharkyTools(commands.Cog):
             second.set_thumbnail(url=member_avatar)
             second.set_footer(text=f"{notice}")
             embeds.append(second)
-            third = discord.Embed(color=0xEE2222, title=f"{member_name}'s Avatar")
+            third = discord.Embed(color=await ctx.embed_color(), title=f"{member_name}'s Avatar")
             third.set_image(url=member_avatar)
             third.set_footer(text=f"{notice}")
             embeds.append(third)
-            forth = discord.Embed(color=0xEE2222, title=f"Bank Balance")
+            forth = discord.Embed(color=await ctx.embed_color(), title=f"Bank Balance")
             forth.add_field(
                 name=f"{member_name}'s Bank Statement",
                 value=f"They have {bal}{credits_name} in their bank!",
@@ -326,7 +334,7 @@ class SharkyTools(commands.Cog):
             msg_list = []
         for page in pagify(msg, ["\n"]):
             if ctx.channel.permissions_for(ctx.me).embed_links:
-                embed = discord.Embed(color=0xEE2222)
+                embed = discord.Embed(color=await ctx.embed_color())
                 embed.description = page
                 embed.set_author(name=guild.name + ("Roles"), icon_url=guild.icon_url)
                 msg_list.append(embed)
