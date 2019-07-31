@@ -49,7 +49,7 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
             characters = await self.config.channel(shark).character_limit()
             if characters is not None:
                 count += f"{shark.mention}: {characters} characters\n"
-            e = discord.Embed(color=guild.me.top_role.color)
+            e = discord.Embed(color=await ctx.embed_color())
             e.title = f"{guild}'s Settings"
             e.description = f"{count}"
         return await ctx.send(embed=e)

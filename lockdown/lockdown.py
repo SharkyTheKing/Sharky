@@ -8,7 +8,7 @@ BaseCog = getattr(commands, "Cog", object)
 class Lockdown(BaseCog):
     """
     Locks down the current guild or specific channels
-    
+
     Make sure you use `[p]lockdownset` to adjust your settings first!
     """
 
@@ -273,7 +273,6 @@ class Lockdown(BaseCog):
     async def list(self, ctx):
         """Displays the list of everything in settings"""
         guild = ctx.guild
-        bot = ctx.bot
         get_channel = await self.config.guild(guild).channels()
         get_voice = await self.config.guild(guild).voices()
         get_lock = await self.config.guild(guild).lockmsg()
@@ -284,7 +283,7 @@ class Lockdown(BaseCog):
             chan += f"<#{channel}> - {channel}\n"
         for voice in get_voice:
             voi += f"<#{voice}> - {voice}\n"
-        e = discord.Embed(color=bot.color)
+        e = discord.Embed(color=await ctx.embed_color())
         e.title = "Current channels:"
         e.add_field(name="Text Channels:", value=chan if chan else "None")
         e.add_field(name="Voice Channels:", value=voi if voi else "None")
@@ -298,7 +297,7 @@ class Lockdown(BaseCog):
     async def locktext(self, ctx, text: discord.TextChannel):
         """
         Locking down selected text channel
-        
+
         `Example: [p]locktext #general`
         """
         role = ctx.guild.default_role
@@ -320,7 +319,7 @@ class Lockdown(BaseCog):
     async def unlocktext(self, ctx, text: discord.TextChannel):
         """
         Unlocks selected text channel
-        
+
         `Example: [p]unlocktext #general`
         """
         role = ctx.guild.default_role
@@ -362,7 +361,7 @@ class Lockdown(BaseCog):
     async def unlockvoice(self, ctx, *, voice: discord.VoiceChannel):
         """
         Unlocking down selected voice channel
-        
+
         `Example: [p]unlockvoice Gaming Voice Call` or you can use a channel ID
         """
         role = ctx.guild.default_role
