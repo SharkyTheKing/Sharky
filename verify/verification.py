@@ -21,7 +21,9 @@ class Verify(BaseCog):
     # TODO Secondly, setup list command to show what role, what channel is active, if the server is set to active
 
     #   Set group
-    @commands.bot_has_permissions(manage_messages=True, send_messages=True, manage_roles=True, embed_links=True)
+    @commands.bot_has_permissions(
+        manage_messages=True, send_messages=True, manage_roles=True, embed_links=True
+    )
     @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     @commands.group()
@@ -116,7 +118,9 @@ class Verify(BaseCog):
 
     #   Accept command
     @commands.command()
-    @commands.bot_has_permissions(manage_messages=True, send_messages=True, manage_roles=True, embed_links=True)
+    @commands.bot_has_permissions(
+        manage_messages=True, send_messages=True, manage_roles=True, embed_links=True
+    )
     @commands.guild_only()
     async def accept(self, ctx):
         """
