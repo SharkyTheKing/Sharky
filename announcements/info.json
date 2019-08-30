@@ -1,0 +1,9 @@
+{
+    "author": [
+        "Sharky The King"
+    ],
+    "description": "Announcement cog, to announce messages, pinging roles or making roles mentionable",
+    "short": "Announcement system",
+    "tags": ["Announce", "Alert"],
+    "type": "COG"
+}
