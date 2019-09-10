@@ -16,7 +16,7 @@ class ReportSystem(BaseCog):
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=923485973)
-        def_guilds = {"report": None}
+        def_guilds = {"report": None, "emote": False}
         self.config.register_guild(**def_guilds)
 
     #   Report command
@@ -110,10 +110,35 @@ class ReportSystem(BaseCog):
             await self.config.guild(ctx.guild).report.set(None)
             await ctx.send(f"Disabled the report command and removed the reporting channel.")
 
+    @reportset.command()
+    @checks.admin_or_permissions(manage_guild=True)
+    async def emote(self, ctx, toggle: Optional[bool]):
+        """
+        Sets it whether the bot automatically puts reactions for each report sent
+
+        Up is confirming it's a valid report
+        Down is confirming it's not a valid report
+        Question means you're unsure of the report or are in question of it
+        X means it's been too long to look into
+        """
+        emote = self.config.guild(ctx.guild).emote
+        if toggle is None:
+            await ctx.send("The current settings is set to {}".format(await emote()))
+        elif toggle is True:
+            await emote.set(True)
+            await ctx.send("The setting is now set to {}".format(await emote()))
+        elif toggle is False:
+            await emote.set(False)
+            await ctx.send("The setting is now set to {}".format(await emote()))
+
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction: discord.Reaction, user):
         report = await self.config.guild(reaction.message.guild).report()
-        chan = discord.utils.get(reaction.message.guild.channels, id=int(report))
+        chan = ""
+        if report is None:
+            pass
+        else:
+            chan = discord.utils.get(reaction.message.guild.channels, id=int(report))
         if reaction.message.channel != chan:
             return False
         elif reaction.message.channel == chan:
@@ -133,11 +158,25 @@ class ReportSystem(BaseCog):
         """
         author = message.author
         report = await self.config.guild(message.guild).report()
-        chan = discord.utils.get(message.guild.channels, id=int(report))
-        if message.channel == chan:
-            if author.bot is True:
-                react = ["<:this:576962004401520700>", "<:notthis:576962019140435972>", "❓", "❌"]
-                for emotes in react:
-                    await message.add_reaction(emotes)
+        emote = self.config.guild(message.guild).emote
+        if report is None:
+            return False
+        else:
+            if await emote() is True:
+                chan = discord.utils.get(message.guild.channels, id=int(report))
+                if message.channel == chan:
+                    if author.bot is True:
+                        react = [
+                            "<:this:576962004401520700>",
+                            "<:notthis:576962019140435972>",
+                            "❓",
+                            "❌",
+                        ]
+                        for emotes in react:
+                            await message.add_reaction(emotes)
+                    else:
+                        pass
+                else:
+                    pass
             else:
                 pass
