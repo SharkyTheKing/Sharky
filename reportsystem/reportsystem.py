@@ -1,6 +1,7 @@
 import discord
 from typing import Optional
 from redbot.core import Config, checks, commands
+from typing import Union
 
 BaseCog = getattr(commands, "Cog", object)
 
@@ -66,7 +67,6 @@ class ReportSystem(BaseCog):
                 )
             else:
                 await bot.get_channel(log).send(embed=embed)
-                await bot.get_channel(log).send(f"{member.mention}\nID:{member.id}")
                 await ctx.author.send(
                     "Thank you for your report. The moderation team has received your report."
                 )
@@ -109,3 +109,35 @@ class ReportSystem(BaseCog):
         else:
             await self.config.guild(ctx.guild).report.set(None)
             await ctx.send(f"Disabled the report command and removed the reporting channel.")
+
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction: discord.Reaction, user):
+        report = await self.config.guild(reaction.message.guild).report()
+        chan = discord.utils.get(reaction.message.guild.channels, id=int(report))
+        if reaction.message.channel != chan:
+            return False
+        elif reaction.message.channel == chan:
+            if user is reaction.message.author:
+                return False
+            else:
+                try:
+                    react = reaction.message
+                    await react.edit(content="{} has claimed this.".format(user.display_name))
+                except discord.Forbidden:
+                    pass
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        """
+        Auto-add reactions
+        """
+        author = message.author
+        report = await self.config.guild(message.guild).report()
+        chan = discord.utils.get(message.guild.channels, id=int(report))
+        if message.channel == chan:
+            if author.bot is True:
+                react = ["<:this:576962004401520700>", "<:notthis:576962019140435972>", "❓", "❌"]
+                for emotes in react:
+                    await message.add_reaction(emotes)
+            else:
+                pass
