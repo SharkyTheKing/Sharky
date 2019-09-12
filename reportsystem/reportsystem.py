@@ -133,26 +133,30 @@ class ReportSystem(BaseCog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction: discord.Reaction, user):
-        if reaction.message.guild is True:
+        """
+        Detects for when someone adds reaction
+        """
+        if reaction.message.guild is not None:
             report = await self.config.guild(reaction.message.guild).report()
-        else:
-            return False
-        chan = ""
-        if report is None:
-            pass
-        else:
-            chan = discord.utils.get(reaction.message.guild.channels, id=int(report))
-        if reaction.message.channel != chan:
-            return False
-        elif reaction.message.channel == chan:
-            if user is reaction.message.author:
-                return False
+            if report is None:
+                pass
             else:
-                try:
-                    react = reaction.message
-                    await react.edit(content="{} has claimed this.".format(user.display_name))
-                except discord.Forbidden:
-                    pass
+                chan = discord.utils.get(reaction.message.guild.channels, id=int(report))
+                if reaction.message.channel != chan:
+                    return False
+                elif reaction.message.channel == chan:
+                    if user == self.bot.user:
+                        return False
+                    else:
+                        try:
+                            react = reaction.message
+                            await react.edit(
+                                content="{} has claimed this.".format(user.display_name)
+                            )
+                        except discord.Forbidden:
+                            pass
+        else:
+            return False
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -160,24 +164,24 @@ class ReportSystem(BaseCog):
         Auto-add reactions
         """
         author = message.author
-        if message.guild is True:
+        if message.guild is not None:
             report = await self.config.guild(message.guild).report()
-        else:
-            return False
-        emote = self.config.guild(message.guild).emote
-        if report is None:
-            return False
-        else:
-            if await emote() is True:
-                if author == self.bot.user:
-                    chan = discord.utils.get(message.guild.channels, id=int(report))
-                    if message.channel == chan:
-                        react = ["👋", "👍", "👎", "❓", "❌"]
-                        for emotes in react:
-                            await message.add_reaction(emotes)
+            emote = self.config.guild(message.guild).emote
+            if report is None:
+                return False
+            else:
+                if await emote() is True:
+                    if author == self.bot.user:
+                        chan = discord.utils.get(message.guild.channels, id=int(report))
+                        if message.channel == chan:
+                            react = ["👋", "👍", "👎", "❓", "❌"]
+                            for emotes in react:
+                                await message.add_reaction(emotes)
+                        else:
+                            pass
                     else:
                         pass
                 else:
                     pass
-            else:
-                pass
+        else:
+            return False
