@@ -163,15 +163,10 @@ class ReportSystem(BaseCog):
             return False
         else:
             if await emote() is True:
-                chan = discord.utils.get(message.guild.channels, id=int(report))
-                if message.channel == chan:
-                    if author.bot is True:
-                        react = [
-                            "<:this:576962004401520700>",
-                            "<:notthis:576962019140435972>",
-                            "❓",
-                            "❌",
-                        ]
+                if author == self.bot.user:
+                    chan = discord.utils.get(message.guild.channels, id=int(report))
+                    if message.channel == chan:
+                        react = ["👋", "👍", "👎", "❓", "❌"]
                         for emotes in react:
                             await message.add_reaction(emotes)
                     else:
