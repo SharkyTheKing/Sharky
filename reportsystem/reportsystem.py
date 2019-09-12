@@ -133,7 +133,10 @@ class ReportSystem(BaseCog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction: discord.Reaction, user):
-        report = await self.config.guild(reaction.message.guild).report()
+        if reaction.message.guild is True:
+            report = await self.config.guild(reaction.message.guild).report()
+        else:
+            return False
         chan = ""
         if report is None:
             pass
@@ -157,7 +160,10 @@ class ReportSystem(BaseCog):
         Auto-add reactions
         """
         author = message.author
-        report = await self.config.guild(message.guild).report()
+        if message.guild is True:
+            report = await self.config.guild(message.guild).report()
+        else:
+            return False
         emote = self.config.guild(message.guild).emote
         if report is None:
             return False
