@@ -145,77 +145,6 @@ class SharkyMod(commands.Cog):
         embed.set_image(url=user_av)
         await ctx.send(embed=embed)
 
-    #   User menu, combinds most if not all of the commands together
-    @commands.command(name="usermenu", aliases=["umenu", "userm", "um"])
-    @commands.bot_has_permissions(embed_links=True, send_messages=True, add_reactions=True)
-    @checks.mod_or_permissions(manage_messages=True)
-    @commands.guild_only()
-    async def _umenu(self, ctx, *, member: discord.Member = None):
-        """Ties all of the commands together, but in a menu! :D"""
-        embeds = []
-        author = ctx.author
-        if not member:
-            member = author
-        guild = ctx.guild
-        member_mention = member.mention
-        member_disc = member.discriminator
-        member_name = member.name
-        member_id = member.id
-        member_avatar = member.avatar_url_as(static_format="png")
-        member_voice = member.voice
-        member_bot = member.bot
-
-        member_role = sorted(member.roles, reverse=True)[:-1]
-        if member_role:
-            member_role = ", ".join([x.mention for x in member_role])
-        else:
-            member_role = None
-        joined_at = member.joined_at
-        member_joined = member.joined_at.strftime("%d %b %Y %H:%M")
-        since_joined = (ctx.message.created_at - joined_at).days
-        member_created = member.created_at.strftime("%d %b %Y %H:%M")
-        since_created = (ctx.message.created_at - member.created_at).days
-
-        created_on = ("{}\n({} days ago)").format(member_created, since_created)
-        joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)
-        member_number = (
-            sorted(guild.members, key=lambda m: m.joined_at or ctx.message.created_at).index(
-                member
-            )
-            + 1
-        )
-        notice = f"Member #{member_number}"
-        for x in map(str, range(1, 4)):
-            first = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
-            first.add_field(
-                name="Name:", value=f"{member_mention}\n{member_name}#{member_disc}", inline=True
-            )
-            first.add_field(name="ID:", value=f"{member_id}", inline=True)
-            if member_bot is True:
-                first.add_field(name=("Bot:"), value=(f"{member_mention} is a bot"), inline=False)
-            if member_voice and member_voice.channel:
-                first.add_field(
-                    name="Current voice channel",
-                    value="<#{0.id}> (ID: {0.id})".format(member_voice.channel),
-                    inline=False,
-                )
-            first.set_thumbnail(url=member_avatar)
-            first.set_footer(text=f"{notice}")
-            embeds.append(first)
-            second = discord.Embed(color=0xEE2222, title=f"{member_name}'s information")
-            second.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
-            second.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
-            if member_role is not None:
-                second.add_field(name="Roles:", value=f"{member_role}", inline=False)
-            second.set_thumbnail(url=member_avatar)
-            second.set_footer(text=f"{notice}")
-            embeds.append(second)
-            third = discord.Embed(color=0xEE2222, title=f"{member_name}'s Avatar")
-            third.set_image(url=member_avatar)
-            third.set_footer(text=f"{notice}")
-            embeds.append(third)
-        await menu(ctx, embeds, DEFAULT_CONTROLS)
-
     #   Display Roles
     @commands.command()
     @commands.guild_only()
@@ -263,209 +192,77 @@ class SharkyMod(commands.Cog):
             msg_list.append(embed)
         await menu(ctx, msg_list, DEFAULT_CONTROLS)
 
-    #   Message Link
-    @commands.command()
-    @commands.guild_only()
-    async def msglink(self, ctx, Channel: discord.TextChannel, Message: int):
-        """Praying this somehow works?"""
-        guild = ctx.guild.id
-        c_id = Channel.id
-        await ctx.send(f"https://discordapp.com/channels/{guild}/{c_id}/{Message}")
-
-    #   Warn Command
-    @commands.command()
-    @commands.guild_only()
+    @commands.group(pass_context=True, no_pm=True, invoke_without_command=True)
     @checks.mod_or_permissions(manage_messages=True)
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
-    async def sharkywarn(self, ctx, Member: discord.Member, *, Reason: str = None):
-        """Uh. Fawk you?"""
-        author = ctx.author
-        guild = ctx.guild
-        guild_ic = guild.icon_url
-        guild_name = guild.name
-        bot = ctx.bot
-        my_perms: discord.Permissions = guild.me.guild_permissions
-        embed = discord.Embed(color=0xEE2222)
-        embed.add_field(name=f"Reason:", value=f"{Reason}")
-        embed.add_field(name=f"Warned By:", value=f"{author.mention}")
-        if my_perms.manage_guild or my_perms.administrator:
-            if "VANITY_URL" in guild.features:
-                vanity = await guild.vanity_invite()
-                embed.add_field(name="Invite Link:", value=f"{vanity}")
-            invites = await guild.invites()
-        else:
-            invites = []
-            for inv in invites:
-                if not (inv.max_uses or inv.max_age or inv.temporary):
-                    embed.add_field(name="Invite Link:", value=inv)
-        embed.set_thumbnail(url=guild_ic)
-        try:
-            await Member.send(f"You've been warned from {guild_name}", embed=embed)
-            await ctx.send(f"Perfectio! Warned {Member} for {Reason}")
-        except discord.errors.Forbidden:
-            await ctx.send("Can't send to user")
-        await modlog.create_case(
-            bot,
-            ctx.guild,
-            ctx.message.created_at,
-            "warning",
-            Member,
-            ctx.message.author,
-            Reason,
-            until=None,
-            channel=None,
-        )
-
-    #   Kick Command
-    @commands.command()
     @commands.guild_only()
-    @checks.mod_or_permissions(kick_members=True)
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
-    async def sharkykick(self, ctx, Member: discord.Member, *, Reason: str = None):
-        """Uh, Double Fawk you?"""
-        author = ctx.author
-        guild = ctx.guild
-        guild_ic = guild.icon_url
-        guild_name = guild.name
-        bot = ctx.bot
-        audit_reason = get_audit_reason(author, Reason)
-        my_perms: discord.Permissions = guild.me.guild_permissions
-        embed = discord.Embed(color=0xEE2222)
-        embed.add_field(name=f"Reason:", value=f"{Reason}")
-        embed.add_field(name=f"Warned By:", value=f"{author.mention}")
-        if my_perms.manage_guild or my_perms.administrator:
-            if "VANITY_URL" in guild.features:
-                return await guild.vanity_invite()
-            invites = await guild.invites()
+    async def membercheck(self, ctx, *, param: str):
+        """
+        Checks who joined the server with that name
+        """
+        if ctx.invoked_subcommand is None:
+            message = ""
+            for x in ctx.guild.members:
+                if param.lower() in x.display_name.lower() and x.joined_at.date() == date.today():
+                    message += f"{x.display_name} - {x.id}\n"
+            try:
+                await ctx.send_interactive(
+                    pagify(message if message else "No one joined with that name today")
+                )
+            except discord.HTTPException:
+                pass
         else:
-            invites = []
-        for inv in invites:
-            if not (inv.max_uses or inv.max_age or inv.temporary):
-                embed.add_field(name="Invite Link:", value=f"{inv}")
-        embed.set_thumbnail(url=guild_ic)
-        try:
-            await guild.kick(Member, reason=audit_reason)
-        except discord.errors.Forbidden:
-            await ctx.send("I'm not allowed to do that.")
-        except Exception as e:
-            print(e)
-        else:
-            await modlog.create_case(
-                bot,
-                ctx.guild,
-                ctx.message.created_at,
-                "kick",
-                Member,
-                ctx.message.author,
-                Reason,
-                until=None,
-                channel=None,
-            )
-        try:
-            await Member.send(f"You've been kicked from {guild_name}", embed=embed)
-            await ctx.send(f"Perfectio! Kicked {Member} for {Reason}")
-        except discord.errors.Forbidden:
-            await ctx.send("Can't send to user")
+            pass
 
-    #   Softban Command
-    #   Issue: Forces 3 cases per each softbans
-    @commands.command()
+    @membercheck.command(pass_context=True, no_pm=True, name="ids")
+    @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
-    @checks.mod_or_permissions(ban_members=True)
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
-    async def sharkysoftban(self, ctx, Member: discord.Member, *, Reason: str = None):
-        """Triple Fawk you"""
-        author = ctx.author
-        guild = ctx.guild
-        guild_ic = guild.icon_url
-        guild_name = guild.name
-        bot = ctx.bot
-        audit_reason = get_audit_reason(author, Reason)
-        my_perms: discord.Permissions = guild.me.guild_permissions
-        embed = discord.Embed(color=0xEE2222)
-        embed.add_field(name=f"Reason:", value=f"{Reason}")
-        embed.add_field(name=f"Warned By:", value=f"{author.mention}")
-        #   Full credit to Trusty
-        #   https://github.com/TrustyJAID/Trusty-cogs/tree/master/serverstats
-        if my_perms.manage_guild or my_perms.administrator:
-            if "VANITY_URL" in guild.features:
-                # guild has a vanity url so use it as the one to send
-                return await guild.vanity_invite()
-            invites = await guild.invites()
+    async def ids(self, ctx, *, param: str):
+        """
+        Checks who joined the server with that name, but with IDs
+        """
+        if ctx.invoked_subcommand is None:
+            message = ""
+            for x in ctx.guild.members:
+                if param.lower() in x.display_name.lower() and x.joined_at.date() == date.today():
+                    message += f"{x.id}\n"
+            try:
+                await ctx.send_interactive(
+                    pagify(message if message else "No one joined with that name today")
+                )
+            except discord.HTTPException:
+                pass
         else:
-            invites = []
-        for inv in invites:
-            if not (inv.max_uses or inv.max_age or inv.temporary):
-                embed.add_field(name="Invite Link:", value=f"{inv}")
-        embed.set_thumbnail(url=guild_ic)
+            pass
 
-        try:
-            await modlog.create_case(
-                bot,
-                ctx.guild,
-                ctx.message.created_at,
-                "softban",
-                Member,
-                ctx.message.author,
-                Reason,
-                until=None,
-                channel=None,
-            )
-
-            await Member.send(f"You've been banned and unbanned from {guild_name}", embed=embed)
-            await ctx.send(f"Perfectio! Softbanned {Member} for {Reason}")
-        except discord.errors.Forbidden:
-            await ctx.send("Can't send to user")
-
-        try:
-            await guild.ban(Member, reason=audit_reason)
-            await guild.unban(Member)
-        except discord.errors.Forbidden:
-            await ctx.send("I'm not allowed to do that.")
-        except Exception as e:
-            print(e)
-
-    #   Ban Command
-    @commands.command()
+    @membercheck.command(pass_context=True, no_pm=True, name="settime")
+    @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
-    @checks.mod_or_permissions(ban_members=True)
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
-    async def sharkyban(self, ctx, Member: discord.Member, *, Reason: str = None):
-        """Mega Fawk you"""
-        author = ctx.author
-        guild = ctx.guild
-        guild_ic = guild.icon_url
-        guild_name = guild.name
-        bot = ctx.bot
-        audit_reason = get_audit_reason(author, Reason)
-        embed = discord.Embed(color=0xEE2222)
-        embed.add_field(name=f"Reason:", value=f"{Reason}")
-        embed.add_field(name=f"Warned By:", value=f"{author.mention}")
-        embed.set_thumbnail(url=guild_ic)
-
-        try:
-            await modlog.create_case(
-                bot,
-                ctx.guild,
-                ctx.message.created_at,
-                "ban",
-                Member,
-                ctx.message.author,
-                Reason,
-                until=None,
-                channel=None,
+    async def settime(
+        self, ctx, param: str, day: Optional[int], month: Optional[int], year: Optional[int]
+    ):
+        """
+        testing this out
+        """
+        if ctx.invoked_subcommand is None:
+            dates = datetime.today()
+            message = ""
+            currentMonth = datetime.now().month
+            currentYear = datetime.now().year
+            currentDay = datetime.now().day
+            time = date(
+                year if year else currentYear,
+                month if month else currentMonth,
+                day if day else currentDay,
             )
-
-            await Member.send(f"You've been banned from {guild_name} forever.", embed=embed)
-            await ctx.send(f"Perfectio! Banned {Member} for {Reason}")
-        except discord.errors.Forbidden:
-            await ctx.send("Can't send to user")
-        try:
-            await guild.ban(Member, reason=audit_reason)
-        except discord.errors.Forbidden:
-            await ctx.send("Yeah, I can't.")
-        except Exception as e:
-            print(e)
-
-
-#   TODO Fix softban, fix ban so it doesn't double post modlogs
+            for x in ctx.guild.members:
+                if param.lower() in x.display_name.lower() and x.joined_at.date() == time:
+                    message += f"{x.display_name} - {x.id}\n"
+            if dates is not None:
+                try:
+                    await ctx.send(message)
+                except discord.HTTPException:
+                    await ctx.send("No one joined with that name on {}".format(time))
+            else:
+                await ctx.send("Something happened, didn't properly do dates right.")
+        else:
+            pass
