@@ -17,6 +17,7 @@ class FilterSystem(BaseCog):
     Filter stuff here!
 
     You can only filter something one at a time, if you filter something, it'll take the whole filter into context...so don't filter the fucking letter x
+    This can't be used with the CORE filter system as this uses the commands based off of it.
     """
 
     def __init__(self, bot):
@@ -29,51 +30,58 @@ class FilterSystem(BaseCog):
     @commands.guild_only()
     @commands.group(pass_context=True)
     @checks.mod_or_permissions(manage_messages=True)
-    async def filtersys(self, ctx):
+    async def filter(self, ctx):
         """
         Filter system
         """
         if ctx.invoked_subcommand is None:
-            guild = ctx.guild
-            author = ctx.author
-            filters = await self.config.guild(guild).filtered()
-            strict = await self.config.guild(guild).strict_filtered()
-            whitelist = await self.config.guild(guild).whitelist()
-            if filters and strict and whitelist is None:
-                return False
-            if filters:
-                words = ", ".join(filters)
-            else:
-                words = "No filtered added"
-            if strict:
-                word_2 = ", ".join(strict)
-            else:
-                word_2 = "No strict filtered added"
-            if whitelist:
-                word_3 = ", ".join(whitelist)
-            else:
-                word_3 = "No whitelisted words added"
-            words = (
-                ("Filtered in this server:\n")
-                + "```"
-                + words
-                + "```\n"
-                + ("Strict Filtered in this server:\n")
-                + "```"
-                + word_2
-                + "```\n"
-                + ("Whitelisted in this server:\n")
-                + "```"
-                + word_3
-                + "```"
-            )
-            try:
-                for page in pagify(words, delims=[" ", "\n"], shorten_by=8):
-                    await author.send(page)
-            except discord.Forbidden:
-                await ctx.send("I can't send direct messages to you.")
+            pass
 
-    @filtersys.command()
+    @filter.command()
+    async def list(self, ctx):
+        guild = ctx.guild
+        author = ctx.author
+        filters = await self.config.guild(guild).filtered()
+        strict = await self.config.guild(guild).strict_filtered()
+        whitelist = await self.config.guild(guild).whitelist()
+        amount = ""
+        msg = ""
+        if filters and strict and whitelist is None:
+            return False
+        if filters:
+            words = ", ".join(filters)
+        else:
+            words = "No filtered added"
+        if strict:
+            word_2 = ", ".join(strict)
+        else:
+            word_2 = "No strict filtered added"
+        if whitelist:
+            word_3 = ", ".join(whitelist)
+        else:
+            word_3 = "No whitelisted words added"
+        msg += f"Current Channels:\n{amount}"
+        words = (
+            ("Filtered in this server:\n")
+            + "```"
+            + words
+            + "```\n"
+            + ("Strict Filtered in this server:\n")
+            + "```"
+            + word_2
+            + "```\n"
+            + ("Whitelisted in this server:\n")
+            + "```"
+            + word_3
+            + "```"
+        )
+        try:
+            for page in pagify(words, delims=[" ", "\n"], shorten_by=8):
+                await author.send(page)
+        except discord.Forbidden:
+            await ctx.send("I can't send direct messages to you.")
+
+    @filter.command()
     @checks.mod_or_permissions(manage_messages=True)
     async def logging(self, ctx, channel: Optional[discord.TextChannel]):
         """
@@ -90,7 +98,7 @@ class FilterSystem(BaseCog):
             await log.set(channel.id)
             await ctx.send("Set the current logging channel to {}".format(channel.mention))
 
-    @filtersys.command()
+    @filter.command()
     async def add(self, ctx, *, word: str):
         """
         Add a word to the filter system
@@ -104,7 +112,7 @@ class FilterSystem(BaseCog):
         else:
             await ctx.send("{} is already in the filter".format(word))
 
-    @filtersys.command()
+    @filter.command()
     async def remove(self, ctx, *, word: str):
         """
         Removes a word from the filter system
@@ -118,7 +126,7 @@ class FilterSystem(BaseCog):
         else:
             await ctx.send("{} is not in the filter".format(word))
 
-    @filtersys.command()
+    @filter.command()
     async def strict(self, ctx, *, word: str):
         """
         Adds/Removes a word that is being watched for the EXACT
@@ -134,7 +142,7 @@ class FilterSystem(BaseCog):
                 more.append(f_word)
             await ctx.send("Added {} to the filter".format(word))
 
-    @filtersys.command()
+    @filter.command()
     async def whitelist(self, ctx, *, word: str):
         """
         This adds the word to a whitelist list
@@ -150,6 +158,21 @@ class FilterSystem(BaseCog):
                 move.append(except_word)
             await ctx.send("Added {} to the whitelist".format(word))
 
+    @filter.command()
+    async def channel(self, ctx, channel: discord.TextChannel, *, word: str):
+        """
+        testing
+        """
+        f_word = word.lower()
+        if f_word in await self.config.channel(channel).filtered():
+            async with self.config.channel(channel).filtered() as less:
+                less.remove(f_word)
+            await ctx.send("Removed {} from the filter".format(word))
+        else:
+            async with self.config.channel(channel).filtered() as more:
+                more.append(f_word)
+            await ctx.send("Added {} to the filter".format(word))
+
     @commands.Cog.listener()
     async def on_message(self, message):
         guild = message.guild
@@ -158,11 +181,11 @@ class FilterSystem(BaseCog):
         strict_hit = None
         white_hit = None
 
-        if guild is None:
-            return
+        if not message.guild:
+            return False
 
         if await self.bot.is_automod_immune(message.author):
-            return
+            return False
 
         filters = await self.config.guild(guild).filtered()  # Not strict
         log = await self.config.guild(guild).logs()
