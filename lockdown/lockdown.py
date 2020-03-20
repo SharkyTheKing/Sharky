@@ -215,13 +215,13 @@ class Lockdown(BaseCog):
         if channel in ctx.guild.text_channels:
             if overwrite.send_messages is False:
                 return await ctx.send(
-                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}unlock {channel.id}`"
+                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}channelunlock {channel.id}`"
                 )
             overwrite.update(send_messages=False)
         elif channel in ctx.guild.voice_channels:
             if overwrite.connect is False:
                 return await ctx.send(
-                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}unlock {channel.id}`"
+                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}channelunlock {channel.id}`"
                 )
             overwrite.update(connect=False)
         try:
@@ -254,13 +254,13 @@ class Lockdown(BaseCog):
         if channel in ctx.guild.text_channels:
             if overwrite.send_messages is None:
                 return await ctx.send(
-                    f"{channel.mention} is already unlocked. To lock, please use `{ctx.prefix}lock {channel.id}`"
+                    f"{channel.mention} is already unlocked. To lock, please use `{ctx.prefix}channellock {channel.id}`"
                 )
             overwrite.update(send_messages=None)
         elif channel in ctx.guild.voice_channels:
             if overwrite.connect is None:
                 return await ctx.send(
-                    f"{channel.mention} is already unlocked. To lock, please use `{ctx.prefix}lock {channel.id}`"
+                    f"{channel.mention} is already unlocked. To lock, please use `{ctx.prefix}channellock {channel.id}`"
                 )
             overwrite.update(connect=None)
 
