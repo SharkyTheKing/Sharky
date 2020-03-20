@@ -16,7 +16,6 @@ class Lockdown(BaseCog):
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=8675309)
-        self.locked_channels = {"Channels": {}}
 
         def_guilds = {"channels": [], "lockmsg": None, "unlockmsg": None}
         self.config.register_guild(**def_guilds)
@@ -70,10 +69,6 @@ class Lockdown(BaseCog):
                     )
                 except discord.Forbidden:
                     pass
-                try:
-                    self.locked_channels["Channels"].add(guild_channel.id)
-                except AttributeError:
-                    self.locked_channels.update({"Channels": {guild_channel.id}})
                 if msg:
                     try:
                         await guild_channel.send(msg)
@@ -119,10 +114,6 @@ class Lockdown(BaseCog):
                         reason=f"Lockdown ended. Requested by {author.name} ({author.id})",
                     )
                 except discord.Forbidden:
-                    pass
-                try:
-                    self.locked_channels["Channels"].remove(guild_channel.id)
-                except AttributeError:
                     pass
                 if msg:
                     try:
@@ -224,13 +215,13 @@ class Lockdown(BaseCog):
         if channel in ctx.guild.text_channels:
             if overwrite.send_messages is False:
                 return await ctx.send(
-                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}channelunlock {channel.id}`"
+                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}unlock {channel.id}`"
                 )
             overwrite.update(send_messages=False)
         elif channel in ctx.guild.voice_channels:
             if overwrite.connect is False:
                 return await ctx.send(
-                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}channelunlock {channel.id}`"
+                    f"{channel.mention} is already locked. To unlock, please use `{ctx.prefix}unlock {channel.id}`"
                 )
             overwrite.update(connect=False)
         try:
@@ -243,10 +234,6 @@ class Lockdown(BaseCog):
             )
         except discord.Forbidden:
             return await ctx.send("Error: Bot doesn't have perms to adjust that channel.")
-        try:
-            self.locked_channels["Channels"].add(channel.id)
-        except AttributeError:
-            self.locked_channels.update({"Channels": {channel.id}})
         await ctx.send("🔐 Locked {}".format(channel.mention))
 
     #   Unlocking Text Channel
@@ -286,58 +273,4 @@ class Lockdown(BaseCog):
             )
         except discord.Forbidden:
             return await ctx.send("Error: Bot doesn't have perms to adjust that channel.")
-        try:
-            self.locked_channels["Channels"].remove(channel.id)
-        except AttributeError:
-            pass
         await ctx.send(f"🔓 Unlocked {channel.mention}")
-
-    @commands.command()
-    @checks.mod_or_permissions(manage_messages=True)
-    async def viewlock(self, ctx):
-        """
-        Views what channels are locked
-
-        It will only register channels that are in `[p]lockdownset list`!
-        """
-        guild = ctx.guild
-        role = ctx.guild.default_role
-        channel_lists = []
-        channel_ids = await self.config.guild(guild).channels()
-        for guild_channel in guild.channels:
-            if guild_channel.id in channel_ids:
-                overwrite = guild_channel.overwrites_for(role)
-                if overwrite.send_messages is False:
-                    channel_lists.append(guild_channel.id)
-        channel_preview = ""
-        if channel_lists:
-            for channel in channel_lists:
-                channel_preview += f"<#{channel}> is locked.\n"
-        embed = discord.Embed(color=discord.Color.gold())
-        embed.title = "Currently Locked Channels"
-        embed.description = channel_preview if channel_lists else "No channels added"
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @checks.mod_or_permissions(manage_messages=True)
-    async def testinglock(self, ctx):
-        info = self.locked_channels
-        guild = ctx.guild
-        role = guild.default_role
-        channel_lists = []
-        if len(info["Channels"]) > 0:
-            for guild_channel in guild.channels:
-                if guild_channel.id in info["Channels"]:
-                    overwrite = guild_channel.overwrites_for(role)
-                    if overwrite.send_messages is False:
-                        channel_lists.append(guild_channel.id)
-            channel_preview = ""
-            if channel_lists:
-                for channel in channel_lists:
-                    channel_preview += f"<#{channel}> is locked.\n"
-            embed = discord.Embed(color=discord.Color.gold())
-            embed.title = "Currently Locked Channels"
-            embed.description = channel_preview if channel_lists else "No channels added"
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send("There is nothing in the dictionary.")
