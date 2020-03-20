@@ -9,7 +9,7 @@ class SharkyMod(commands.Cog):
     """Sharky Moderation Tools"""
 
     __author__ = "Sharky The King"
-    __version__ = "2.0.0"
+    __version__ = "2.0.1"
 
     #  Sharky's Userinfo twist
     @commands.command(name="sharkinfo", aliases=["pinfo"])
@@ -70,48 +70,39 @@ class SharkyMod(commands.Cog):
         embed.set_author(name=f"{member_name}#{member_disc}", icon_url=f"{member_avatar}")
         await ctx.send(embed=embed)
 
-    #   Trying to find if user is banned in Discord.
     @commands.command()
-    @commands.bot_has_permissions(ban_members=True, embed_links=True, send_messages=True)
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.bot_has_permissions(ban_members=True, embed_links=True)
+    @checks.mod_or_permissions(ban_members=True)
     @commands.guild_only()
-    async def findban(self, ctx, *, banneduser):
-        """Check if a user is banned"""
-        guild = ctx.guild
-        bot = ctx.bot
+    async def findban(self, ctx, *, banneduser: int):
+        """
+        Find if a user is banned on the server or not
+
+        If you don't know how to grab a userid, please click [here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
+        """
+        guild, bot = ctx.guild, ctx.bot
+        embed = discord.Embed(color=0xEE2222)
+        x_emote = "https://i.imgur.com/rBWVEUu.png"
+        ban_hammer = "https://i.imgur.com/Gp2bamf.png"
         try:
             member = await bot.fetch_user(banneduser)
-        except discord.NotFound:
-            embed = discord.Embed(color=0xEE2222, title="Unknown User")
-            embed.add_field(
-                name=f"Not Valid",
-                value=f"{banneduser} is not a Valid User\n Please make sure you're using a correct UserID.\nHow you ask? [Go here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)",
-            )
-            return await ctx.send(embed=embed)
-        except discord.HTTPException:
-            embed = discord.Embed(color=0xEE2222, title="Invalid Input")
-            embed.add_field(
-                name="ID10T Error:",
-                value=f"**{banneduser}** is not a valid input...but you knew that, didn't you?",
-            )
-            return await ctx.send(embed=embed)
-        mid = banneduser
-        hammer = "https://photos.kstj.us/TartPuzzlingKusimanse.png"
-        x_emote = "https://photos.kstj.us/GiddyDizzyIvorybilledwoodpecker.png"
-        try:
-            tban = await guild.fetch_ban(await bot.fetch_user(banneduser))
-            embed = discord.Embed(color=0xEE2222, title="Ban Found")
-            embed.add_field(name=f"User Found:", value=f"{member}\n({mid})", inline=True)
-            embed.add_field(name=f"Ban reason:", value=f"{tban[0]}", inline=False)
-            embed.set_thumbnail(url=hammer)
-            return await ctx.send(embed=embed)
-        except discord.NotFound:
-            embed = discord.Embed(color=0xEE2222, title="Ban **NOT** Found")
-            embed.add_field(
-                name=f"They are not banned from the server.", value=f"{member} ({mid})"
-            )
+        except discord.NotFound:  # Not a valid user
             embed.set_thumbnail(url=x_emote)
+            embed.title = "Unknown User"
+            embed.description = f"{banneduser} is not a valid user.\n\nPlease make sure you're using a correct [UserID.](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)"
             return await ctx.send(embed=embed)
+        case_amount = await modlog.get_cases_for_member(bot=ctx.bot, guild=ctx.guild, member=member)
+        try:
+            ban_info = await guild.fetch_ban(member)
+            embed.set_thumbnail(url=ban_hammer)
+            embed.add_field(name="User Found:", value=f"{member}\n({member.id})")
+            embed.add_field(name="Case Amount:", value=len(case_amount))
+            embed.add_field(name="Ban Reason:", value=ban_info[0], inline=False)
+        except discord.NotFound:  # Not Banned
+            embed.set_thumbnail(url=x_emote)
+            embed.title = "Ban **NOT** Found"
+            embed.add_field(name=f"{member} - ({member.id})", value="They are **NOT** banned from the server.")
+        await ctx.send(embed=embed)
 
     #   User Avatar
     @commands.command(name="avatar", aliases=["av", "picture"])
