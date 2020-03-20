@@ -6,11 +6,12 @@ from redbot.core.utils.predicates import ReactionPredicate
 
 import re
 from typing import Optional
+from .auditlog import AuditLogging, PrivateLogEntry, PublicLogEntry
 
 BaseCog = getattr(commands, "Cog", object)
 
 
-class FilterSystem(BaseCog):
+class FilterSystem(BaseCog, AuditLogging):
     """
     Filter stuff here!
 
@@ -23,7 +24,6 @@ class FilterSystem(BaseCog):
         self.added_color = discord.Color.green()
         self.removed_color = discord.Color.dark_red()
         self.config = Config.get_conf(self, identifier=2398472689223426)
-
         def_guild = {
             "logs": None,
             "filtered": [],
@@ -35,6 +35,7 @@ class FilterSystem(BaseCog):
         def_channel = {"filtered": [], "whitelist": []}
         self.config.register_guild(**def_guild)
         self.config.register_channel(**def_channel)
+        # self.private_log = AuditLogging(self.config)
 
     async def yes_or_no(self, ctx, message) -> bool:
         msg = await ctx.send(message)
@@ -165,7 +166,7 @@ class FilterSystem(BaseCog):
                 whitelist_messages = FilterSystem.split_len(whitelist_list, 1800)
 
                 await target.send(
-                    f"Filtered in this server:\n{box(filter_messages.pop(0) if len(filter_list) > 0 else 'No filters added')}"
+                    f"Strict Filter in this server:\n{box(filter_messages.pop(0) if len(filter_list) > 0 else 'No filters added')}"
                 )
                 for filters in filter_messages:
                     await target.send(box(filters))
@@ -256,8 +257,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Added {word} to the filter")
         except discord.HTTPException:
             await ctx.send("Added that word to the filter")
-        v = 1
-        await self._private_log(ctx, author, v, word)
+        private_log_entry = PrivateLogEntry(ctx, word, "Global filter added")
+        await self.send_log(private_log_entry)
 
     @global_strict.command(name="remove", aliases=["delete", "del"])
     async def strict_remove(self, ctx, *, word: str):
@@ -276,8 +277,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Removed {word} from the filter")
         except discord.HTTPException:
             await ctx.send("Removed the word from the filter")
-        v = 2
-        await self._private_log(ctx, author, v, word)
+        log_entry = PrivateLogEntry(ctx, word, f"Global filter removed", is_removed=True)
+        await self.send_log(log_entry)
 
     @filter.group(name="exact")
     async def global_exact(self, ctx):
@@ -305,8 +306,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Removed {word} from the filter")
         except discord.HTTPException:
             await ctx.send("Removed that word from the filter")
-        v = 3
-        await self._private_log(ctx, author, v, word)
+        log_entry = PrivateLogEntry(ctx, word, f"Global strict removed", is_removed=True)
+        await self.send_log(log_entry)
 
     @global_exact.command(name="add")
     async def exact_add(self, ctx, *, word: str):
@@ -331,8 +332,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Added the {word} to the filter")
         except discord.HTTPException:
             await ctx.send("Added that word to the filter")
-        v = 4
-        await self._private_log(ctx, author, v, word)
+        log_entry = PrivateLogEntry(ctx, word, f"Global strict added")
+        await self.send_log(log_entry)
 
     @filter.group(name="whitelist")
     async def global_whitelist(self, ctx):
@@ -360,8 +361,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Removed {word} from the whitelist")
         except discord.HTTPException:
             await ctx.send("Removed that word from the whitelist")
-        v = 5
-        await self._private_log(ctx, author, v, word)
+        log_entry = PrivateLogEntry(ctx, word, f"Global whitelist removed", is_removed=True)
+        await self.send_log(log_entry)
 
     @global_whitelist.command(name="add")
     async def whitelist_add(self, ctx, *, word: str):
@@ -385,8 +386,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Added {word} to the whitelist")
         except discord.HTTPException:
             await ctx.send("Added that word to the whitelist")
-        v = 6
-        await self._private_log(ctx, author, v, word)
+        log_entry = PrivateLogEntry(ctx, word, f"Global whitelist added")
+        await self.send_log(log_entry)
 
     @filter.group()
     async def channel(self, ctx):
@@ -424,8 +425,10 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Removed {word} from the filter")
         except discord.HTTPException:
             await ctx.send("Removed that word from the filter")
-        v = 7
-        await self._private_log(ctx, ctx.author, v, word, channel)
+        log_entry = PrivateLogEntry(
+            ctx, word, f"{channel} filter removed.", is_removed=True, channel=channel
+        )
+        await self.send_log(log_entry)
 
     @channel_strict.command(name="add")
     async def channel_strict_add(self, ctx, channel: discord.TextChannel, *, word: str):
@@ -448,8 +451,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Added {word} to the filter")
         except discord.HTTPException:
             await ctx.send("Added that word to the filter")
-        v = 8
-        await self._private_log(ctx, ctx.author, v, word, channel)
+        log_entry = PrivateLogEntry(ctx, word, f"{channel} filter added.", channel=channel)
+        await self.send_log(log_entry)
 
     @channel.group(name="whitelist")
     async def channel_whitelist(self, ctx):
@@ -476,8 +479,10 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Removed {word} from the whitelist")
         except discord.HTTPException:
             await ctx.send("Removed that word from the whitelist")
-        v = 9
-        await self._private_log(ctx, ctx.author, v, word, channel)
+        log_entry = PrivateLogEntry(
+            ctx, word, f"{channel} whitelist removed.", is_removed=True, channel=channel
+        )
+        await self.send_log(log_entry)
 
     @channel_whitelist.command(name="add")
     async def channel_whitelist_add(self, ctx, channel: discord.TextChannel, *, word: str):
@@ -500,8 +505,8 @@ class FilterSystem(BaseCog):
             await ctx.send(f"Added {word} to the whitelist")
         except discord.HTTPException:
             await ctx.send("Added that word to the whitelist")
-        v = 10
-        await self._private_log(ctx, ctx.author, v, word, channel)
+        log_entry = PrivateLogEntry(ctx, word, f"{channel} whitelist added.", channel=channel)
+        await self.send_log(log_entry)
 
     @commands.command()
     @checks.admin_or_permissions(manage_guild=True)
@@ -551,14 +556,14 @@ class FilterSystem(BaseCog):
             strict_check = re.compile("|".join(rf"\b{re.escape(w)}\b" for w in strict))
             if strict_check is not None:
                 strict_hit = strict_check.findall(message.content.lower())
-                filter_list.append(strict_hit)
+                filter_list.extend(strict_hit)
             else:
                 strict_hit = False
         if filters:  # Non Exact setup
             check = re.compile("|".join(rf"{re.escape(w)}" for w in filters))
             if check is not None:
                 hit = check.findall(message.content.lower())
-                filter_list.append(hit)
+                filter_list.extend(hit)
             else:
                 hit = False
         #   Channel setups
@@ -566,7 +571,7 @@ class FilterSystem(BaseCog):
             chan_check = re.compile("|".join(rf"{re.escape(w)}" for w in chan_filter))
             if chan_check is not None:
                 channel_hit = chan_check.findall(message.content.lower())
-                filter_list.append(channel_hit)
+                filter_list.extend(channel_hit)
             else:
                 channel_hit = False
         if chan_whitelist:  # Channel Whitelist
@@ -576,106 +581,18 @@ class FilterSystem(BaseCog):
             else:
                 channel_white_hit = False
 
-        if channel_hit or hit or strict_hit:  # If exact hits or if non-exact hits continue process
-            if (
-                white_hit or channel_white_hit
-            ):  # If it hits a whitelisted word/sentence, nothing happens
+        if channel_hit or hit or strict_hit:
+            if white_hit or channel_white_hit and not channel_hit:
                 return False
-            hit_info = [h for h in filter_list[0] if h]  # Shows what the triggered word is
-            await self._log_sending(message, hit_info)
+
             try:
                 await message.delete()
             except (discord.errors.NotFound, discord.Forbidden, discord.HTTPException):
                 pass
 
+            log_entry = PublicLogEntry(message, filter_list)
+            await self.send_log(log_entry)
+
     @commands.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
         await self._listening_for_trouble(after)
-
-    async def _log_sending(self, message, hit_info):
-        author = message.author
-        filter_log_channel = await self.config.guild(message.guild).logs()
-        if filter_log_channel is not None:
-            embed = discord.Embed(
-                title=f"{author.name}#{author.discriminator} - Filtered Mesasge",
-                description=f"```{await self.truncate_message_content(message)}```",
-                color=discord.Colour.dark_red(),
-            )
-            embed.add_field(name="Filtered From:", value=message.channel.mention)
-            embed.set_footer(text=f"User ID: {author.id}")
-            embed.add_field(name="Filter Hit:", value=hit_info[0])
-            try:
-                await self.bot.get_channel(filter_log_channel).send(embed=embed)
-            except (discord.Forbidden, discord.HTTPException):
-                pass
-
-    async def _private_log(self, ctx, author, v, word, channel: discord.TextChannel = None):
-        """
-        v = 1, means global filter add
-        v = 2, means global filter remove
-        v = 3, means global exact remove
-        v = 4, means global exact add
-        v = 5, means global whitelist remove
-        v = 6, means global whitelist add
-        v = 7, means channel remove
-        v = 8, means channel add
-        v = 9, means channel whitelist remove
-        v = 10, means channel whitelist add
-        """
-        #   TODO Should improve this method entirely.
-        guild = ctx.guild
-        private_log_channel = await self.config.guild(guild).private_logs()
-        if private_log_channel:
-            embed = discord.Embed()
-            if v == 1:
-                embed.color = self.added_color
-                embed.title = f"{author} - Global Filter Added"
-                embed.description = f"Added: ```{word}```"
-            elif v == 2:
-                embed.color = self.removed_color
-                embed.title = f"{author} - Global Filter Removed"
-                embed.description = f"Removed: ```{word}```"
-            elif v == 3:
-                embed.color = self.removed_color
-                embed.title = f"{author} - Global Strict Removed"
-                embed.description = f"Removed: ```{word}```"
-            elif v == 4:
-                embed.color = self.added_color
-                embed.title = f"{author} - Global Strict Added"
-                embed.description = f"Added: ```{word}```"
-            elif v == 5:
-                embed.color = self.removed_color
-                embed.title = f"{author} - Global Whitelist Removed"
-                embed.description = f"Removed: ```{word}```"
-            elif v == 6:
-                embed.color = self.added_color
-                embed.title = f"{author} - Global Whitelist Added"
-                embed.description = f"Added: ```{word}```"
-            elif v == 7:
-                embed.color = self.removed_color
-                embed.title = f"{author} - {channel} Filter Removed"
-                embed.description = f"Removed: ```{word}```"
-            elif v == 8:
-                embed.color = self.added_color
-                embed.title = f"{author} - {channel} Filter Added"
-                embed.description = f"Added: ```{word}```"
-            elif v == 9:
-                embed.color = self.removed_color
-                embed.title = f"{author} - {channel} Whitelist Removed"
-                embed.description = f"Removed: ```{word}```"
-            elif v == 10:
-                embed.color = self.added_color
-                embed.title = f"{author} - {channel} Whitelist Added"
-                embed.description = f"Added: ```{word}```"
-            try:
-                await self.bot.get_channel(private_log_channel).send(embed=embed)
-            except discord.Forbidden:
-                pass
-            except discord.HTTPException:
-                embed = discord.Embed(color=discord.Color.gold())
-                embed.title = f"{author} - Filter Change"
-                embed.description = f"Too big of a message. [Click Here]({ctx.message.jump_url})"
-                try:
-                    await self.bot.get_channel(private_log_channel).send(embed=embed)
-                except discord.Forbidden:
-                    pass
