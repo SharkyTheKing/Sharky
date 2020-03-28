@@ -192,7 +192,8 @@ class ReportSystem(BaseCog):
                         if (
                             reaction.message.embeds
                             and "Moderator Claimed:" in str(reaction.message.embeds[0].fields)
-                            or "has claimed this." in reaction.message.content or not reaction.message.embeds
+                            or "has claimed this." in reaction.message.content
+                            or not reaction.message.embeds
                         ):
                             return False
                         else:
@@ -201,7 +202,9 @@ class ReportSystem(BaseCog):
                                 em = react.embeds[0]
                                 em.add_field(
                                     name="Moderator Claimed:",
-                                    value="{} ({}) has claimed this.".format(user.display_name, user.id),
+                                    value="{} ({}) has claimed this.".format(
+                                        user.display_name, user.id
+                                    ),
                                 )
                                 await react.edit(embed=em)
                                 if await emote is True:
@@ -231,28 +234,29 @@ class ReportSystem(BaseCog):
         On Message system
         """
         await self._build_reactions(message)
-#        await self._build_report_explination(message)
 
-#    async def _build_report_explination(self, message):
-#        author = message.author
-#        regex = re.compile(r"(?i)(how (do i|to|do you) report)").search(message.content)
-#        if regex is not None:
-#            if (
-#                author == self.bot.user
-#                or message.channel.permissions_for(message.author).manage_messages is True
-#            ):
-#                pass
-#            else:
-#                try:
-#                    await author.send(
-#                        'Hello {},\nNoticed you were asking how to report people. To report someone **in Discord** Please read the following examples:\n`{}report @Sharky The King#0001 For being a shark`\n`{}report 223391425302102016 for being a shark`\n`{}report "Sharky The King" for being a shark`\n\nTo report someone in-game: Please do not report players here. Abusive players should be reported in-game (Esc -> Report Player) or using the instructions on this page <https://epicgames.helpshift.com/a/fortnite/?b_id=9729&p=all&s=battle-royale&f=how-do-i-report-bad-player-behavior-in-fortnite&l=en>'.format(
-#                            author.mention
-#                        )
-#                    )
-#                except:
-#                    pass
-#        else:
-#            pass
+    #        await self._build_report_explination(message)
+
+    #    async def _build_report_explination(self, message):
+    #        author = message.author
+    #        regex = re.compile(r"(?i)(how (do i|to|do you) report)").search(message.content)
+    #        if regex is not None:
+    #            if (
+    #                author == self.bot.user
+    #                or message.channel.permissions_for(message.author).manage_messages is True
+    #            ):
+    #                pass
+    #            else:
+    #                try:
+    #                    await author.send(
+    #                        'Hello {},\nNoticed you were asking how to report people. To report someone **in Discord** Please read the following examples:\n`{}report @Sharky The King#0001 For being a shark`\n`{}report 223391425302102016 for being a shark`\n`{}report "Sharky The King" for being a shark`\n\nTo report someone in-game: Please do not report players here. Abusive players should be reported in-game (Esc -> Report Player) or using the instructions on this page <https://epicgames.helpshift.com/a/fortnite/?b_id=9729&p=all&s=battle-royale&f=how-do-i-report-bad-player-behavior-in-fortnite&l=en>'.format(
+    #                            author.mention
+    #                        )
+    #                    )
+    #                except:
+    #                    pass
+    #        else:
+    #            pass
 
     async def _build_reactions(self, message):
         author = message.author

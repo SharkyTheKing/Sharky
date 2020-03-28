@@ -338,4 +338,3 @@ class Silence(commands.Cog):
             )
         except discord.Forbidden:
             await ctx.send("wot")
-

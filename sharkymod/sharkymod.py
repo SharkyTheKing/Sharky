@@ -91,7 +91,9 @@ class SharkyMod(commands.Cog):
             embed.title = "Unknown User"
             embed.description = f"{banneduser} is not a valid user.\n\nPlease make sure you're using a correct [UserID.](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)"
             return await ctx.send(embed=embed)
-        case_amount = await modlog.get_cases_for_member(bot=ctx.bot, guild=ctx.guild, member=member)
+        case_amount = await modlog.get_cases_for_member(
+            bot=ctx.bot, guild=ctx.guild, member=member
+        )
         try:
             ban_info = await guild.fetch_ban(member)
             embed.set_thumbnail(url=ban_hammer)
@@ -101,7 +103,9 @@ class SharkyMod(commands.Cog):
         except discord.NotFound:  # Not Banned
             embed.set_thumbnail(url=x_emote)
             embed.title = "Ban **NOT** Found"
-            embed.add_field(name=f"{member} - ({member.id})", value="They are **NOT** banned from the server.")
+            embed.add_field(
+                name=f"{member} - ({member.id})", value="They are **NOT** banned from the server."
+            )
         await ctx.send(embed=embed)
 
     #   User Avatar
