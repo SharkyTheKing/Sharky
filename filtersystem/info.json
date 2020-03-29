@@ -3,7 +3,7 @@
         "Sharky The King",
         "Bread"
     ],
-    "description": "Revamped version of core filter to include word bounded filter and non-word bounded filter",
+    "description": "Revamped version of core filter to extend functions",
     "short": "Revamped filter",
     "tags": [],
     "type": "COG"
