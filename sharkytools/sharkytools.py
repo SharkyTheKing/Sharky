@@ -117,7 +117,6 @@ class SharkyTools(commands.Cog):
     #   User Avatar
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     async def av(self, ctx, *, user: discord.Member = None):
         """A user's avatar"""
