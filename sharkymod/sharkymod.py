@@ -111,7 +111,6 @@ class SharkyMod(commands.Cog):
     #   User Avatar
     @commands.command(name="avatar", aliases=["av", "picture"])
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
-    @checks.mod_or_permissions(manage_messages=True)
     @commands.guild_only()
     async def _avatar(self, ctx, *, user: discord.Member = None):
         """A user's avatar"""
