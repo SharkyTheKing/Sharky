@@ -3,6 +3,8 @@ from redbot.core import commands, checks, modlog
 from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from redbot.core.utils.mod import get_audit_reason
+from datetime import datetime, date
+from typing import Optional, Union
 
 
 class SharkyMod(commands.Cog):
