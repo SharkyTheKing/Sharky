@@ -7,7 +7,7 @@ BaseCog = getattr(commands, "Cog", object)
 
 
 class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you know about humor.
-    """Limit the amount of characters per channel"""
+    """Limit the amount of characters / lines per channel"""
 
     def __init__(self, bot: Red):
         self.bot = bot
