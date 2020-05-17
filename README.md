@@ -14,9 +14,6 @@ This cog was made to limit the amount of characters people send in a channel. Yo
 
 You also have the option to make the bot send a message to notify the user that their mesasge in X channel has exceed X character limit, this is useful for people who are curious to know what the limit is and are wondering why their message was removed.
 
-## Lockdown
-This cog is for locking down Text Channels and Voice Channels. It will make it so people can't send a message in that channel, if you setup the proper permissions of course. You will have to add in the config each channel manually, you also have the options to make a Lockdown message and an Unlockdown message that'll be sent whenever the command is issued.
-
 There are a few commands in to lock a channel by itself, still working on this overall to make it better.
 
 ## Verify
