@@ -115,9 +115,8 @@ class NewsPublish(BASECOG):
         #   Variables
         channel, guild = message.channel, message.guild
 
-        if isinstance(message.guild, discord.Guild):
-            if guild is None:
-                return
+        if not isinstance(message.guild, discord.Guild):
+            return
 
         if not await self.is_in_list(guild=guild, channel=channel):
             return
