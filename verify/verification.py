@@ -127,9 +127,7 @@ class Verify(BaseCog):
         Accepting this means you understand the rules of the server
         """
         color = await ctx.embed_color()
-        bot = ctx.bot
-        guild = ctx.guild
-        author = ctx.author
+        bot, guild, author = ctx.bot, ctx.guild, ctx.author
         joined_at = author.joined_at
         member_joined = author.joined_at.strftime("%d %b %Y %H:%M")
         since_joined = (ctx.message.created_at - joined_at).days
