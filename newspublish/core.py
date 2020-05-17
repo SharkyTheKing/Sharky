@@ -6,10 +6,10 @@ import logging
 
 DEF_GUILD = {"news_channels": [], "alert_channel": None}
 
-BaseCog = getattr(commands, "Cog", object)
+BASECOG = getattr(commands, "Cog", object)
 
 
-class NewsPublish(BaseCog):
+class NewsPublish(BASECOG):
     """
     For Guilds that have News Channels
     """
@@ -20,14 +20,23 @@ class NewsPublish(BaseCog):
         self.config = Config.get_conf(self, identifier=23462345, force_registration=True)
         self.config.register_guild(**DEF_GUILD)
 
+    async def is_in_list(self, guild: discord.Guild, channel: discord.TextChannel):
+        """
+        Checks config for channel.
+
+        Returns True if in config, returns False if not.
+        """
+        config_list = await self.config.guild(guild).news_channels()
+        return True if channel.id in config_list else False
+
     @commands.group(name="publishset")
     @commands.guild_only()
     @checks.mod_or_permissions(manage_channels=True)
     async def publish_settings(self, ctx):
         if ctx.invoked_subcommand is None:
-            channels = ""
             alert_channel = await self.config.guild(ctx.guild).alert_channel()
             news_channels = await self.config.guild(ctx.guild).news_channels()
+            channels = ""
             if news_channels:
                 for channel in news_channels:
                     channels += "<#{}> - {}\n".format(channel, channel)
@@ -36,7 +45,8 @@ class NewsPublish(BaseCog):
             embed = discord.Embed()
             embed.title = "{}'s Settings".format(ctx.guild.name)
             embed.add_field(
-                name="Alert Channel", value=f"<#{alert_channel}>" if alert_channel else "None"
+                name="Alert Channel",
+                value="<#{}>".format(alert_channel) if alert_channel else "None",
             )
             embed.add_field(name="News Channel", value=channels)
             await ctx.send(embed=embed)
@@ -58,7 +68,7 @@ class NewsPublish(BaseCog):
                 )
             )
 
-        if channel.id in await self.config.guild(ctx.guild).news_channels():
+        if await self.is_in_list(guild=ctx.guild, channel=channel):
             return await ctx.send(
                 "{} is already in the publish list. Nothing for me to add.".format(channel.mention)
             )
@@ -75,7 +85,7 @@ class NewsPublish(BaseCog):
 
         To add, please use `[p]publishset addnews channel-name`
         """
-        if channel.id not in await self.config.guild(ctx.guild).news_channels():
+        if not await self.is_in_list(guild=ctx.guild, channel=channel):
             return await ctx.send(
                 "{} is not in the publish list. Nothing for me to remove.".format(channel.mention)
             )
@@ -103,15 +113,14 @@ class NewsPublish(BaseCog):
         Listens for news
         """
         #   Variables
-        guild = message.guild
-        channel = message.channel
+        channel, guild = message.channel, message.guild
 
         if isinstance(message.guild, discord.Guild):
             if guild is None:
-                return False
+                return
 
-        if message.channel.id not in await self.config.guild(guild).news_channels():
-            return False
+        if not await self.is_in_list(guild=guild, channel=channel):
+            return
 
         try:
             await asyncio.wait_for(message.publish(), timeout=60)
@@ -125,11 +134,10 @@ class NewsPublish(BaseCog):
         Sends alert if it exists.
         Guild = message.guild
         """
-        channel = message.channel
-        guild = message.guild
+        channel, guild = message.channel, message.guild
         alert_channel = await self.config.guild(guild).alert_channel()
         if alert_channel is None:
-            return False  # Don't alert
+            return  # Don't alert
         if error_type == "HTTPException":
             try:
                 return await self.bot.get_channel(alert_channel).send(
