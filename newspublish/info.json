@@ -1,9 +1,9 @@
 {
-    "author": [
-      "Sharky The King"
-    ],
-    "description": "Automatic publishing in Discord's news channels",
-    "short": "publish",
-    "tags": [],
-    "type": "COG"
-  }
+  "author": [
+    "Sharky The King"
+  ],
+  "description": "Automatic publishing in Discord's news channels",
+  "short": "publish",
+  "tags": [],
+  "type": "COG"
+}
