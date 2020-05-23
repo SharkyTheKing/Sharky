@@ -68,7 +68,7 @@ class StrawPoll(BaseCog):
             return False
 
     async def get_multiple_choices(self, ctx, message, json_info) -> bool:
-        msg = await ctx.send(message)
+        await ctx.send(message)
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
