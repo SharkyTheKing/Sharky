@@ -40,7 +40,7 @@ class StrawPoll(BaseCog):
         return pred.result
 
     async def get_title_info(self, ctx, message, json_info) -> bool:
-        msg = await ctx.send(message)
+        await ctx.send(message)
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
@@ -55,7 +55,7 @@ class StrawPoll(BaseCog):
         return True
 
     async def get_description_info(self, ctx, message, json_info) -> bool:
-        msg = await ctx.send(message)
+        await ctx.send(message)
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
