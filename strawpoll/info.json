@@ -1,0 +1,9 @@
+{
+    "author": [
+        "Sharky The King"
+    ],
+    "description": "Polling system through Strawpoll's API",
+    "short": "Poll System",
+    "tags": [],
+    "type": "COG"
+}
