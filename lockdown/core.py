@@ -198,9 +198,7 @@ class Lockdown(BaseCog):
             await channel.set_permissions(
                 role,
                 overwrite=overwrite,
-                reason="Lockdown in effect. Requested by {} ({})".format(
-                    author.name, author.id
-                ),
+                reason="Lockdown in effect. Requested by {} ({})".format(author.name, author.id),
             )
         except discord.Forbidden:
             return await ctx.send("Error: Bot doesn't have perms to adjust that channel.")
@@ -210,6 +208,7 @@ class Lockdown(BaseCog):
     @checks.mod_or_permissions(manage_messages=True)
     async def channelunlock(self, ctx, channel: Union[discord.TextChannel, discord.VoiceChannel]):
         """Unlocking down selected text/voice channel"""
+
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
