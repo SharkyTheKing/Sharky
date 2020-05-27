@@ -1,11 +1,13 @@
 import discord
-from redbot.core import commands, checks, Config
+import logging
 from typing import Optional
+from redbot.core import commands, checks, Config
 
-BaseCog = getattr(commands, "Cog", object)
+
+BASECOG = getattr(commands, "Cog", object)
 
 
-class Verify(BaseCog):
+class Verify(BASECOG):
     """
     Verification process for members
 
@@ -13,14 +15,13 @@ class Verify(BaseCog):
     """
 
     def __init__(self, bot):
+        self.bot = bot
+        self.log = logging.getLogger("red.cogs.verify")
         self.config = Config.get_conf(self, identifier=123532432623423)
 
         def_guild = {"toggle": False, "role": None, "logs": None}
         self.config.register_guild(**def_guild)
 
-    # TODO Secondly, setup list command to show what role, what channel is active, if the server is set to active
-
-    #   Set group
     @commands.bot_has_permissions(
         manage_messages=True, send_messages=True, manage_roles=True, embed_links=True
     )
@@ -30,10 +31,30 @@ class Verify(BaseCog):
     async def verifyset(self, ctx):
         """
         Manages the settings for the guild
-
-        Please use `[p]verifyset list` to see the current settings
         """
-        pass
+        if ctx.invoked_subcommand is None:
+            guild = ctx.guild
+            color = await ctx.embed_color()
+            role_config = await self.config.guild(guild).role()
+            logs = await self.config.guild(guild).logs()
+            toggle = await self.config.guild(guild).toggle()
+            if role_config is None:
+                role_info = "There is no role set yet"
+            else:
+                role_info = discord.utils.get(ctx.guild.roles, id=int(role_config))
+
+            if logs is None:
+                log_info = "No channel has been set yet"
+            else:
+                log_info = discord.utils.get(ctx.guild.text_channels, id=int(logs))
+
+            embed = discord.Embed(color=color)
+            embed.title = f"{guild.name}'s Settings"
+            embed.description = "Please make sure you setup the Verification Channel and Selected Role.\nOnce that's done, make sure to set the Active to True or else this won't work"
+            embed.add_field(name="Active:", value=toggle, inline=False)
+            embed.add_field(name="Selected Role:", value=role_info, inline=True)
+            embed.add_field(name="Logging Channel:", value=log_info, inline=True)
+            await ctx.send(embed=embed)
 
     @verifyset.command()
     async def active(self, ctx, toggle: Optional[bool]):
@@ -45,16 +66,14 @@ class Verify(BaseCog):
         guild = ctx.guild
         tog = self.config.guild(guild)
         if toggle is None:
-            if await tog.toggle() is False:
-                await ctx.send("The Verification settings is set to False")
-            elif await tog.toggle() is True:
-                await ctx.send("The Verification settings is set to True")
-        elif toggle is True:
+            return await ctx.send(f"The Verification settings is set to {await tog.toggle()}")
+
+        if toggle is True:
             await tog.toggle.set(True)
-            await ctx.send("Verification settings is now set to True")
+            return await ctx.send("Verification settings is now set to True")
         elif toggle is False:
             await tog.toggle.set(False)
-            await ctx.send("Verification settings is now set to False")
+            return await ctx.send("Verification settings is now set to False")
 
     @verifyset.command()
     async def log(self, ctx, *, channel: Optional[discord.TextChannel]):
@@ -64,13 +83,13 @@ class Verify(BaseCog):
         This will log whenever someone accepts the verification
         """
         guild = ctx.guild
-        log = self.config.guild(guild)
+        log_config = self.config.guild(guild)
         if channel is None:
-            await log.logs.clear()
-            await ctx.send("The bot will no longer log actions done.")
-        else:
-            await log.logs.set(channel.id)
-            await ctx.send(f"Logging channel is now set to {channel.mention}")
+            await log_config.logs.clear()
+            return await ctx.send("The bot will no longer log actions done.")
+
+        await log_config.logs.set(channel.id)
+        await ctx.send(f"Logging channel is now set to {channel.mention}")
 
     @verifyset.command()
     async def role(self, ctx, *, role: Optional[discord.Role]):
@@ -80,94 +99,86 @@ class Verify(BaseCog):
         Please make sure you setup the role correctly in so they can only access your rules and/or verification channel
         """
         guild = ctx.guild
-        ro = self.config.guild(guild)
+        role_config = self.config.guild(guild)
         if role is None:
-            await ro.role.set(None)
-            await ctx.send("Cleared the role being used")
-        else:
-            await ro.role.set(role.id)
-            await ctx.send(f"Set the role to {role.mention}")
+            await role_config.role.set(None)
+            return await ctx.send("Cleared the role being used")
 
-    @verifyset.command()
-    async def list(self, ctx):
-        """
-        Shows the entire settings
-        """
-        guild = ctx.guild
-        color = await ctx.embed_color()
-        ro = await self.config.guild(guild).role()
-        logs = await self.config.guild(guild).logs()
-        toggle = await self.config.guild(guild).toggle()
-        ro_info = ""
-        log_info = ""
-        if ro is None:
-            ro_info = "There is no role set yet"
-        else:
-            ro_info = discord.utils.get(ctx.guild.roles, id=int(ro))
-        if logs is None:
-            log_info = "No channel has been set yet"
-        else:
-            log_info = discord.utils.get(ctx.guild.text_channels, id=int(logs))
-        embed = discord.Embed(color=color)
-        embed.title = f"{guild.name}'s Settings"
-        embed.description = "Please make sure you setup the Verification Channel and Selected Role.\nOnce that's done, make sure to set the Active to True or else this won't work"
-        embed.add_field(name="Active:", value=toggle, inline=False)
-        embed.add_field(name="Selected Role:", value=ro_info, inline=True)
-        embed.add_field(name="Logging Channel:", value=log_info, inline=True)
-        await ctx.send(embed=embed)
+        await role_config.role.set(role.id)
+        await ctx.send(f"Set the role to {role.mention}")
 
-    #   Accept command
-    @commands.command()
-    @commands.bot_has_permissions(
-        manage_messages=True, send_messages=True, manage_roles=True, embed_links=True
-    )
-    @commands.guild_only()
-    async def accept(self, ctx):
+    @commands.command(name="accept")
+    @commands.bot_has_permissions(manage_roles=True)
+    async def accept_member(self, ctx):
         """
         Accepting this means you understand the rules of the server
         """
-        color = await ctx.embed_color()
-        bot, guild, author = ctx.bot, ctx.guild, ctx.author
+        author = ctx.author
         joined_at = author.joined_at
-        member_joined = author.joined_at.strftime("%d %b %Y %H:%M")
-        since_joined = (ctx.message.created_at - joined_at).days
-        member_created = author.created_at.strftime("%d %b %Y %H:%M")
-        since_created = (ctx.message.created_at - author.created_at).days
+        member_joined, since_joined = (
+            author.joined_at.strftime("%d %b %Y %H:%M"),
+            (ctx.message.created_at - joined_at).days,
+        )
+        member_created, since_created = (
+            author.created_at.strftime("%d %b %Y %H:%M"),
+            (ctx.message.created_at - author.created_at).days,
+        )
         created_on = ("{}\n({} days ago)").format(member_created, since_created)
         joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)
         author_avatar = author.avatar_url_as(static_format="png")
-        log = await self.config.guild(guild).logs()
-        ro = await self.config.guild(ctx.guild).role()
-        role = guild.get_role(ro)
-        if role is None:
-            pass
-        else:
-            if author not in role.members:
-                pass
-            else:
-                await author.remove_roles(role, reason="Member has verified themselves")
-                await ctx.message.delete()
-                if log is not None:
-                    embed = discord.Embed(color=color)
-                    embed.title = f"{author.name}#{author.discriminator} - Verified"
-                    embed.set_thumbnail(url=author_avatar)
-                    embed.set_footer(text=f"User ID: {author.id}")
-                    embed.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
-                    embed.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
-                    await bot.get_channel(log).send(embed=embed)
-                else:
-                    pass
 
-    #   On Join
+        log_config = await self.config.guild(ctx.guild).logs()
+        role_config = await self.config.guild(ctx.guild).role()
+        if role_config is None:
+            return await ctx.send(
+                "Sorry, there is no role set. Please contact the moderation team of this server."
+            )
+            self.log.warning("No role set. Unable to process verification.")
+
+        role = ctx.guild.get_role(role_config)
+        if author not in role.members:
+            return
+
+        try:
+            await author.remove_roles(role, reason="Member has verified themselves")
+            await ctx.message.delete()
+        except discord.Forbidden:
+            await ctx.send(
+                "Error: I am unable to remove your role, please contact the moderation team."
+            )
+            return self.log.warning("Error: No permissions to remove roles.")
+        except discord.HTTPException as e:
+            return self.log.warning("HTTPException: {} - {}".format(e.status, e.code))
+        if log_config is None:
+            return
+
+        embed = discord.Embed(color=discord.Color.green())
+        embed.title = f"{author.name}#{author.discriminator} - Verified"
+        embed.set_thumbnail(url=author_avatar)
+        embed.set_footer(text=f"User ID: {author.id}")
+        embed.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
+        embed.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
+        try:
+            await ctx.bot.get_channel(log_config).send(embed=embed)
+        except discord.Forbidden:
+            return self.log.warning(
+                "Error: Unable to send log message to {}".format(ctx.bot.get_channel(log_config))
+            )
+        except discord.HTTPException as e:
+            return self.log.warning("HTTPException: {} - {}".format(e.status, e.code))
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         toggle = await self.config.guild(member.guild).toggle()
-        ro = await self.config.guild(member.guild).role()
-        if toggle is True:
-            if ro is not None:
-                role = discord.utils.get(member.guild.roles, id=int(ro))
+        role_config = await self.config.guild(member.guild).role()
+        if toggle is False:
+            return False
+
+        if role_config is not None:
+            role = discord.utils.get(member.guild.roles, id=int(role_config))
+            try:
                 await member.add_roles(role, reason="New Member, Needs to Verify")
-            else:
-                pass
-        elif toggle is False:
-            pass
+            except discord.Forbidden:
+                return self.log.warning("Unable to grant roles to new joiner.")
+            except discord.HTTPException as e:
+                return self.log.warning("HTTPException: {} - {}".format(e.status, e.code))
