@@ -49,7 +49,7 @@ class Verify(BASECOG):
                 log_info = discord.utils.get(ctx.guild.text_channels, id=int(logs))
 
             embed = discord.Embed(color=color)
-            embed.title = f"{guild.name}'s Settings"
+            embed.title = "{}'s Settings".format(guild.name)
             embed.description = "Please make sure you setup the Verification Channel and Selected Role.\nOnce that's done, make sure to set the Active to True or else this won't work"
             embed.add_field(name="Active:", value=toggle, inline=False)
             embed.add_field(name="Selected Role:", value=role_info, inline=True)
@@ -66,7 +66,9 @@ class Verify(BASECOG):
         guild = ctx.guild
         tog = self.config.guild(guild)
         if toggle is None:
-            return await ctx.send(f"The Verification settings is set to {await tog.toggle()}")
+            return await ctx.send(
+                "The Verification settings is set to {}".format(await tog.toggle())
+            )
 
         if toggle is True:
             await tog.toggle.set(True)
@@ -89,7 +91,7 @@ class Verify(BASECOG):
             return await ctx.send("The bot will no longer log actions done.")
 
         await log_config.logs.set(channel.id)
-        await ctx.send(f"Logging channel is now set to {channel.mention}")
+        await ctx.send("Logging channel is now set to {}".format(channel.mention))
 
     @verifyset.command()
     async def role(self, ctx, *, role: Optional[discord.Role]):
@@ -105,7 +107,7 @@ class Verify(BASECOG):
             return await ctx.send("Cleared the role being used")
 
         await role_config.role.set(role.id)
-        await ctx.send(f"Set the role to {role.mention}")
+        await ctx.send("Set the role to {}".format(role.mention))
 
     @commands.command(name="accept")
     @commands.bot_has_permissions(manage_roles=True)
@@ -153,11 +155,11 @@ class Verify(BASECOG):
             return
 
         embed = discord.Embed(color=discord.Color.green())
-        embed.title = f"{author.name}#{author.discriminator} - Verified"
+        embed.title = "{}#{} - Verified".format(author.name, author.discriminator)
         embed.set_thumbnail(url=author_avatar)
-        embed.set_footer(text=f"User ID: {author.id}")
-        embed.add_field(name="Account Creation:", value=f"{created_on}", inline=True)
-        embed.add_field(name="Joined Date:", value=f"{joined_on}", inline=True)
+        embed.set_footer(text="User ID: {}".format(author.id))
+        embed.add_field(name="Account Creation:", value=created_on, inline=True)
+        embed.add_field(name="Joined Date:", value=joined_on, inline=True)
         try:
             await ctx.bot.get_channel(log_config).send(embed=embed)
         except discord.Forbidden:
