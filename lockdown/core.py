@@ -4,7 +4,12 @@ import logging
 import discord
 import asyncio
 
-DEF_GUILD = {"channels": [], "lockdown_message": None, "unlockdown_message": None, "confirmation_message": False}
+DEF_GUILD = {
+    "channels": [],
+    "lockdown_message": None,
+    "unlockdown_message": None,
+    "confirmation_message": False,
+}
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -159,7 +164,9 @@ class Lockdown(BASECOG):
 
             embed.add_field(name="Unlock Message:", value=get_unlock, inline=False)
 
-            embed.add_field(name="Confirmation:", value="enabled" if get_confirmation else "disabled")
+            embed.add_field(
+                name="Confirmation:", value="enabled" if get_confirmation else "disabled"
+            )
 
             await ctx.send(embed=embed)
 
