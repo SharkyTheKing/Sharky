@@ -246,7 +246,6 @@ class Lockdown(BASECOG):
 
         if await self.config.guild(ctx.guild).confirmation_message() is True:
             await ctx.send("Do you want to lockdown {}\n**Yes or No?**".format(channel.mention))
-            should_lock = await ctx.bot.wait_for("message", check=check, timeout=30)
             try:
                 should_lock = await ctx.bot.wait_for("message", check=check, timeout=30)
                 if should_lock.content.lower() != "yes":
@@ -294,7 +293,6 @@ class Lockdown(BASECOG):
 
         if await self.config.guild(ctx.guild).confirmation_message() is True:
             await ctx.send("Do you want to unlock {}\n**Yes or No?**".format(channel.mention))
-            should_unlock = await ctx.bot.wait_for("message", check=check, timeout=30)
             try:
                 should_unlock = await ctx.bot.wait_for("message", check=check, timeout=30)
                 if should_unlock.content.lower() != "yes":
