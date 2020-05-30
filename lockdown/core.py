@@ -32,7 +32,7 @@ class Lockdown(BASECOG):
         """
         Lockdown a server
 
-        Guild is optional, if none is given it'll default to current.
+        Currently only able to do current guilds. Working on improving this.
         """
 
         def check(m):
