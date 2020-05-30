@@ -37,11 +37,12 @@ class Lockdown(BASECOG):
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
+
         guild = ctx.guild
-#        guild = guild if guild else ctx.guild
-#        author_targeted_guild = guild.get_member(ctx.author.id)
-#        if author_targeted_guild.guild_permissions.manage_channels is False:
-#            return await ctx.send("You don't have `manage_channels` permissions in this guild.")
+        #        guild = guild if guild else ctx.guild
+        #        author_targeted_guild = guild.get_member(ctx.author.id)
+        #        if author_targeted_guild.guild_permissions.manage_channels is False:
+        #            return await ctx.send("You don't have `manage_channels` permissions in this guild.")
 
         if await self.config.guild(guild).confirmation_message() is True:
             await ctx.send(
@@ -95,12 +96,13 @@ class Lockdown(BASECOG):
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
-        guild = ctx.guild
-#        guild = guild if guild else ctx.guild
 
-#        author_targeted_guild = guild.get_member(ctx.author.id)
-#        if author_targeted_guild.guild_permissions.manage_channels is False:
-#            return await ctx.send("You don't have manage_channels in this server.")
+        guild = ctx.guild
+        #        guild = guild if guild else ctx.guild
+
+        #        author_targeted_guild = guild.get_member(ctx.author.id)
+        #        if author_targeted_guild.guild_permissions.manage_channels is False:
+        #            return await ctx.send("You don't have manage_channels in this server.")
 
         if await self.config.guild(guild).confirmation_message() is True:
             await ctx.send(
