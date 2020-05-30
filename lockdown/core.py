@@ -4,12 +4,17 @@ import logging
 import discord
 import asyncio
 
-DEF_GUILD = {"channels": [], "lockdown_message": None, "unlockdown_message": None}
+DEF_GUILD = {
+    "channels": [],
+    "lockdown_message": None,
+    "unlockdown_message": None,
+    "confirmation_message": False,
+}
 
-BaseCog = getattr(commands, "Cog", object)
+BASECOG = getattr(commands, "Cog", object)
 
 
-class Lockdown(BaseCog):
+class Lockdown(BASECOG):
     """
     Lockdown the entire server / other servers you're mod of
     """
@@ -23,35 +28,38 @@ class Lockdown(BaseCog):
 
     @commands.command()
     @checks.mod_or_permissions(manage_channels=True)
-    async def lockdown(self, ctx, guild: Optional[discord.Guild]):
+    async def lockdown(self, ctx):
         """
         Lockdown a server
 
-        Guild is optional, if none is given it'll default to current.
+        Currently only able to do current guilds. Working on improving this.
         """
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
-        guild = guild if guild else ctx.guild
-        author_targeted_guild = guild.get_member(ctx.author.id)
-        if author_targeted_guild.guild_permissions.manage_channels is False:
-            return await ctx.send("You don't have `manage_channels` permissions in this guild.")
+        guild = ctx.guild
+        #        guild = guild if guild else ctx.guild
+        #        author_targeted_guild = guild.get_member(ctx.author.id)
+        #        if author_targeted_guild.guild_permissions.manage_channels is False:
+        #            return await ctx.send("You don't have `manage_channels` permissions in this guild.")
 
-        await ctx.send(
-            "Are you sure you want to lockdown the guild? If so, please type `yes`, otherwise type `no`."
-        )
-        try:
-            confirm_lockdown = await ctx.bot.wait_for("message", check=check, timeout=30)
-            if confirm_lockdown.content.lower() != "yes":
-                return await ctx.send("Okay. Won't lockdown the guild.")
-        except asyncio.TimeoutError:
-            return await ctx.send("You took too long to reply!")
+        if await self.config.guild(guild).confirmation_message() is True:
+            await ctx.send(
+                "Are you sure you want to lockdown the guild? If so, please type `yes`, otherwise type `no`."
+            )
+            try:
+                confirm_lockdown = await ctx.bot.wait_for("message", check=check, timeout=30)
+                if confirm_lockdown.content.lower() != "yes":
+                    return await ctx.send("Okay. Won't lockdown the guild.")
+            except asyncio.TimeoutError:
+                return await ctx.send("You took too long to reply!")
 
         author = ctx.author
         role = guild.default_role
         message = await self.config.guild(guild).lockdown_message()
         channel_ids = await self.config.guild(guild).channels()
+        # TODO add check if channel_ids is none, return "there is nothing"
 
         for guild_channel in guild.channels:
             if guild_channel.id in channel_ids:
@@ -81,7 +89,7 @@ class Lockdown(BaseCog):
 
     @commands.command()
     @checks.mod_or_permissions(manage_messages=True)
-    async def unlockdown(self, ctx, guild: Optional[discord.Guild]):
+    async def unlockdown(self, ctx):
         """
         Ends the lockdown for the guild
         """
@@ -89,21 +97,23 @@ class Lockdown(BaseCog):
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
-        guild = guild if guild else ctx.guild
+        guild = ctx.guild
+        #        guild = guild if guild else ctx.guild
 
-        author_targeted_guild = guild.get_member(ctx.author.id)
-        if author_targeted_guild.guild_permissions.manage_channels is False:
-            return await ctx.send("You don't have manage_channels in this server.")
+        #        author_targeted_guild = guild.get_member(ctx.author.id)
+        #        if author_targeted_guild.guild_permissions.manage_channels is False:
+        #            return await ctx.send("You don't have manage_channels in this server.")
 
-        await ctx.send(
-            "Are you sure you want to unlock the guild? If so, please type `yes`, otherwise type `no`."
-        )
-        try:
-            confirm_unlockdown = await ctx.bot.wait_for("message", check=check, timeout=30)
-            if confirm_unlockdown.content.lower() != "yes":
-                return await ctx.send("Okay. Won't unlock the guild.")
-        except asyncio.TimeoutError:
-            return await ctx.send("You took too long to reply!")
+        if await self.config.guild(guild).confirmation_message() is True:
+            await ctx.send(
+                "Are you sure you want to unlock the guild? If so, please type `yes`, otherwise type `no`."
+            )
+            try:
+                confirm_unlockdown = await ctx.bot.wait_for("message", check=check, timeout=30)
+                if confirm_unlockdown.content.lower() != "yes":
+                    return await ctx.send("Okay. Won't unlock the guild.")
+            except asyncio.TimeoutError:
+                return await ctx.send("You took too long to reply!")
 
         author = ctx.author
         role = guild.default_role
@@ -111,7 +121,7 @@ class Lockdown(BaseCog):
         channel_ids = await self.config.guild(guild).channels()
         for guild_channel in guild.channels:
             if guild_channel.id in channel_ids:
-                overwrite = guild_channel.overwrite_for(role)
+                overwrite = guild_channel.overwrites_for(role)
                 overwrite.update(send_messages=None)
                 try:
                     await guild_channel.set_permissions(
@@ -143,6 +153,7 @@ class Lockdown(BaseCog):
             get_channel = await self.config.guild(guild).channels()
             get_lock = await self.config.guild(guild).lockmsg()
             get_unlock = await self.config.guild(guild).unlockmsg()
+            get_confirmation = await self.config.guild(guild).confirmation_message()
             chan = ""
             for channel in get_channel:
                 chan += "<#{}> - {}\n".format(channel, channel)
@@ -155,7 +166,77 @@ class Lockdown(BaseCog):
 
             embed.add_field(name="Unlock Message:", value=get_unlock, inline=False)
 
+            embed.add_field(
+                name="Confirmation:", value="enabled" if get_confirmation else "disabled"
+            )
+
             await ctx.send(embed=embed)
+
+    @lockdownset.command()
+    async def channel(self, ctx, channel: discord.TextChannel):
+        """
+        Toggles lockdown status for a particular channel
+        """
+        status = "Error"
+        if channel.id not in await self.config.guild(ctx.guild).channels():
+            async with self.config.guild(ctx.guild).channels() as chan:
+                chan.append(channel.id)
+                status = "Added"
+        else:
+            async with self.config.guild(ctx.guild).channels() as chan:
+                chan.remove(channel.id)
+                status = "Removed"
+
+        await ctx.send("New status for {} set! - {}".format(channel.mention, status))
+
+    @lockdownset.command(name="lockmessage")
+    async def lock_message(self, ctx, *, message: Optional[str]):
+        """
+        What the bot sends when you trigger [p]lockdown
+        """
+        if message is None:
+            await self.config.guild(ctx.guild).lockdown_message.set(None)
+            return await ctx.send("Done. Cleared lockdown message.")
+
+        if len(message) > 1500:
+            return await ctx.send(
+                "Please limit the amount of characters. Don't go above 1,500 characters."
+            )
+
+        await self.config.guild(ctx.guild).lockdown_message.set(message)
+        await ctx.send("Done. The lockdown message is now:\n\n{}".format(message))
+
+    @lockdownset.command(name="unlockmessage")
+    async def unlock_message(self, ctx, *, message: Optional[str]):
+        """
+        What the bot sends when you trigger [p]unlockdown
+        """
+        if message is None:
+            await self.config.guild(ctx.guild).unlockdown_message.set(None)
+            return await ctx.send("Done. Cleared unlockdown message.")
+
+        if len(message) > 1500:
+            return await ctx.send(
+                "Please limit the amount of characters. Don't go above 1,500 characters."
+            )
+
+        await self.config.guild(ctx.guild).unlockdown_message.set(message)
+        await ctx.send("Done. The unlockdown message is now:\n\n{}".format(message))
+
+    @lockdownset.command(name="confirmtoggle")
+    async def confirmation_toggle(self, ctx, toggle: bool = False):
+        """
+        Sets if the bot requires a confirmation before locking/unlocking
+
+        If no option is given, it'll default to False
+        """
+        if toggle is True:
+            await self.config.guild(ctx.guild).confirmation_message.set(True)
+            return await ctx.send("Done. Confirmation is now required.")
+
+        if toggle is False:
+            await self.config.guild(ctx.guild).confirmation_message.set(False)
+            return await ctx.send("Done. Confirmation is not required.")
 
     @commands.command()
     @checks.mod_or_permissions(manage_messages=True)
@@ -165,14 +246,14 @@ class Lockdown(BaseCog):
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
-        await ctx.send("Do you want to lockdown {}\n**Yes or No?**".format(channel.mention))
-        should_lock = await ctx.bot.wait_for("message", check=check, timeout=30)
-        try:
-            should_lock = await ctx.bot.wait_for("message", check=check, timeout=30)
-            if should_lock.content.lower() != "yes":
-                return await ctx.send("Okay. Won't lock {}.".format(channel.mention))
-        except asyncio.TimeoutError:
-            return await ctx.send("You took too long to reply!")
+        if await self.config.guild(ctx.guild).confirmation_message() is True:
+            await ctx.send("Do you want to lockdown {}\n**Yes or No?**".format(channel.mention))
+            try:
+                should_lock = await ctx.bot.wait_for("message", check=check, timeout=30)
+                if should_lock.content.lower() != "yes":
+                    return await ctx.send("Okay. Won't lock {}.".format(channel.mention))
+            except asyncio.TimeoutError:
+                return await ctx.send("You took too long to reply!")
 
         author = ctx.author
         role = ctx.guild.default_role
@@ -198,9 +279,7 @@ class Lockdown(BaseCog):
             await channel.set_permissions(
                 role,
                 overwrite=overwrite,
-                reason="Lockdown in effect. Requested by {} ({})".format(
-                    author.name, author.id
-                ),
+                reason="Lockdown in effect. Requested by {} ({})".format(author.name, author.id),
             )
         except discord.Forbidden:
             return await ctx.send("Error: Bot doesn't have perms to adjust that channel.")
@@ -210,17 +289,18 @@ class Lockdown(BaseCog):
     @checks.mod_or_permissions(manage_messages=True)
     async def channelunlock(self, ctx, channel: Union[discord.TextChannel, discord.VoiceChannel]):
         """Unlocking down selected text/voice channel"""
+
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
-        await ctx.send("Do you want to unlock {}\n**Yes or No?**".format(channel.mention))
-        should_unlock = await ctx.bot.wait_for("message", check=check, timeout=30)
-        try:
-            should_unlock = await ctx.bot.wait_for("message", check=check, timeout=30)
-            if should_unlock.content.lower() != "yes":
-                return await ctx.send("Okay. Won't unlock {}.".format(channel.mention))
-        except asyncio.TimeoutError:
-            return await ctx.send("You took too long to reply!")
+        if await self.config.guild(ctx.guild).confirmation_message() is True:
+            await ctx.send("Do you want to unlock {}\n**Yes or No?**".format(channel.mention))
+            try:
+                should_unlock = await ctx.bot.wait_for("message", check=check, timeout=30)
+                if should_unlock.content.lower() != "yes":
+                    return await ctx.send("Okay. Won't unlock {}.".format(channel.mention))
+            except asyncio.TimeoutError:
+                return await ctx.send("You took too long to reply!")
 
         author = ctx.author
         role = ctx.guild.default_role
