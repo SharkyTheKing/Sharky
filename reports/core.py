@@ -45,7 +45,7 @@ class Reports(BASECOG):
                 pass
         try:
             await ctx.message.delete()
-        except(discord.Forbidden, discord.HTTPException):
+        except (discord.Forbidden, discord.HTTPException):
             self.log.info("Unable to delete message in {}".format(ctx.channel.name))
 
         await self.build_report_embeds(ctx, member, reason, report_channel)
@@ -93,10 +93,13 @@ class Reports(BASECOG):
             self.log.warning("HTTPException {} - {}".format(e.code, e.status))
 
         try:
-            await ctx.author.send("Thank you for your report. The moderation team has received your report.")
-        except(discord.Forbidden, discord.HTTPException):
-            self.log.info("Unable to send message to {} - {}".format(ctx.author.name, ctx.author.id))
-
+            await ctx.author.send(
+                "Thank you for your report. The moderation team has received your report."
+            )
+        except (discord.Forbidden, discord.HTTPException):
+            self.log.info(
+                "Unable to send message to {} - {}".format(ctx.author.name, ctx.author.id)
+            )
 
     @report.error
     async def _report_error_handler(self, ctx, error):
