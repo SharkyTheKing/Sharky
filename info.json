@@ -1,7 +1,10 @@
 {
-    "author" : "Sharky The King (Sharky The King#0001)",
-    "install_msg" : "Thank you for installing! If you need support or even to ask questions, please join my discord! https://discord.gg/SKEtjnA",
-    "name" : "Sharky",
-    "short" : "Cogs from Sharky",
-    "tags" : ["None"]
+    "author": "Sharky The King (Sharky The King#0001)",
+    "install_msg": "Thank you for installing! If you come across an inssue, please make an issue on my github.",
+    "name": "Sharky",
+    "short": "Cogs from Sharky",
+    "description": "Tools and codes that I've made that I wanted on the repo.",
+    "tags": [
+        "None"
+    ]
 }
