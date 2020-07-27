@@ -75,7 +75,7 @@ Commands:
 ## Silence
 Allows to mute people with Discord server's Roles.
 
-> Note: This is planned for removal due to Red's Default mute being allowed for this. Due to this, no further information given
+> Note: This is planned for removal. Due to this, no further information given
 
 ## StrawPoll
 Create polls through StrawPoll's API!
