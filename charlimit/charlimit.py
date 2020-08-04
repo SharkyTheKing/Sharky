@@ -26,8 +26,8 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
 
     @commands.guild_only()
     @commands.group()
-    @checks.mod_or_permissions(manage_channels=True)
-    @checks.bot_has_permissions(embed_links=True, manage_channels=True)
+    @checks.mod_or_permissions(manage_messages=True)
+    @checks.bot_has_permissions(embed_links=True, manage_messages=True)
     async def charlimit(self, ctx):
         """Manage the character limits"""
         pass
