@@ -1,7 +1,7 @@
 import discord
 from redbot.core import commands, Config, checks
 from redbot.core.bot import Red
-from .log import log
+import logging
 
 BaseCog = getattr(commands, "Cog", object)
 
@@ -22,6 +22,7 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         self.config.register_guild(**def_guild)
         self.cache = {}
         self.manual = False  # If set to True then requires manual input
+        self.log = logging.getLogger("red.cogs.charlimit")
 
     @commands.guild_only()
     @commands.group()
@@ -168,9 +169,9 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
             await self.notify_user(message=message, reasons=reasons)
             await message.delete()
         except discord.Forbidden:
-            log.info(f"Forbidden access to delete in {current}")
+            self.log.info(f"Forbidden access to delete in {current}")
         except discord.HTTPException as e:
-            log.info(f"HTTPException in {current} - {e.status}")
+            self.log.info(f"HTTPException in {current} - {e.status}")
 
     async def notify_user(self, message: discord.Message, reasons):
         if await self.config.guild(message.guild).message() is False:
@@ -229,5 +230,5 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
                     )
         if not self.cache:
             self.manual = True
-            log.info("No Config. Requires manual input.")
+            self.log.info("No Config. Requires manual input.")
             return False
