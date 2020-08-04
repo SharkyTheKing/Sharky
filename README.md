@@ -1,25 +1,92 @@
 # Sharky
-Random cogs that I've been making, overall just for learning or for myself.
+Codes that I've been working on for use, feedback and issues are welcomed!
+
+## Install
+These codes are for [Red Discord Bot](https://github.com/Cog-Creators/Red-DiscordBot), you MUST have a up-todate RedBot to use and/or install these codes. 
 
 ## Announcements
-This cog is purely for announcements made from Moderators/Admins of a Discord. It'll allow you to make announcements either in a specific channel or if no channel is given it'll use the channel you're in.
+Announcements Cog. Announcing a message in a channel while pinging a singular role through the bot.
 
-You have three commands
-- Alert: Is the announcement feature, you can give a channel to direct to and a role so it'll mention it in the announcement.
-- Messageedit: This does what it's called, edits a message by the bot.
-- Mentionable: This looks at the given role, makes it mentionable if it's not already and unmentionable if it's not already.
+Three commands:
+- Alert: Optional to mention a role, if no channel is given it'll default to current channel. This lets you send a message in your selected channel. It'll ping a role if one was given.
+- MessageEdit: Edits the message by the bot.
+- Mentionable: Lets you make a role mentionable or not.
+
+> Note: This needs send_mesage at least, to send the messages to the specific channels.
 
 ## Charlimit
-This cog was made to limit the amount of characters people send in a channel. You can limit it however many characters you want. It'll only check in the channel that's given in the config to count the characters that's been sent.
+Limits amount of characters and lines your members are able to send in a channel.
 
-You also have the option to make the bot send a message to notify the user that their mesasge in X channel has exceed X character limit, this is useful for people who are curious to know what the limit is and are wondering why their message was removed.
+This works perfect for LFG channels that you want to limit the amount of spam they put into their messages.
 
-There are a few commands in to lock a channel by itself, still working on this overall to make it better.
+It'll also send a message saying how many characters / lines is needed to not be removed, though this is defauled to being off. You must turn this on to allow for it to send a message. Currently, not adjustable message. 
+
+> Note: You MUST have set the proper permissions for the bot to be able to manage_messages in each of the channels affected or else this could cause issues.
+
+## Lockdown
+Lockdown system for guilds. Let's you completely lockdown your server Text Channels with having the option for the bot to leave a message.
+
+> Note: You MUST have set the proper permissions for the bot to be able to send_messages, manage_channels, manage_permissions in each of the channels affected or else this could cause issues.
+
+Commands:
+- Lockdown: Does fullscale lockdown, with asking for permission before doing so.
+- Unlockdown: Does fullscale unlockdown, asks permission before doing so.
+- ChannelLock: Locks down a single channel that you select, Text or Voice channel.
+- ChannelUnlock: Unlocks a single channel that you select.
+- Lockdownset Lockmsg: Gives the bot a message to put in the channels if the Lockdown command is thrown.
+- Lockdownset Unlockmsg: Gives the bot a message to put in channels if the UnLockdown comand is thrown.
+
+## NewsPublish
+Automatic news publishing for verified / partnered servers that have a news channel.
+
+> Note: The bot must have manage_messages and send_messages permissions to publish your messages.
+
+This lets you automatically publish messages via bot, in your news channels. You can set an alert message so the bot will alert the selected channel if it's unable to publish the new message due to Discord's Ratelimit of publishing.
+
+Commands:
+- Addnews: Adds the news channel, checks if the channel is a news channel and checks permissions
+- RemoveNews: Removes the selected channels from listing
+- AlertChannel: Sets the alertchannel to notify if publish failed.
+
+## Reports
+Report system for Moderators of servers.
+
+> Note: The bot must have send_messages and manage_messages permissions or else this could cause issues.
+
+This is a simple report members cog, you set it up and members can report members to the server's moderator without having to have hassles of contacting a moderator directly.
+
+Commands:
+- Report: Reports a member, sends to selected channel in server for moderator's preview.
+- ReportSet Channel: Sets the channel reports goes into.
+- ReportSet Emotes: Sets if the bot automatically adds emotes to the reports sent.
+
+## SharkyTools
+Tools that I've made for personal use.
+
+> Note: If you are to use this, this needs ban_members permissions for the `findban` command.
+
+Shows members account information (join date, profile picture, etc). Can show specific's users avatar. Find if someone's banned based off of userid.
+
+Commands:
+- Uav: Allows you to preview a user's avatar. (Must be userid)
+- Avatar: Shows member's avatar (Note: Can cause conflict with other cogs for same command)
+- Age: Shows member's age (Join date, account creation, etc)
+
+## Silence
+Allows to mute people with Discord server's Roles.
+
+> Note: This is planned for removal. Due to this, no further information given
+
+## StrawPoll
+Create polls through StrawPoll's API!
+
+> Note: This does use Request which could cause blocking issues if something is to happen during the API call.
+
+Allows members to make a poll through StrawPoll. Returns a link to the poll after questionaire is finished. This allows for one member per guild active at a time so it doesn't get spammed on the bot.
 
 ## Verify
-This cog is a verification process. Where it'll automactically add someone to a muted role and will get them to type into a specific channel the accept command to make sure they agree to your rules before being able to see the entire server.
+Server verification system, requires people to type command to be allowed access in server
 
-Currently you must give the proper role to add and setup the permissions yourself. You will also need to toggle the feature on or else it won't work.
+> Note: This requires your knowledge of locking people out via role. This does not automatically handle this, it assumes you are or the person using this is capable of setting Discord permissions to disallow member viewing any channel except Rules and whatever channel used to send the command in.
+> Due to this, this requires Manage_Roles
 
-## Other
-The rest of the cogs are random stuff I've coded and been toying with on and off, decided to keep on the repo incase I ever want to dig more into a full functionality or if someone wants to toy with it.
