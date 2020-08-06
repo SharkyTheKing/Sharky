@@ -72,11 +72,6 @@ Commands:
 - Avatar: Shows member's avatar (Note: Can cause conflict with other cogs for same command)
 - Age: Shows member's age (Join date, account creation, etc)
 
-## Silence
-Allows to mute people with Discord server's Roles.
-
-> Note: This is planned for removal. Due to this, no further information given
-
 ## StrawPoll
 Create polls through StrawPoll's API!
 
