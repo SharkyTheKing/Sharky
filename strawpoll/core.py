@@ -108,7 +108,7 @@ class StrawPoll(BaseCog):
         Create a new strawpoll!
         """
         try:
-            if len(self.one_person_check[ctx.guild.id]) > 0:
+            if self.one_person_check[ctx.guild.id]:
                 return await ctx.send(
                     "Currently in use. Please wait until the person has finished their poll"
                 )
