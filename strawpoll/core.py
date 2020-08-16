@@ -178,7 +178,7 @@ class StrawPoll(BaseCog):
                 if straw.status != 200:
                     return None
                 end_url = await straw.json()
-                message = ("https://strawpoll.com/" + str(end_url["content_id"]))
+                message = "https://strawpoll.com/" + str(end_url["content_id"])
                 await self.clearing_guild_cache(ctx.guild)
                 return message
         except aiohttp.ClientConnectionError:
