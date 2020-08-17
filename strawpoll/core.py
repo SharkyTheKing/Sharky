@@ -1,5 +1,5 @@
 import discord
-import requests
+import aiohttp
 import asyncio
 
 from redbot.core import commands, checks, Config
@@ -25,6 +25,13 @@ class StrawPoll(BaseCog):
         self.url = "https://strawpoll.com/api/poll"
         self.bot = bot
         self.one_person_check = {}
+        self.session = aiohttp.ClientSession()
+
+    def cog_unload(self):
+        """
+        Called when cog is unloaded or bot is restarted
+        """
+        self.bot.loop.create_task(self.session.close())
 
     async def yes_or_no(self, ctx, message) -> bool:
         msg = await ctx.send(message)
@@ -101,7 +108,7 @@ class StrawPoll(BaseCog):
         Create a new strawpoll!
         """
         try:
-            if len(self.one_person_check[ctx.guild.id]) > 0:
+            if self.one_person_check[ctx.guild.id]:
                 return await ctx.send(
                     "Currently in use. Please wait until the person has finished their poll"
                 )
@@ -159,9 +166,23 @@ class StrawPoll(BaseCog):
             await self.clearing_guild_cache(ctx.guild)
             return await ctx.send("Canceled. You must have a title and a description")
 
-        straw = requests.post(self.url, json=json_info)
-        await ctx.send("https://strawpoll.com/" + str(straw.json()["content_id"]))
-        await self.clearing_guild_cache(ctx.guild)
+        data = await self.getting_straw_data(ctx=ctx, json_info=json_info)
+        if not data:
+            return await ctx.send("Something happened... Couldn't get/send strawpoll information.")
+
+        await ctx.send(data)
+
+    async def getting_straw_data(self, ctx, json_info):
+        try:
+            async with self.session.post(self.url, json=json_info) as straw:
+                if straw.status != 200:
+                    return None
+                end_url = await straw.json()
+                message = "https://strawpoll.com/" + str(end_url["content_id"])
+                await self.clearing_guild_cache(ctx.guild)
+                return message
+        except aiohttp.ClientConnectionError:
+            return None
 
     async def clearing_guild_cache(self, guild: discord.Guild):
         """
