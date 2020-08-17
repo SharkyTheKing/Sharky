@@ -75,8 +75,6 @@ Commands:
 ## StrawPoll
 Create polls through StrawPoll's API!
 
-> Note: This does use Request which could cause blocking issues if something is to happen during the API call.
-
 Allows members to make a poll through StrawPoll. Returns a link to the poll after questionaire is finished. This allows for one member per guild active at a time so it doesn't get spammed on the bot.
 
 ## Verify
