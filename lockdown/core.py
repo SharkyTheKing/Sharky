@@ -26,6 +26,12 @@ class Lockdown(BASECOG):
         self.config.register_guild(**DEF_GUILD)
         self.log = logging.getLogger("red.cogs.lockdown")
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     @commands.command()
     @checks.mod_or_permissions(manage_channels=True)
     async def lockdown(self, ctx):

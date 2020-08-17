@@ -16,6 +16,12 @@ class SharkyTools(BASECOG):
     def __init__(self, bot):
         self.bot = bot
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)
     async def uav(self, ctx, *, user):

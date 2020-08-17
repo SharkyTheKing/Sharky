@@ -24,6 +24,12 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         self.manual = False  # If set to True then requires manual input
         self.log = logging.getLogger("red.cogs.charlimit")
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     @commands.guild_only()
     @commands.group()
     @checks.mod_or_permissions(manage_messages=True)

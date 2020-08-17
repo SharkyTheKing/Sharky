@@ -20,6 +20,12 @@ class NewsPublish(BASECOG):
         self.config = Config.get_conf(self, identifier=23462345, force_registration=True)
         self.config.register_guild(**DEF_GUILD)
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     async def is_in_list(self, guild: discord.Guild, channel: discord.TextChannel):
         """
         Checks config for channel.
