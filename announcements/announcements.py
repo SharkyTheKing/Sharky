@@ -14,6 +14,12 @@ class Announcements(BaseCog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     @commands.command()
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True, send_messages=True)

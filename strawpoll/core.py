@@ -33,6 +33,12 @@ class StrawPoll(BaseCog):
         """
         self.bot.loop.create_task(self.session.close())
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     async def yes_or_no(self, ctx, message) -> bool:
         msg = await ctx.send(message)
         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)

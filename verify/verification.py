@@ -22,6 +22,12 @@ class Verify(BASECOG):
         def_guild = {"toggle": False, "role": None, "logs": None}
         self.config.register_guild(**def_guild)
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     @commands.bot_has_permissions(
         manage_messages=True, send_messages=True, manage_roles=True, embed_links=True
     )

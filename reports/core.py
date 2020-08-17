@@ -22,6 +22,12 @@ class Reports(BASECOG):
 
         self.log = logging.getLogger("red.cogs.reports")
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     @commands.guild_only()
     @commands.cooldown(2, 15, commands.BucketType.user)
     @commands.command(usage="<member> <reason>")
