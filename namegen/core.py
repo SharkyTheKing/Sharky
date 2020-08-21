@@ -21,6 +21,12 @@ class NameGen(BASECOG):
         self.config = Config.get_conf(self, identifier=740569763)
         self.config.register_guild(**DEF_GUILD)
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
     @staticmethod  # Thank you zixy
     def split_len(seq, length):
         """
