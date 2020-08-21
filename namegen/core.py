@@ -5,7 +5,7 @@ import logging
 import discord
 
 BASECOG = getattr(commands, "Cog", object)
-DEF_GUILD = {"first_name": [], "last_name": [], "generated_message": None}
+DEF_GUILD = {"first_name": [], "last_name": [], "generated_message": None, "rename_members": False}
 
 
 class NameGen(BASECOG):
@@ -49,6 +49,7 @@ class NameGen(BASECOG):
         first_name_config = await self.config.guild(ctx.guild).first_name()
         last_name_config = await self.config.guild(ctx.guild).last_name()
         gen_message = await self.config.guild(ctx.guild).generated_message()
+        rename_or_message = await self.config.guild(ctx.guild).rename_members()
 
         if first_name_config:
             first_name_list = ", ".join(name_count for name_count in first_name_config)
@@ -67,7 +68,25 @@ class NameGen(BASECOG):
         await ctx.send(
             f"Last Names Stored:\n{box(last_name_message.pop(0)) if len(last_name_list) > 0 else 'No Last Names'}"
         )
+        await ctx.send(
+            f"Current settings: {'Will rename members' if rename_or_message else 'Will send message'}"
+        )
         await ctx.send(f"Custom Message: {gen_message if gen_message else 'None Set'}")
+
+    @nameset.command(name="rename")
+    async def rename_or_message(self, ctx, toggle: bool):
+        """
+        Sets the cog to either renames or send message when command is used.
+
+        Default settings are set to sending message. To change, type:
+        `[p]nameset rename True`
+        """
+        if toggle is True:
+            await self.config.guild(ctx.guild).rename_members.set(True)
+            return await ctx.send("Done. Will now rename members.")
+        elif toggle is False:
+            await self.config.guild(ctx.guild).rename_members.set(False)
+            return await ctx.send("Done. Will now send message.")
 
     @nameset.command(name="genmessage", aliases=["genmsg"])
     async def custom_generated_message(self, ctx, *, message: str):
@@ -92,25 +111,6 @@ class NameGen(BASECOG):
         Add names to list
         """
         pass
-
-    async def adding_name(self, name_title, names: list):
-        failed_to_add = ""
-        for name in names:
-            if name not in await name_title:
-                async with name_title as first_name:
-                    first_name.append(name)
-            else:
-                failed_to_add += "{}\n".format(name)
-
-        if not failed_to_add:
-            message_to_send = "Done. Added your list of names to First Name"
-        else:
-            message_to_send = (
-                "Done. Added your list of names to First Name"
-                + "\nNames that were already in list: {}".format(failed_to_add)
-            )
-
-        return message_to_send
 
     @add_names.command(name="firstname", aliases=["first"])
     async def add_first_name(self, ctx, *names: str):
@@ -211,7 +211,6 @@ class NameGen(BASECOG):
         await ctx.send(message_to_send)
 
     @commands.command(name="namegen")
-    @checks.bot_has_permissions(manage_nicknames=True)
     @commands.guild_only()
     async def generate_name(self, ctx):
         """
@@ -220,6 +219,7 @@ class NameGen(BASECOG):
         first_names = await self.config.guild(ctx.guild).first_name()
         last_names = await self.config.guild(ctx.guild).last_name()
         gen_message = await self.config.guild(ctx.guild).generated_message()
+        rename = await self.config.guild(ctx.guild).rename_members()
         if not first_names:
             return await ctx.send("Nothing in First Names list")
         if not last_names:
@@ -227,10 +227,11 @@ class NameGen(BASECOG):
 
         generated_name = choice(first_names) + " " + choice(last_names)
 
-        try:
-            await ctx.author.edit(nick=generated_name, reason="Randomized name!")
-        except discord.Forbidden:
-            return await ctx.send("Sorry. We're unable to rename you.")
+        if rename:
+            try:
+                await ctx.author.edit(nick=generated_name, reason="Randomized name!")
+            except discord.Forbidden:
+                return await ctx.send("Sorry. We're unable to rename you.")
 
         if gen_message is None:
             message = self.default_message + generated_name
