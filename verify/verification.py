@@ -115,11 +115,11 @@ class Verify(BASECOG):
         await role_config.role.set(role.id)
         await ctx.send("Set the role to {}".format(role.mention))
 
-    @commands.command(name="accept")
+    @commands.command(name="agree")
     @commands.bot_has_permissions(manage_roles=True)
-    async def accept_member(self, ctx):
+    async def verify_agree(self, ctx):
         """
-        Accepting this means you understand the rules of the server
+        Agreeing to this means you understand the rules of the server
         """
         author = ctx.author
         joined_at = author.joined_at
