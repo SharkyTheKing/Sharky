@@ -1,0 +1,9 @@
+{
+    "author": [
+        "Sharky The King"
+    ],
+    "description": "Name Generator, gives you a random first and last name from your own list!",
+    "short": "Name Generator",
+    "tags": [],
+    "type": "COG"
+}
