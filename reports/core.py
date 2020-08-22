@@ -1,8 +1,8 @@
-from redbot.core import Config, checks, commands
-from typing import Union, Optional
-import discord
 import logging
+from typing import Optional, Union
 
+import discord
+from redbot.core import Config, checks, commands
 
 BASECOG = getattr(commands, "Cog", object)
 DEF_GUILD = {"report_channel": None, "emote_reactions": False}
