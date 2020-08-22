@@ -238,7 +238,11 @@ class NameGen(BASECOG):
             try:
                 await ctx.author.edit(nick=generated_name, reason="Randomized name!")
             except discord.Forbidden:
+                self.log.warn("Unable to rename {author} ({author_id}). Missing permissions".format(author=ctx.author.name, author_id=ctx.author.id))
                 return await ctx.send("Sorry. We're unable to rename you.")
+            except discord.HTTPException as e:
+                return self.log.info("HTTPException in {channel} - {status}".format(channel=ctx.channel, status=e.status))
+
 
         if gen_message is None:
             message = self.default_message + generated_name
