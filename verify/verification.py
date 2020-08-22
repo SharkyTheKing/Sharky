@@ -1,8 +1,8 @@
-import discord
 import logging
 from typing import Optional
-from redbot.core import commands, checks, Config
 
+import discord
+from redbot.core import Config, checks, commands
 
 BASECOG = getattr(commands, "Cog", object)
 

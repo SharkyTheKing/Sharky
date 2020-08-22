@@ -1,7 +1,8 @@
-import discord
-from redbot.core import commands, Config, checks
-from redbot.core.bot import Red
 import logging
+
+import discord
+from redbot.core import Config, checks, commands
+from redbot.core.bot import Red
 
 BaseCog = getattr(commands, "Cog", object)
 
