@@ -1,6 +1,5 @@
 import discord
-from redbot.core import commands, checks, modlog
-
+from redbot.core import checks, commands, modlog
 
 BASECOG = getattr(commands, "Cog", object)
 
