@@ -1,8 +1,9 @@
-from redbot.core import commands, checks, Config
-from typing import Optional, Union
-import logging
-import discord
 import asyncio
+import logging
+from typing import Optional, Union
+
+import discord
+from redbot.core import Config, checks, commands
 
 DEF_GUILD = {
     "channels": [],

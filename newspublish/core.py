@@ -1,8 +1,9 @@
-import discord
-from redbot.core import commands, Config, checks
-from typing import Optional
 import asyncio
 import logging
+from typing import Optional
+
+import discord
+from redbot.core import Config, checks, commands
 
 DEF_GUILD = {"news_channels": [], "alert_channel": None}
 
