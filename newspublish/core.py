@@ -124,6 +124,9 @@ class NewsPublish(BASECOG):
         if not isinstance(message.guild, discord.Guild):
             return
 
+        if await self.bot.cog_disabled_in_guild(self, message.guild):
+            return
+
         if not await self.is_in_list(guild=guild, channel=channel):
             return
 

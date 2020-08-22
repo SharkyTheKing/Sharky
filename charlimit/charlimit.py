@@ -143,6 +143,9 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
             if not guild:
                 return False
 
+        if await self.bot.cog_disabled_in_guild(self, message.guild):
+            return False
+
         if isinstance(message.author, discord.Member):
             if await self.bot.is_automod_immune(message.author):
                 return False
