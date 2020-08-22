@@ -1,8 +1,9 @@
-from redbot.core import commands, Config, checks
-from redbot.core.utils.chat_formatting import box
-from random import choice
 import logging
+from random import choice
+
 import discord
+from redbot.core import Config, checks, commands
+from redbot.core.utils.chat_formatting import box
 
 BASECOG = getattr(commands, "Cog", object)
 DEF_GUILD = {"first_name": [], "last_name": [], "generated_message": None, "rename_members": False}
