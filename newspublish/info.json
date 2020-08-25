@@ -5,5 +5,7 @@
   "description": "Automatic publishing in Discord's news channels",
   "short": "publish",
   "tags": [],
-  "type": "COG"
+  "type": "COG",
+  "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+  "min_bot_version": "3.4.0"
 }

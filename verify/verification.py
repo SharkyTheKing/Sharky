@@ -177,6 +177,9 @@ class Verify(BASECOG):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        if await self.bot.cog_disabled_in_guild(self, member.guild):
+            return False
+
         toggle = await self.config.guild(member.guild).toggle()
         role_config = await self.config.guild(member.guild).role()
         if toggle is False:

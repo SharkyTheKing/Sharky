@@ -137,12 +137,13 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
     @commands.Cog.listener()
     async def on_message(self, message):
         current = message.channel
-        guild = message.guild
         reasons = {"send_message": False, "character_count": False, "line_count": False}
 
-        if isinstance(message.guild, discord.Guild):
-            if not guild:
-                return False
+        if not isinstance(message.guild, discord.Guild):
+            return False
+
+        if await self.bot.cog_disabled_in_guild(self, message.guild):
+            return False
 
         if isinstance(message.author, discord.Member):
             if await self.bot.is_automod_immune(message.author):
