@@ -15,9 +15,7 @@ DEF_GUILD = {
             "embed_set": False,
             "send_alert": True,
             "nondefault": False,
-            "confirmation_message": True,
         }
-# nondefault and roles are futures
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -88,7 +86,7 @@ class Lockdown(BASECOG):
         e = discord.Embed(
             color=discord.Color(color1),
             title=f"Server Lockdown :lock:",
-            description=msg,
+            description=message,
             timestamp=ctx.message.created_at,
         )
         e.set_footer(text=f"{guild.name}")
@@ -169,14 +167,14 @@ class Lockdown(BASECOG):
         author = ctx.author
         role = guild.default_role
         color2 = 0x2FFFFF
+        message = await self.config.guild(guild).unlockdown_message()
         e = discord.Embed(
             color=discord.Color(color2),
             title=f"Server Unlocked :unlock:",
-            description=msg,
+            description=message,
             timestamp=ctx.message.created_at,
         )
         e.set_footer(text=ctx.guild.name)
-        message = await self.config.guild(guild).unlockdown_message()
         channel_ids = await self.config.guild(guild).channels()
         for guild_channel in guild.channels:
             if guild_channel.id in channel_ids:
@@ -197,7 +195,7 @@ class Lockdown(BASECOG):
                     if confirm is True:
                         if check_embed is False:
                             try:
-                                await guild_channel.send(content=msg)
+                                await guild_channel.send(content=message)
                             except discord.Forbidden:
                                 self.log.info(
                                     "Could not send message to {}".format(
