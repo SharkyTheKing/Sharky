@@ -6,16 +6,16 @@ import discord
 from redbot.core import Config, checks, commands
 
 DEF_GUILD = {
-            "channels": [],
-            "roles": [],
-            "lockdown_message": None,
-            "unlockdown_message": None,
-            "locked": False,
-            "vc_channels": [],
-            "embed_set": False,
-            "send_alert": True,
-            "nondefault": False,
-        }
+    "channels": [],
+    "roles": [],
+    "lockdown_message": None,
+    "unlockdown_message": None,
+    "locked": False,
+    "vc_channels": [],
+    "embed_set": False,
+    "send_alert": True,
+    "nondefault": False,
+}
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -62,9 +62,7 @@ class Lockdown(BASECOG):
         guild = ctx.guild
         channel_ids = await self.config.guild(guild).channels()
         if not channel_ids:
-            await ctx.send(
-                "You need to set this up by running `;;lockdownset addchan` first!"
-            )
+            await ctx.send("You need to set this up by running `;;lockdownset addchan` first!")
             return
 
         if await self.config.guild(guild).confirmation_message() is True:
@@ -113,9 +111,7 @@ class Lockdown(BASECOG):
                             await guild_channel.send(embed=e)
                         except discord.Forbidden:
                             self.log.info(
-                                "Could not send message to {}".format(
-                                    guild_channel.name
-                                )
+                                "Could not send message to {}".format(guild_channel.name)
                             )
 
         await ctx.send(
@@ -147,9 +143,7 @@ class Lockdown(BASECOG):
         guild = ctx.guild
         channel_ids = await self.config.guild(guild).channels()
         if not channel_ids:
-            await ctx.send(
-                "You need to set this up by running `;;lockdownset addchan` first!"
-            )
+            await ctx.send("You need to set this up by running `;;lockdownset addchan` first!")
             return
 
         if await self.config.guild(guild).confirmation_message() is True:
@@ -198,18 +192,14 @@ class Lockdown(BASECOG):
                                 await guild_channel.send(content=message)
                             except discord.Forbidden:
                                 self.log.info(
-                                    "Could not send message to {}".format(
-                                        guild_channel.name
-                                    )
+                                    "Could not send message to {}".format(guild_channel.name)
                                 )
                         else:
                             try:
                                 await guild_channel.send(embed=e)
                             except discord.Forbidden:
                                 self.log.info(
-                                    "Could not send messages in {}".format(
-                                        guild_channel.name
-                                    )
+                                    "Could not send messages in {}".format(guild_channel.name)
                                 )
 
         await ctx.send("Guild is now unlocked.")
@@ -237,18 +227,14 @@ class Lockdown(BASECOG):
             #     role += "`{}` - <@&{}>\n".format(r, r)
 
             e = discord.Embed(
-                color=await ctx.embed_color(),
-                title="Lockdown Config:",
-                description=chan,
+                color=await ctx.embed_color(), title="Lockdown Config:", description=chan,
             )
 
             # e.add_field(name="Channels", value=chan, inline=False)
             e.add_field(name="Lock Message:", value=get_lock, inline=False)
             e.add_field(name="Unlock Message:", value=get_unlock, inline=False)
             e.add_field(name="Unlock Embed", value=check_embed, inline=False)
-            e.add_field(
-                name="Confirmation:", value="enabled" if get_confirmation else "disabled"
-            )
+            e.add_field(name="Confirmation:", value="enabled" if get_confirmation else "disabled")
             # e.add_field(name="Non-Default Roles", value=role, inline=False)
 
             await ctx.send(embed=e)
@@ -301,9 +287,7 @@ class Lockdown(BASECOG):
         await ctx.send("**Channel List:**\n{}".format(chan))
 
     @lockdownset.command()
-    async def rmchan(
-        self, ctx: commands.Context, *, channel: discord.TextChannel = None
-    ):
+    async def rmchan(self, ctx: commands.Context, *, channel: discord.TextChannel = None):
         """
         Remove a channel to list of channels to lock/unlock
         You can only remove one at a time otherwise run `;;lds reset`
@@ -332,9 +316,7 @@ class Lockdown(BASECOG):
         try:
             confirm_reset = await ctx.bot.wait_for("message", check=check, timeout=30)
             if confirm_reset.content != "RESET THIS GUILD":
-                return await ctx.send(
-                    "Okay, not resetting today so like fuck off this command"
-                )
+                return await ctx.send("Okay, not resetting today so like fuck off this command")
         except asyncio.TimeoutError:
             return await ctx.send(
                 "You took too long to reply, it's only your server configuration at steak!"
@@ -383,10 +365,7 @@ class Lockdown(BASECOG):
 
     @lockdownset.command(name="setvc")
     async def vc_setter(
-        self,
-        ctx: commands.Context,
-        *,
-        vc_channel: Optional[discord.VoiceChannel] = None,
+        self, ctx: commands.Context, *, vc_channel: Optional[discord.VoiceChannel] = None,
     ):
         """
         Adds channel to list of voice chats to lock/unlock
@@ -409,9 +388,7 @@ class Lockdown(BASECOG):
         confirm = await self.config.guild(guild).send_alert()
         if option is False:
             await self.config.guild(guild).send_alert.set(value=False)
-            await ctx.send(
-                "Will silence the channel notifications on lockdown/unlockdown"
-            )
+            await ctx.send("Will silence the channel notifications on lockdown/unlockdown")
             return
         if confirm is True:
             await ctx.send(
@@ -452,9 +429,7 @@ class Lockdown(BASECOG):
         for voice_channel in guild.channels:
             if voice_channel.id in channel_ids:
                 overwrite = voice_channel.overwrites_for(role)
-                overwrite.update(
-                    read_messages=True, connect=False, speak=False, stream=False
-                )
+                overwrite.update(read_messages=True, connect=False, speak=False, stream=False)
                 try:
                     await voice_channel.set_permissions(
                         role,
@@ -482,9 +457,7 @@ class Lockdown(BASECOG):
         for voice_channel in guild.channels:
             if voice_channel.id in channel_ids:
                 overwrite = voice_channel.overwrites_for(role)
-                overwrite.update(
-                    read_messages=None, connect=None, speak=None, stream=None
-                )
+                overwrite.update(read_messages=None, connect=None, speak=None, stream=None)
                 try:
                     await voice_channel.set_permissions(
                         role,
