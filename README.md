@@ -4,16 +4,6 @@ Codes that I've been working on for use, feedback and issues are welcomed!
 ## Install
 These codes are for [Red Discord Bot](https://github.com/Cog-Creators/Red-DiscordBot), you MUST have a up-todate RedBot to use and/or install these codes. 
 
-## Announcements
-Announcements Cog. Announcing a message in a channel while pinging a singular role through the bot.
-
-Three commands:
-- Alert: Optional to mention a role, if no channel is given it'll default to current channel. This lets you send a message in your selected channel. It'll ping a role if one was given.
-- MessageEdit: Edits the message by the bot.
-- Mentionable: Lets you make a role mentionable or not.
-
-> Note: This needs send_mesage at least, to send the messages to the specific channels.
-
 ## Charlimit
 Limits amount of characters and lines your members are able to send in a channel.
 
