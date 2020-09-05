@@ -1,0 +1,10 @@
+{
+    "author": [
+        "Sharky The King"
+    ],
+    "description": "Name Generator, gives you a random first and last name from your own list!",
+    "short": "Name Generator",
+    "tags": [],
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

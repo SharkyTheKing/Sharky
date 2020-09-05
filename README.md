@@ -26,6 +26,21 @@ Commands:
 - Lockdownset Lockmsg: Gives the bot a message to put in the channels if the Lockdown command is thrown.
 - Lockdownset Unlockmsg: Gives the bot a message to put in channels if the UnLockdown comand is thrown.
 
+## NameGen
+Gives a random name based on first name and last name lists created by you.
+
+> Note: There are two functionality. Either sending a message or renaming someone when using the primary command. If you want it to rename, then the bot must need manage_nicknames permission
+
+Commands:
+- NameSet List: Displays your lists of names and settings.
+- NameSet Rename: Toggle system to either rename or send message.
+- NameSet GenMessage: Let's you customize the response when the bot gives/changes name.
+- NameSet Add FirstName: Adds your first names to list.
+- NameSet Add LastName: Adds your last names to list.
+- NameSet Remove FirstName: Removes your first names from list.
+- NameSet Remove LastName: Removes your last names from list.
+- NameGen: Generate a random name and outputs either via text or by changing your name.
+
 ## NewsPublish
 Automatic news publishing for verified / partnered servers that have a news channel.
 
