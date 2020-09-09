@@ -40,6 +40,7 @@ class Lockdown(BASECOG):
 
     @commands.command()
     @checks.mod_or_permissions(manage_channels=True)
+    @commands.bot_has_permissions(manage_channels=True)
     async def lockdown(self, ctx):
         """
         Lockdown a server
@@ -123,6 +124,7 @@ class Lockdown(BASECOG):
 
     @commands.command()
     @checks.mod_or_permissions(manage_messages=True)
+    @commands.bot_has_permissions(manage_channels=True)
     async def unlockdown(self, ctx):
         """
         Ends the lockdown for the guild
@@ -266,12 +268,13 @@ class Lockdown(BASECOG):
         """
         Adds channel to list of channels to lock/unlock
         You can add as many as needed
-        Example: `;;lds addchan general support bot-commands`
+        Example: `[p]lds addchan general support bot-commands`
         IDs are also accepted.
         """
         if not channel:
-            await ctx.send("Give me a channel idiot")
+        await ctx.send("Give me a channel to add to the list")
             return
+        
         guild = ctx.guild
         chans = await self.config.guild(guild).channels()
         for chan in channel:
@@ -287,19 +290,22 @@ class Lockdown(BASECOG):
         await ctx.send("**Channel List:**\n{}".format(chan))
 
     @lockdownset.command()
-    async def rmchan(self, ctx: commands.Context, *, channel: discord.TextChannel = None):
+    async def rmchan(self, ctx: commands.Context, *, channel: int):
         """
         Remove a channel to list of channels to lock/unlock
-        You can only remove one at a time otherwise run `;;lds reset`
+        You can only remove one at a time otherwise run `[p]lds reset`
         """
         if channel is None:
-            await ctx.send("Give me a channel idiot")
+            await ctx.send("Give me a channel id to remove it from this servers configuration")
             return
         guild = ctx.guild
         chans = await self.config.guild(guild).channels()
-        chans.remove(channel.id)
-        await self.config.guild(guild).channels.set(chans)
-        await ctx.send(f"{channel.mention} removed")
+        for chan in channel:
+            if chan not in chans:
+                chans.remove(chan.id)
+                await self.config.guild(guild).channels.set(chans)
+
+        await ctx.send(f"{channel} removed")
 
     @lockdownset.command(name="reset")
     async def clear_config(self, ctx):
@@ -311,18 +317,18 @@ class Lockdown(BASECOG):
             return m.author == ctx.author and m.channel == ctx.channel
 
         await ctx.send(
-            "Are you certain about this? This will wipe all settings/messages/channels in your servers configuration Type:`RESET THIS GUILD` to continue (must be typed exact)"
+            "Are you certain about this? This will wipe all settings/messages/channels in your servers configuration Type: `RESET THIS GUILD` to continue (must be typed exact)"
         )
         try:
             confirm_reset = await ctx.bot.wait_for("message", check=check, timeout=30)
             if confirm_reset.content != "RESET THIS GUILD":
-                return await ctx.send("Okay, not resetting today so like fuck off this command")
+                return await ctx.send("Okay, not resetting today")
         except asyncio.TimeoutError:
             return await ctx.send(
-                "You took too long to reply, it's only your server configuration at steak!"
+                "You took too long to reply!"
             )
         await self.config.guild(ctx.guild).clear_raw()
-        await ctx.send("Guild Reset, goodluck lmfao")
+        await ctx.send("Guild Reset, goodluck.")
 
     @lockdownset.command()
     async def lockmsg(self, ctx: commands.Context, *, str=None):
@@ -371,7 +377,7 @@ class Lockdown(BASECOG):
         Adds channel to list of voice chats to lock/unlock
         """
         if vc_channel is None:
-            await ctx.send("Give a channel to me idiot")
+            await ctx.send("Give me a channel to add to the list")
             return
         guild = ctx.guild
         vc_chans = await self.config.guild(guild).vc_channels()
