@@ -273,7 +273,7 @@ class Lockdown(BASECOG):
         IDs are also accepted.
         """
         if not channel:
-        await ctx.send("Give me a channel to add to the list")
+            await ctx.send("Give me a channel to add to the list")
             return
         
         guild = ctx.guild
