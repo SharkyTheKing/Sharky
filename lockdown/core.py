@@ -142,7 +142,7 @@ class Lockdown(BASECOG):
         #            return await ctx.send("You don't have manage_channels in this server.")
         lock_check = await self.config.guild(ctx.guild).locked()
         if lock_check is False:
-            return await ctx.send("Guild is already locked")
+            return await ctx.send("Guild is already unlocked")
         guild = ctx.guild
         channel_ids = await self.config.guild(guild).channels()
         if not channel_ids:
