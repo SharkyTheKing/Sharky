@@ -275,7 +275,7 @@ class Lockdown(BASECOG):
         if not channel:
             await ctx.send("Give me a channel to add to the list")
             return
-        
+
         guild = ctx.guild
         chans = await self.config.guild(guild).channels()
         for chan in channel:
@@ -325,9 +325,7 @@ class Lockdown(BASECOG):
             if confirm_reset.content != "RESET THIS GUILD":
                 return await ctx.send("Okay, not resetting today")
         except asyncio.TimeoutError:
-            return await ctx.send(
-                "You took too long to reply!"
-            )
+            return await ctx.send("You took too long to reply!")
         await self.config.guild(ctx.guild).clear_raw()
         await ctx.send("Guild Reset, goodluck.")
 
