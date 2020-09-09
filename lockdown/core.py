@@ -15,6 +15,7 @@ DEF_GUILD = {
     "embed_set": False,
     "send_alert": True,
     "nondefault": False,
+    "confirmation_message": True,
 }
 
 BASECOG = getattr(commands, "Cog", object)
