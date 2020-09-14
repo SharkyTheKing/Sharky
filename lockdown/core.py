@@ -18,7 +18,6 @@ BASECOG = getattr(commands, "Cog", object)
 
 # TODO Figure out how to display which channels failed to locked/unlocked
 # TODO Figure out how to display which channel failed to send messages
-# TODO Look into making confirmation_message a staticmethod/function?
 # TODO Look into pre-checking channel/channels perms
 # TODO Possibly combine send_message and channel_lock/unlock to prevent posting when channel fails to lock/unlock
 # TODO Custom role to overwrite, instead of default @everyone
@@ -32,9 +31,9 @@ BASECOG = getattr(commands, "Cog", object)
 
 # ---- Doing ----
 
-
 # ---- Resolved ----
 # Wipe config per guild: Locked to admin/owner only.
+# Look into making confirmation_message a staticmethod/function?
 
 
 class Lockdown(BASECOG):
@@ -78,6 +77,24 @@ class Lockdown(BASECOG):
 
         return overwrite
 
+    async def confirm_action(self, message: str, ctx):
+        """
+        MessagePredicate.yes_or_no confirmation
+        """
+        await ctx.send(message)
+        pred = MessagePredicate.yes_or_no(ctx)
+        try:
+            await self.bot.wait_for("message", check=pred, timeout=30)
+        except asyncio.TimeoutError:
+            await ctx.send("Responsed timed out. Won't complete process.")
+            return False
+
+        if pred.result is False:
+            await ctx.send("Okay. Stopped process.")
+            return False
+
+        return True
+
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)
@@ -89,17 +106,12 @@ class Lockdown(BASECOG):
         Locks every channel that's in config.
         """
         if await self.config.guild(ctx.guild).confirmation_message() is True:
-            await ctx.send(
-                "Are you sure you want to lock the guild? If so, please type `yes`, otherwise type `no`."
+            confirm = await self.confirm_action(
+                "Are you sure you want to lock the guild? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-            pred = MessagePredicate.yes_or_no(ctx)
-            try:
-                await self.bot.wait_for("message", check=pred, timeout=30)
-            except asyncio.TimeoutError:
-                return await ctx.send("Response timed out, won't lockdown the guild.")
-
-            if pred.result is False:
-                return await ctx.send("Okay. Won't lockdown the guild.")
+            if confirm is False:
+                return
 
         role = ctx.guild.default_role
         # Allow for customization of roles in the future...if I'm smart enough to
@@ -156,17 +168,12 @@ class Lockdown(BASECOG):
         Ends the lockdown for the guild
         """
         if await self.config.guild(ctx.guild).confirmation_message() is True:
-            await ctx.send(
-                "Are you sure you want to unlock the guild? If so, please type `yes`, otherwise type `no`."
+            confirm = await self.confirm_action(
+                "Are you sure you want to unlock the guild? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-            pred = MessagePredicate.yes_or_no(ctx)
-            try:
-                await self.bot.wait_for("message", check=pred, timeout=30)
-            except asyncio.TimeoutError:
-                return await ctx.send("Response timed out, won't unlock the guild.")
-
-            if pred.result is False:
-                return await ctx.send("Okay. Won't unlock the guild.")
+            if confirm is False:
+                return
 
         # Gather config
         lock_message = await self.config.guild(ctx.guild).lockdown_message()
@@ -225,12 +232,6 @@ class Lockdown(BASECOG):
         """
         Displays guild's lockdown settings.
         """
-        {
-            "channels": [],
-            "lockdown_message": None,
-            "unlockdown_message": None,
-            "confirmation_message": False,
-        }
         config_info = await self.config.guild(ctx.guild).all()
         channel_list = config_info["channels"]
         lock_message = config_info["lockdown_message"]
@@ -269,17 +270,12 @@ class Lockdown(BASECOG):
             await ctx.send("You can't use any boolean except for True. Try again.")
             return await ctx.send_help()
 
-        await ctx.send(
-            "Are you sure you want to wipe the guild config? If so, please type `yes`, otherwise type `no`."
+        confirm = await self.confirm_action(
+            "Are you sure you want to wipe the guild config? If so, please type `yes`, otherwise type `no`.",
+            ctx,
         )
-        pred = MessagePredicate.yes_or_no(ctx)
-        try:
-            await self.bot.wait_for("message", check=pred, timeout=30)
-        except asyncio.TimeoutError:
-            return await ctx.send("Response timed out, won't wipe config.")
-
-        if pred.result is False:
-            return await ctx.send("Okay. Won't wipe the config.")
+        if confirm is False:
+            return
 
         await self.config.guild(ctx.guild).clear()
         await ctx.send("Done. Wiped guild's config. Thank you come again.")
@@ -393,17 +389,12 @@ class Lockdown(BASECOG):
             )
 
         if await self.config.guild(ctx.guild).confirmation_message() is True:
-            await ctx.send(
-                "Are you sure you want to lock those channels? If so, please type `yes`, otherwise type `no`."
+            confirm = await self.confirm_action(
+                "Are you sure you want to lock those channels? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-            pred = MessagePredicate.yes_or_no(ctx)
-            try:
-                await self.bot.wait_for("message", check=pred, timeout=30)
-            except asyncio.TimeoutError:
-                return await ctx.send("Response timed out, won't lockdown the channels.")
-
-            if pred.result is False:
-                return await ctx.send("Okay. Won't lockdown the channels.")
+            if confirm is False:
+                return
 
         failed_channels = []
         confirmed_channels = []
@@ -460,17 +451,12 @@ class Lockdown(BASECOG):
             )
 
         if await self.config.guild(ctx.guild).confirmation_message() is True:
-            await ctx.send(
-                "Are you sure you want to unlock those channels? If so, please type `yes`, otherwise type `no`."
+            confirm = await self.confirm_action(
+                "Are you sure you want to unlock those channels? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-            pred = MessagePredicate.yes_or_no(ctx)
-            try:
-                await self.bot.wait_for("message", check=pred, timeout=30)
-            except asyncio.TimeoutError:
-                return await ctx.send("Response timed out, won't unlock the channels.")
-
-            if pred.result is False:
-                return await ctx.send("Okay. Won't unlock the channels.")
+            if confirm is False:
+                return
 
         failed_channels = []
         confirmed_channels = []
