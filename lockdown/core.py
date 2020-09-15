@@ -23,13 +23,13 @@ BASECOG = getattr(commands, "Cog", object)
 # TODO Custom role to overwrite, instead of default @everyone
 # TODO Possibly look into standard message vs embed optionality
 # ---- TODO if above is done, create dict and account for migration
-# TODO Look into Union for int removal or add another command specific for this.
 # TODO Add proper logging to every failed task.
 # TODO Make a staticmethod for MessagePredicate.yes_or_no(ctx)
 # TODO Pagify showsettings embeds
 # TODO Change out commands.Greedy to *, look into possibility of doing this.
 
 # ---- Doing ----
+# TODO Look into Union for int removal or add another command specific for this.
 
 # ---- Resolved ----
 # Wipe config per guild: Locked to admin/owner only.
@@ -258,6 +258,22 @@ class Lockdown(BASECOG):
 
         await ctx.send(embed=embed)
 
+    @lockdown_settings.command(name="int")
+    async def remove_int(self, ctx, number: int):
+        """
+        Removes int from config if channel was removed.
+        """
+        if number not in await self.config.guild(ctx.guild).channels():
+            return await ctx.send("This number is not in the config. Please double check the number.")
+
+        status = "Error"
+
+        async with self.config.guild(ctx.guild).channels() as chan:
+            chan.remove(number)
+            status = "Removed"
+
+        await ctx.send("Done. New status for {} - {}".format(number, status))
+
     @lockdown_settings.command(name="guildreset", usage="True")
     @checks.admin_or_permissions(administrator=True)
     async def clear_guild_config(self, ctx, toggle: bool):
@@ -290,18 +306,17 @@ class Lockdown(BASECOG):
         Toggles lockdown status for channels
         """
         if channels is None:
-            return await ctx.send("Kind of need to give me a channel dingus.")
+            return await ctx.send_help()
         status = "Error"
         status_list = []
 
-        for channel in channels:
-            if channel.id not in await self.config.guild(ctx.guild).channels():
-                async with self.config.guild(ctx.guild).channels() as chan:
+        async with self.config.guild(ctx.guild).channels() as chan:
+            for channel in channels:
+                if channel.id not in chan:
                     chan.append(channel.id)
                     status = "Added"
                     status_list.append("{} {}".format(channel.mention, status))
-            else:
-                async with self.config.guild(ctx.guild).channels() as chan:
+                else:
                     chan.remove(channel.id)
                     status = "Removed"
                     status_list.append("{} {}".format(channel.mention, status))
