@@ -32,7 +32,7 @@ class NameGen(BASECOG):
     def split_len(seq, length):
         """
         Splits a sequence into n sized pieces
-        stolen from stacktrace
+        https://stackoverflow.com/questions/434287/what-is-the-most-pythonic-way-to-iterate-over-a-list-in-chunks
         """
         return [seq[i : i + length] for i in range(0, len(seq), length)]
 
