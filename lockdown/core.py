@@ -263,7 +263,9 @@ class Lockdown(BASECOG):
         Removes int from config if channel was removed.
         """
         if number not in await self.config.guild(ctx.guild).channels():
-            return await ctx.send("This number is not in the config. Please double check the number.")
+            return await ctx.send(
+                "This number is not in the config. Please double check the number."
+            )
 
         status = "Error"
 
