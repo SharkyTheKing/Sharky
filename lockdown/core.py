@@ -18,22 +18,21 @@ BASECOG = getattr(commands, "Cog", object)
 
 # TODO Figure out how to display which channels failed to locked/unlocked
 # TODO Figure out how to display which channel failed to send messages
-# TODO Look into pre-checking channel/channels perms
 # TODO Possibly combine send_message and channel_lock/unlock to prevent posting when channel fails to lock/unlock
 # TODO Custom role to overwrite, instead of default @everyone
 # TODO Possibly look into standard message vs embed optionality
 # ---- TODO if above is done, create dict and account for migration
 # TODO Add proper logging to every failed task.
-# TODO Make a staticmethod for MessagePredicate.yes_or_no(ctx)
 # TODO Pagify showsettings embeds
 # TODO Change out commands.Greedy to *, look into possibility of doing this.
+# TODO Look into pre-checking channel/channels perms
 
 # ---- Doing ----
-# TODO Look into Union for int removal or add another command specific for this.
 
 # ---- Resolved ----
 # Wipe config per guild: Locked to admin/owner only.
 # Look into making confirmation_message a staticmethod/function?
+# Look into Union for int removal or add another command specific for this.
 
 
 class Lockdown(BASECOG):
