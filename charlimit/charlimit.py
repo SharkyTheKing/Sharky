@@ -121,13 +121,13 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         message_conf = await self.config.guild(guild).message()
         count = ""
         lime = ""
-        for shark in ctx.guild.channels:
-            characters = await self.config.channel(shark).character_limit()
-            lines = await self.config.channel(shark).line_limit()
+        for channel in ctx.guild.channels:
+            characters = await self.config.channel(channel).character_limit()
+            lines = await self.config.channel(channel).line_limit()
             if characters is not None:
-                count += f"{shark.mention}: {characters} characters\n"
+                count += f"{channel.mention}: {characters} characters\n"
             if lines is not None:
-                lime += f"\n{shark.mention}: {lines} lines\n"
+                lime += f"\n{channel.mention}: {lines} lines\n"
             e = discord.Embed(color=guild.me.top_role.color)
             e.title = f"{guild}'s Settings"
             e.description = f"{count + lime}"
@@ -177,9 +177,9 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
             await self.notify_user(message=message, reasons=reasons)
             await message.delete()
         except discord.Forbidden:
-            self.log.info(f"Forbidden access to delete in {current}")
+            self.log.debug(f"Forbidden access to delete in {current}")
         except discord.HTTPException as e:
-            self.log.info(f"HTTPException in {current} - {e.status}")
+            self.log.debug(f"HTTPException in {current} - {e.status}")
 
     async def notify_user(self, message: discord.Message, reasons):
         if await self.config.guild(message.guild).message() is False:
