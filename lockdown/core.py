@@ -28,6 +28,7 @@ BASECOG = getattr(commands, "Cog", object)
 # TODO Look into pre-checking channel/channels perms
 
 # ---- Doing ----
+# TODO Pagify showsettings
 
 # ---- Resolved ----
 # Wipe config per guild: Locked to admin/owner only.
