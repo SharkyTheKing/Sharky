@@ -4,6 +4,7 @@ from typing import Optional, Union
 
 import discord
 from redbot.core import Config, checks, commands
+from redbot.core.utils import menus
 from redbot.core.utils.chat_formatting import box, pagify
 from redbot.core.utils.predicates import MessagePredicate
 
@@ -228,6 +229,7 @@ class Lockdown(BASECOG):
         """
 
     @lockdown_settings.command()
+    @commands.bot_has_permissions(add_reactions=True, embed_links=True)
     async def showsettings(self, ctx):
         """
         Displays guild's lockdown settings.
@@ -242,21 +244,43 @@ class Lockdown(BASECOG):
         for channel in channel_list:
             chan += "<#{}> - {}\n".format(channel, channel)
 
-        # Embed information
-        embed = discord.Embed(
-            color=await ctx.embed_color(),
-            title="Lockdown Settings:",
-            description=chan if chan else "No channels added",
-        )
-        embed.add_field(name="Lock Message:", value=lock_message if lock_message else "None set")
-        embed.add_field(
-            name="Unlock Message:", value=unlock_message if unlock_message else "None set"
-        )
-        embed.add_field(
-            name="Confirmation:", value="enabled" if confirmation_message else "disabled"
-        )
+        if not chan:
+            embed = discord.Embed(
+                color=await ctx.embed_color(),
+                title="Lockdown Settings:",
+                description="No channels added",
+            )
+            embed.add_field(
+                name="Lock Message:", value=lock_message if lock_message else "None set"
+            )
+            embed.add_field(
+                name="Unlock Message:", value=unlock_message if unlock_message else "None set"
+            )
+            embed.add_field(
+                name="Confirmation:", value="enabled" if confirmation_message else "disabled"
+            )
+            return await ctx.send(embed=embed)
 
-        await ctx.send(embed=embed)
+        # Embed information
+        embed_list = []
+        channel_embed = list(pagify(chan, page_length=1000))
+        for idx, page in enumerate(channel_embed, start=1):
+            embed = discord.Embed(
+                color=await ctx.embed_color(), title="Lockdown Settings:", description=chan,
+            )
+            embed.add_field(
+                name="Lock Message:", value=lock_message if lock_message else "None set"
+            )
+            embed.add_field(
+                name="Unlock Message:", value=unlock_message if unlock_message else "None set"
+            )
+            embed.add_field(
+                name="Confirmation:", value="enabled" if confirmation_message else "disabled"
+            )
+            embed.set_footer(text="Page {}/{}".format(idx, len(channel_embed)))
+            embed_list.append(embed)
+
+        await menus.menu(ctx, embed_list, menus.DEFAULT_CONTROLS)
 
     @lockdown_settings.command(name="int")
     async def remove_int(self, ctx, number: int):
