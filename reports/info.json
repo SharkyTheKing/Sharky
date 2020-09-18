@@ -2,6 +2,8 @@
     "author": [
         "Sharky The King"
     ],
+    "name": "Reports",
+    "install_msg": "Thank you for installing reports!",
     "description": "Report system for moderators",
     "short": "Reports",
     "tags": [],

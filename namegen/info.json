@@ -2,6 +2,8 @@
     "author": [
         "Sharky The King"
     ],
+    "name": "NameGen",
+    "install_msg": "Thank you for installing NameGen!",
     "description": "Name Generator, gives you a random first and last name from your own list!",
     "short": "Name Generator",
     "tags": [],
