@@ -2,6 +2,8 @@
     "author": [
         "Sharky The King"
     ],
+    "name": "Lockdown",
+    "install_msg": "Thank you for installing Lockdown!",
     "description": "Guild Lockdown System",
     "short": "Locking System",
     "tags": [

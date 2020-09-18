@@ -2,6 +2,8 @@
     "author": [
         "Sharky The King"
     ],
+    "name": "SharkyTools",
+    "install_msg": "Thank you for installing SharkyTools",
     "description": "Tools that Sharky built",
     "short": "sharkytools",
     "tags": [],
