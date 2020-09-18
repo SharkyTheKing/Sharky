@@ -115,13 +115,15 @@ class SharkyTools(BASECOG):
         """
         guild, bot = ctx.guild, ctx.bot
         embed = discord.Embed(color=0xEE2222)
-        try:
-            member = await bot.fetch_user(banneduser)
-        except discord.NotFound:  # Not a valid user
-            embed.set_thumbnail(url=X_EMOTE)
-            embed.title = "Unknown User"
-            embed.description = f"{banneduser} is not a valid user.\n\nPlease make sure you're using a correct [UserID.](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)"
-            return await ctx.send(embed=embed)
+        member = ctx.bot.get_user(banneduser)  # look into more
+        if not member:
+            try:
+                member = await bot.fetch_user(banneduser)
+            except discord.NotFound:  # Not a valid user
+                embed.set_thumbnail(url=X_EMOTE)
+                embed.title = "Unknown User"
+                embed.description = f"{banneduser} is not a valid user.\n\nPlease make sure you're using a correct [UserID.](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)"
+                return await ctx.send(embed=embed)
         case_amount = await modlog.get_cases_for_member(
             bot=ctx.bot, guild=ctx.guild, member=member
         )

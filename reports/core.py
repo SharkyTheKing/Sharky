@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Union
+from typing import Optional
 
 import discord
 from redbot.core import Config, checks, commands
@@ -208,5 +208,7 @@ class Reports(BASECOG):
             for emotes in reaction_emotes:
                 try:
                     await message.add_reaction(emotes)
+                except discord.NotFound:
+                    return  # No need to log if message was removed
                 except (discord.Forbidden, discord.HTTPException):
                     self.log.warning("Unable to react in {}".format(emote_channel))

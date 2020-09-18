@@ -112,6 +112,12 @@ class Verify(BASECOG):
             await role_config.role.set(None)
             return await ctx.send("Cleared the role being used")
 
+        if role >= ctx.author.top_role:
+            return await ctx.send("You can't set a role equal to or higher than your own.")
+
+        if role >= ctx.guild.me.top_role:
+            return await ctx.send("You can't set a role that's equal to or higher than the bot.")
+
         await role_config.role.set(role.id)
         await ctx.send("Set the role to {}".format(role.mention))
 
