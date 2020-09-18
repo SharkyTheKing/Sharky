@@ -4,6 +4,9 @@ from typing import Optional, Union
 
 import discord
 from redbot.core import Config, checks, commands
+from redbot.core.utils import menus
+from redbot.core.utils.chat_formatting import box, pagify
+from redbot.core.utils.predicates import MessagePredicate
 
 DEF_GUILD = {
     "channels": [],
@@ -14,18 +17,39 @@ DEF_GUILD = {
 
 BASECOG = getattr(commands, "Cog", object)
 
+# TODO Figure out how to display which channels failed to locked/unlocked
+# TODO Figure out how to display which channel failed to send messages
+# TODO Possibly combine send_message and channel_lock/unlock to prevent posting when channel fails to lock/unlock
+# TODO Custom role to overwrite, instead of default @everyone
+# TODO Possibly look into standard message vs embed optionality
+# ---- TODO if above is done, create dict and account for migration
+# TODO Add proper logging to every failed task.
+# TODO Pagify showsettings embeds
+# TODO Change out commands.Greedy to *, look into possibility of doing this.
+# TODO Look into pre-checking channel/channels perms
+
+# ---- Doing ----
+# TODO Pagify showsettings
+
+# ---- Resolved ----
+# Wipe config per guild: Locked to admin/owner only.
+# Look into making confirmation_message a staticmethod/function?
+# Look into Union for int removal or add another command specific for this.
+
 
 class Lockdown(BASECOG):
     """
-    Lockdown the entire server / other servers you're mod of
+    Lockdown guilds or selective channels.
+
+    Note: You must have permissions set properly for the bot for this to work properly.
     """
 
     def __init__(self, bot):
         self.bot = bot
-        self.config = Config.get_conf(self, identifier=548498634843)
-
-        self.config.register_guild(**DEF_GUILD)
         self.log = logging.getLogger("red.cogs.lockdown")
+
+        self.config = Config.get_conf(self, identifier=548498634843)
+        self.config.register_guild(**DEF_GUILD)
 
     async def red_delete_data_for_user(self, **kwargs):
         """
@@ -33,309 +57,482 @@ class Lockdown(BASECOG):
         """
         return
 
+    @staticmethod
+    def retrieve_overwrite(
+        channel: Union[discord.TextChannel, discord.VoiceChannel], overwrite, lock_or_unlock: str
+    ):
+        """
+        Returns overwrite setting depending on channel type
+        """
+        if lock_or_unlock == "lock":
+            if isinstance(channel, discord.TextChannel):  # verify channel type
+                overwrite.update(send_messages=False)
+            else:
+                overwrite.update(connect=False)
+
+        elif lock_or_unlock == "unlock":
+            if isinstance(channel, discord.TextChannel):
+                overwrite.update(send_messages=None)
+            else:
+                overwrite.update(connect=None)
+
+        return overwrite
+
+    async def confirm_action(self, message: str, ctx):
+        """
+        MessagePredicate.yes_or_no confirmation
+        """
+        await ctx.send(message)
+        pred = MessagePredicate.yes_or_no(ctx)
+        try:
+            await self.bot.wait_for("message", check=pred, timeout=30)
+        except asyncio.TimeoutError:
+            await ctx.send("Responsed timed out. Won't complete process.")
+            return False
+
+        if pred.result is False:
+            await ctx.send("Okay. Stopped process.")
+            return False
+
+        return True
+
     @commands.command()
-    @checks.mod_or_permissions(manage_channels=True)
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_guild=True)
+    # Don't be stupid shark..make sure unlockdown has same perm check
     async def lockdown(self, ctx):
         """
-        Lockdown a server
+        Lockdown the guild.
 
-        Currently only able to do current guilds. Working on improving this.
+        Locks every channel that's in config.
         """
-
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
-
-        guild = ctx.guild
-        #        guild = guild if guild else ctx.guild
-        #        author_targeted_guild = guild.get_member(ctx.author.id)
-        #        if author_targeted_guild.guild_permissions.manage_channels is False:
-        #            return await ctx.send("You don't have `manage_channels` permissions in this guild.")
-
-        if await self.config.guild(guild).confirmation_message() is True:
-            await ctx.send(
-                "Are you sure you want to lockdown the guild? If so, please type `yes`, otherwise type `no`."
+        if await self.config.guild(ctx.guild).confirmation_message() is True:
+            confirm = await self.confirm_action(
+                "Are you sure you want to lock the guild? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-            try:
-                confirm_lockdown = await ctx.bot.wait_for("message", check=check, timeout=30)
-                if confirm_lockdown.content.lower() != "yes":
-                    return await ctx.send("Okay. Won't lockdown the guild.")
-            except asyncio.TimeoutError:
-                return await ctx.send("You took too long to reply!")
+            if confirm is False:
+                return
 
-        author = ctx.author
-        role = guild.default_role
-        message = await self.config.guild(guild).lockdown_message()
-        channel_ids = await self.config.guild(guild).channels()
-        # TODO add check if channel_ids is none, return "there is nothing"
+        role = ctx.guild.default_role
+        # Allow for customization of roles in the future...if I'm smart enough to
 
-        for guild_channel in guild.channels:
+        # Gather config
+        lock_message = await self.config.guild(ctx.guild).lockdown_message()
+        channel_ids = await self.config.guild(ctx.guild).channels()
+
+        if not channel_ids:
+            return await ctx.send(
+                "Error: There are no channels stored. Please add channels to be able to lockdown the guild."
+            )
+
+        for guild_channel in ctx.guild.channels:
             if guild_channel.id in channel_ids:
                 overwrite = guild_channel.overwrites_for(role)
-                overwrite.update(send_messages=False)
+                overwrite = self.retrieve_overwrite(guild_channel, overwrite, "lock")
                 try:
                     await guild_channel.set_permissions(
                         role,
                         overwrite=overwrite,
                         reason="Lockdown in effect. Requested by {} ({})".format(
-                            author.name, author.id
+                            ctx.author.name, ctx.author.id
                         ),
                     )
                 except discord.Forbidden:
-                    self.log.info("Could not lockdown {}".format(guild_channel.name))
-                if message:
+                    self.log.info(
+                        "Could not lockdown {} ({}): Missing permissions".format(
+                            guild_channel.name, guild_channel.id
+                        )
+                    )
+
+                if lock_message:
                     try:
-                        await guild_channel.send(message)
+                        await guild_channel.send(lock_message)
                     except discord.Forbidden:
-                        self.log.info("Could not send message to {}".format(guild_channel.name))
+                        self.log.info(
+                            "Could not send message to {} ({})".format(
+                                guild_channel.name, guild_channel.id
+                            )
+                        )
 
         await ctx.send(
-            "Guild is locked down. You can unlock the guild by doing `{}unlockdown`".format(
+            "Guild is locked. You can unlock the guild by doing `{}unlockdown`\n".format(
                 ctx.prefix
             )
         )
 
     @commands.command()
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_guild=True)  # good job shark. You did it right
     async def unlockdown(self, ctx):
         """
         Ends the lockdown for the guild
         """
-
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
-
-        guild = ctx.guild
-        #        guild = guild if guild else ctx.guild
-
-        #        author_targeted_guild = guild.get_member(ctx.author.id)
-        #        if author_targeted_guild.guild_permissions.manage_channels is False:
-        #            return await ctx.send("You don't have manage_channels in this server.")
-
-        if await self.config.guild(guild).confirmation_message() is True:
-            await ctx.send(
-                "Are you sure you want to unlock the guild? If so, please type `yes`, otherwise type `no`."
+        if await self.config.guild(ctx.guild).confirmation_message() is True:
+            confirm = await self.confirm_action(
+                "Are you sure you want to unlock the guild? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-            try:
-                confirm_unlockdown = await ctx.bot.wait_for("message", check=check, timeout=30)
-                if confirm_unlockdown.content.lower() != "yes":
-                    return await ctx.send("Okay. Won't unlock the guild.")
-            except asyncio.TimeoutError:
-                return await ctx.send("You took too long to reply!")
+            if confirm is False:
+                return
 
-        author = ctx.author
-        role = guild.default_role
-        message = await self.config.guild(guild).unlockdown_message()
-        channel_ids = await self.config.guild(guild).channels()
-        for guild_channel in guild.channels:
+        # Gather config
+        lock_message = await self.config.guild(ctx.guild).lockdown_message()
+        channel_ids = await self.config.guild(ctx.guild).channels()
+
+        if not channel_ids:
+            return await ctx.send(
+                "Error: There are no channels stored. Please add channels to be able to unlock the guild."
+            )
+
+        role = ctx.guild.default_role
+
+        for guild_channel in ctx.guild.channels:
             if guild_channel.id in channel_ids:
                 overwrite = guild_channel.overwrites_for(role)
-                overwrite.update(send_messages=None)
+                overwrite = self.retrieve_overwrite(guild_channel, overwrite, "unlock")
                 try:
                     await guild_channel.set_permissions(
                         role,
                         overwrite=overwrite,
-                        reason="Lockdown ended. Requested by {} ({})".format(
-                            author.name, author.id
+                        reason="Unlock in effect. Requested by {} ({})".format(
+                            ctx.author.name, ctx.author.id
                         ),
                     )
                 except discord.Forbidden:
-                    self.log.info("Couldn't unlock {}".format(guild_channel.mention))
-                if message:
+                    self.log.info(
+                        "Could not unlock {} ({}): Missing permissions".format(
+                            guild_channel.name, guild_channel.id
+                        )
+                    )
+
+                if lock_message:
                     try:
-                        await guild_channel.send(message)
+                        await guild_channel.send(lock_message)
                     except discord.Forbidden:
-                        self.log.info("Could not send message to {}".format(guild_channel.name))
+                        self.log.info(
+                            "Could not send message to {} ({})".format(
+                                guild_channel.name, guild_channel.id
+                            )
+                        )
 
-        await ctx.send("Guild is now unlocked.")
+        await ctx.send(
+            "Guild is unlocked. You can lock the guild by doing `{}lockdown`\n".format(ctx.prefix)
+        )
 
-    @commands.group()
+    @commands.group(name="lockset", aliases=["lockdownset"])
     @commands.guild_only()
-    @checks.admin_or_permissions(manage_guild=True)
-    async def lockdownset(self, ctx):
+    @checks.mod_or_permissions(manage_guild=True)
+    async def lockdown_settings(self, ctx):
         """
-        Settings for lockdown
+        Settings for lockdown cog.
         """
-        if ctx.invoked_subcommand is None:
-            guild = ctx.guild
-            get_channel = await self.config.guild(guild).channels()
-            get_lock = await self.config.guild(guild).lockmsg()
-            get_unlock = await self.config.guild(guild).unlockmsg()
-            get_confirmation = await self.config.guild(guild).confirmation_message()
-            chan = ""
-            for channel in get_channel:
-                chan += "<#{}> - {}\n".format(channel, channel)
 
+    @lockdown_settings.command()
+    @commands.bot_has_permissions(add_reactions=True, embed_links=True)
+    async def showsettings(self, ctx):
+        """
+        Displays guild's lockdown settings.
+        """
+        config_info = await self.config.guild(ctx.guild).all()
+        channel_list = config_info["channels"]
+        lock_message = config_info["lockdown_message"]
+        unlock_message = config_info["unlockdown_message"]
+        confirmation_message = config_info["confirmation_message"]
+
+        chan = ""
+        for channel in channel_list:
+            chan += "<#{}> - {}\n".format(channel, channel)
+
+        if not chan:
             embed = discord.Embed(
-                color=await ctx.embed_color(), title="Current channels:", description=chan
+                color=await ctx.embed_color(),
+                title="Lockdown Settings:",
+                description="No channels added",
             )
-
-            embed.add_field(name="Lock Message:", value=get_lock, inline=False)
-
-            embed.add_field(name="Unlock Message:", value=get_unlock, inline=False)
-
             embed.add_field(
-                name="Confirmation:", value="enabled" if get_confirmation else "disabled"
+                name="Lock Message:", value=lock_message if lock_message else "None set"
+            )
+            embed.add_field(
+                name="Unlock Message:", value=unlock_message if unlock_message else "None set"
+            )
+            embed.add_field(
+                name="Confirmation:", value="enabled" if confirmation_message else "disabled"
+            )
+            return await ctx.send(embed=embed)
+
+        # Embed information
+        embed_list = []
+        channel_embed = list(pagify(chan, page_length=1000))
+        for idx, page in enumerate(channel_embed, start=1):
+            embed = discord.Embed(
+                color=await ctx.embed_color(), title="Lockdown Settings:", description=chan,
+            )
+            embed.add_field(
+                name="Lock Message:", value=lock_message if lock_message else "None set"
+            )
+            embed.add_field(
+                name="Unlock Message:", value=unlock_message if unlock_message else "None set"
+            )
+            embed.add_field(
+                name="Confirmation:", value="enabled" if confirmation_message else "disabled"
+            )
+            embed.set_footer(text="Page {}/{}".format(idx, len(channel_embed)))
+            embed_list.append(embed)
+
+        await menus.menu(ctx, embed_list, menus.DEFAULT_CONTROLS)
+
+    @lockdown_settings.command(name="int")
+    async def remove_int(self, ctx, number: int):
+        """
+        Removes int from config if channel was removed.
+        """
+        if number not in await self.config.guild(ctx.guild).channels():
+            return await ctx.send(
+                "This number is not in the config. Please double check the number."
             )
 
-            await ctx.send(embed=embed)
-
-    @lockdownset.command()
-    async def channel(self, ctx, channel: discord.TextChannel):
-        """
-        Toggles lockdown status for a particular channel
-        """
         status = "Error"
-        if channel.id not in await self.config.guild(ctx.guild).channels():
-            async with self.config.guild(ctx.guild).channels() as chan:
-                chan.append(channel.id)
-                status = "Added"
-        else:
-            async with self.config.guild(ctx.guild).channels() as chan:
-                chan.remove(channel.id)
-                status = "Removed"
 
-        await ctx.send("New status for {} set! - {}".format(channel.mention, status))
+        async with self.config.guild(ctx.guild).channels() as chan:
+            chan.remove(number)
+            status = "Removed"
 
-    @lockdownset.command(name="lockmessage")
-    async def lock_message(self, ctx, *, message: Optional[str]):
+        await ctx.send("Done. New status for {} - {}".format(number, status))
+
+    @lockdown_settings.command(name="guildreset", usage="True")
+    @checks.admin_or_permissions(administrator=True)
+    async def clear_guild_config(self, ctx, toggle: bool):
         """
-        What the bot sends when you trigger [p]lockdown
+        Completely wipes guild's config.
+
+        You must confirm this with a `True` argument. You will then be asked if you are sure. This is for safety.
         """
-        if message is None:
+        if toggle is False:
+            await ctx.send("You can't use any boolean except for True. Try again.")
+            return await ctx.send_help()
+
+        confirm = await self.confirm_action(
+            "Are you sure you want to wipe the guild config? If so, please type `yes`, otherwise type `no`.",
+            ctx,
+        )
+        if confirm is False:
+            return
+
+        await self.config.guild(ctx.guild).clear()
+        await ctx.send("Done. Wiped guild's config. Thank you come again.")
+
+    @lockdown_settings.command()
+    async def channel(
+        self,
+        ctx,
+        channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]] = None,
+    ):
+        """
+        Toggles lockdown status for channels
+        """
+        if channels is None:
+            return await ctx.send_help()
+        status = "Error"
+        status_list = []
+
+        async with self.config.guild(ctx.guild).channels() as chan:
+            for channel in channels:
+                if channel.id not in chan:
+                    chan.append(channel.id)
+                    status = "Added"
+                    status_list.append("{} {}".format(channel.mention, status))
+                else:
+                    chan.remove(channel.id)
+                    status = "Removed"
+                    status_list.append("{} {}".format(channel.mention, status))
+
+        status_message = ""
+        if not status_list:
+            return await ctx.send("Uh oh...Something happened. Unable to process channel(s)\n")
+        for stat in status_list:
+            status_message += "{}\n".format(stat)
+
+        msg = "New status for listed channels:\n{}".format(status_message)
+        for page in pagify(msg):
+            await ctx.send(page)
+
+    @lockdown_settings.command(name="lockmessage", aliases=["lockmsg"])
+    async def lockdown_message(self, ctx, *, message: str):
+        """
+        Message the bot sends when lockdown is triggered.
+
+        To disable the message, type `None` or `Clear`.
+        """
+        if message.lower() == "none" or "clear":  # redo later
             await self.config.guild(ctx.guild).lockdown_message.set(None)
             return await ctx.send("Done. Cleared lockdown message.")
 
         if len(message) > 1500:
             return await ctx.send(
-                "Please limit the amount of characters. Don't go above 1,500 characters."
+                "Please limit the amount of characters used. Don't go above 1,500 characters.\n\nYou currently have {}".format(
+                    len(message)
+                )
             )
 
         await self.config.guild(ctx.guild).lockdown_message.set(message)
-        await ctx.send("Done. The lockdown message is now:\n\n{}".format(message))
+        await ctx.send("Done. The lockdown message is now:\n\n{}".format(box(message)))
 
-    @lockdownset.command(name="unlockmessage")
-    async def unlock_message(self, ctx, *, message: Optional[str]):
+    @lockdown_settings.command(name="unlockmessage", aliases=["unlockmsg"])
+    async def unlockdown_message(self, ctx, *, message: str):
         """
-        What the bot sends when you trigger [p]unlockdown
+        Message the bot sends when unlockdown is triggered.
+
+        To disable the message, type `None` or `Clear`.
         """
-        if message is None:
+        if message.lower() == "none" or "clear":  # redo later
             await self.config.guild(ctx.guild).unlockdown_message.set(None)
             return await ctx.send("Done. Cleared unlockdown message.")
 
         if len(message) > 1500:
             return await ctx.send(
-                "Please limit the amount of characters. Don't go above 1,500 characters."
+                "Please limit the amount of characters used. Don't go above 1,500 characters.\n\nYou currently have {}".format(
+                    len(message)
+                )
             )
 
         await self.config.guild(ctx.guild).unlockdown_message.set(message)
-        await ctx.send("Done. The unlockdown message is now:\n\n{}".format(message))
+        await ctx.send("Done. The unlockdown message is now:\n\n{}".format(box(message)))
 
-    @lockdownset.command(name="confirmtoggle")
-    async def confirmation_toggle(self, ctx, toggle: bool = False):
+    @lockdown_settings.command(name="confirm")
+    async def confirmation_toggle(self, ctx, toggle: bool):
         """
-        Sets if the bot requires a confirmation before locking/unlocking
+        Make the bot require confirmation message to lockdown.
 
-        If no option is given, it'll default to False
+        Default behavior is false. Type `true` or `false` to change settings
         """
         if toggle is True:
             await self.config.guild(ctx.guild).confirmation_message.set(True)
-            return await ctx.send("Done. Confirmation is now required.")
-
-        if toggle is False:
+            await ctx.send("Done. Confirmation is now required.")
+        else:
             await self.config.guild(ctx.guild).confirmation_message.set(False)
-            return await ctx.send("Done. Confirmation is not required.")
+            await ctx.send("Done. Confirmation is not required anymore.")
 
-    @commands.command()
-    @checks.mod_or_permissions(manage_messages=True)
-    async def channellock(self, ctx, channel: Union[discord.TextChannel, discord.VoiceChannel]):
-        """Locking down selected text/voice channel"""
-
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+    @commands.command(name="channellock")
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_guild=True)  # gg shark
+    async def channel_lockdown(
+        self,
+        ctx,
+        channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]] = None,
+    ):
+        """
+        Lockdown selected channels.
+        """
+        if channels is None:
+            return await ctx.send(
+                "Please provide a channel or multiple channels you want to lock."
+            )
 
         if await self.config.guild(ctx.guild).confirmation_message() is True:
-            await ctx.send("Do you want to lockdown {}\n**Yes or No?**".format(channel.mention))
-            try:
-                should_lock = await ctx.bot.wait_for("message", check=check, timeout=30)
-                if should_lock.content.lower() != "yes":
-                    return await ctx.send("Okay. Won't lock {}.".format(channel.mention))
-            except asyncio.TimeoutError:
-                return await ctx.send("You took too long to reply!")
-
-        author = ctx.author
-        role = ctx.guild.default_role
-        overwrite = channel.overwrites_for(role)
-        #   Checking channel type
-        if channel.type == discord.ChannelType.text:
-            if overwrite.send_messages is False:
-                return await ctx.send(
-                    "{} is already locked. To unlock, please use `{}channelunlock {}`".format(
-                        channel.mention, ctx.prefix, channel.id
-                    )
-                )
-            overwrite.update(send_messages=False)
-        elif channel.type == discord.ChannelType.voice:
-            if overwrite.connect is False:
-                return await ctx.send(
-                    "{} is already locked. To unlock, please use `{}channelunlock {}`".format(
-                        channel.mention, ctx.prefix, channel.id
-                    )
-                )
-            overwrite.update(connect=False)
-        try:
-            await channel.set_permissions(
-                role,
-                overwrite=overwrite,
-                reason="Lockdown in effect. Requested by {} ({})".format(author.name, author.id),
+            confirm = await self.confirm_action(
+                "Are you sure you want to lock those channels? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-        except discord.Forbidden:
-            return await ctx.send("Error: Bot doesn't have perms to adjust that channel.")
-        await ctx.send("Done. Locked {}".format(channel.mention))
+            if confirm is False:
+                return
 
-    @commands.command()
-    @checks.mod_or_permissions(manage_messages=True)
-    async def channelunlock(self, ctx, channel: Union[discord.TextChannel, discord.VoiceChannel]):
-        """Unlocking down selected text/voice channel"""
+        failed_channels = []
+        confirmed_channels = []
+        role = ctx.guild.default_role
+        for channel in channels:
+            overwrite = channel.overwrites_for(role)
+            overwrite = self.retrieve_overwrite(channel, overwrite, "lock")
+            try:
+                await channel.set_permissions(
+                    role,
+                    overwrite=overwrite,
+                    reason="Lockdown in effect. Requested by {} ({})".format(
+                        ctx.author.name, ctx.author.id
+                    ),
+                )
+                confirmed_channels.append(channel.mention)
+            except discord.Forbidden:
+                failed_channels.append("{} - {}".format(channel.mention, channel.id))
 
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+        if not confirmed_channels:
+            return await ctx.send(
+                "Uh oh. None of the channels were able to be locked. Check your permissions!"
+            )
+
+        confirmed_message = "Channels locked:\n"
+        for chan in confirmed_channels:
+            confirmed_message += "{}\n".format(chan)
+
+        await ctx.send(confirmed_message)
+
+        if not failed_channels:
+            return
+
+        failed_message = "Channels failed:\n"
+        for chan in failed_channels:
+            failed_message += "{}\n".format(chan)
+
+        await ctx.send(failed_message)
+
+    @commands.command(name="channelunlock")
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_guild=True)  # gg shark
+    async def channel_unlockdown(
+        self,
+        ctx,
+        channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]] = None,
+    ):
+        """
+        Unlocks selected channels.
+        """
+        if channels is None:
+            return await ctx.send(
+                "Please provide a channel or multiple channels you want to unlock."
+            )
 
         if await self.config.guild(ctx.guild).confirmation_message() is True:
-            await ctx.send("Do you want to unlock {}\n**Yes or No?**".format(channel.mention))
-            try:
-                should_unlock = await ctx.bot.wait_for("message", check=check, timeout=30)
-                if should_unlock.content.lower() != "yes":
-                    return await ctx.send("Okay. Won't unlock {}.".format(channel.mention))
-            except asyncio.TimeoutError:
-                return await ctx.send("You took too long to reply!")
-
-        author = ctx.author
-        role = ctx.guild.default_role
-        overwrite = channel.overwrites_for(role)
-        #   Checking channel type
-        if channel.type == discord.ChannelType.text:
-            if overwrite.send_messages is None:
-                return await ctx.send(
-                    "{} is already unlocked. To lock, please use `{}channellock {}`".format(
-                        channel.mention, ctx.prefix, channel.id
-                    )
-                )
-            overwrite.update(send_messages=None)
-        elif channel.type == discord.ChannelType.voice:
-            if overwrite.connect is None:
-                return await ctx.send(
-                    "{} is already unlocked. To lock, please use `{}channellock {}`".format(
-                        channel.mention, ctx.prefix, channel.id
-                    )
-                )
-            overwrite.update(connect=None)
-
-        try:
-            await channel.set_permissions(
-                role,
-                overwrite=overwrite,
-                reason="Lockdown over. Requested by {} ({})".format(author.name, author.id),
+            confirm = await self.confirm_action(
+                "Are you sure you want to unlock those channels? If so, please type `yes`, otherwise type `no`.",
+                ctx,
             )
-        except discord.Forbidden:
-            return await ctx.send("Error: Bot doesn't have perms to adjust that channel.")
-        await ctx.send("Unlocked {}".format(channel.mention))
+            if confirm is False:
+                return
+
+        failed_channels = []
+        confirmed_channels = []
+        role = ctx.guild.default_role
+        for channel in channels:
+            overwrite = channel.overwrites_for(role)
+            overwrite = self.retrieve_overwrite(channel, overwrite, "unlock")
+            try:
+                await channel.set_permissions(
+                    role,
+                    overwrite=overwrite,
+                    reason="Unlockdown. Requested by {} ({})".format(
+                        ctx.author.name, ctx.author.id
+                    ),
+                )
+                confirmed_channels.append(channel.mention)
+            except discord.Forbidden:
+                failed_channels.append("{} - {}".format(channel.mention, channel.id))
+
+        if not confirmed_channels:
+            return await ctx.send(
+                "Uh oh. None of the channels were able to be unlocked. Check your permissions!"
+            )
+
+        confirmed_message = "Channels unlocked:\n"
+        for chan in confirmed_channels:
+            confirmed_message += "{}\n".format(chan)
+
+        await ctx.send(confirmed_message)
+
+        if not failed_channels:
+            return
+
+        failed_message = "Channels failed:\n"
+        for chan in failed_channels:
+            failed_message += "{}\n".format(chan)
+
+        await ctx.send(failed_message)
