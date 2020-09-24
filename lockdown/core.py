@@ -259,7 +259,8 @@ class Lockdown(BASECOG):
             embed.add_field(
                 name="Confirmation:", value="enabled" if confirmation_message else "disabled"
             )
-            return await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
+            return
 
         # Embed information
         embed_list = []
