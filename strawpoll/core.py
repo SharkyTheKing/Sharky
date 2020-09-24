@@ -6,7 +6,9 @@ from redbot.core import commands
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import ReactionPredicate
 
-#   Data example: data_info = {"poll": {"title": "Testing", "description": "This is a test", "answers": ["yes", "no", "maybe"], "priv": "true", "ma": 0,"mip" :0,"co": 1,"vpn": 0,"enter_name": 0,"has_deadline": "true","deadline": "2020-02-27T07:00:00.000Z","only_reg": 0,"has_image": 0,"image": "null"}}
+# Data example: data_info = {"poll": {"title": "Testing", "description": "This is a test", "answers": ["yes", "no",
+# "maybe"], "priv": "true", "ma": 0,"mip" :0,"co": 1,"vpn": 0,"enter_name": 0,"has_deadline": "true","deadline":
+# "2020-02-27T07:00:00.000Z","only_reg": 0,"has_image": 0,"image": "null"}}
 
 #   data_info = {"poll":{"title":"Testing", "description":"This is a test", "answers":["yes", "no", "maybe"]}}
 #   straw = requests.post("https://strawpoll.com/api/poll", data=data_info)
@@ -155,7 +157,9 @@ class StrawPoll(BaseCog):
         if confirm_choices:
             answers = await self.get_multiple_choices(
                 ctx,
-                'Please type out your multiple answers.\nIf you are using more than one word for an answer, please put it in quotes. `"This is what I mean"`\nAn example: `Pizza Tacos "Mac and Cheese"`',
+                "Please type out your multiple answers.\nIf you are using more than one word for "
+                'an answer, please put it in quotes. `"This is what I mean"`\nAn example: `Pizza '
+                'Tacos "Mac and Cheese"`',
                 json_info=json_info,
             )
             if not answers:
