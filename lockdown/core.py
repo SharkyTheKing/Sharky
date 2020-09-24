@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Optional, Union
+from typing import Union
 
 import discord
 from redbot.core import Config, checks, commands
@@ -266,7 +266,9 @@ class Lockdown(BASECOG):
         channel_embed = list(pagify(chan, page_length=1000))
         for idx, page in enumerate(channel_embed, start=1):
             embed = discord.Embed(
-                color=await ctx.embed_color(), title="Lockdown Settings:", description=chan,
+                color=await ctx.embed_color(),
+                title="Lockdown Settings:",
+                description=chan,
             )
             embed.add_field(
                 name="Lock Message:", value=lock_message if lock_message else "None set"

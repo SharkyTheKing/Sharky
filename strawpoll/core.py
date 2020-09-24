@@ -2,9 +2,9 @@ import asyncio
 
 import aiohttp
 import discord
-from redbot.core import Config, checks, commands
+from redbot.core import commands
 from redbot.core.utils.menus import start_adding_reactions
-from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from redbot.core.utils.predicates import ReactionPredicate
 
 #   Data example: data_info = {"poll": {"title": "Testing", "description": "This is a test", "answers": ["yes", "no", "maybe"], "priv": "true", "ma": 0,"mip" :0,"co": 1,"vpn": 0,"enter_name": 0,"has_deadline": "true","deadline": "2020-02-27T07:00:00.000Z","only_reg": 0,"has_image": 0,"image": "null"}}
 
@@ -66,7 +66,8 @@ class StrawPoll(BaseCog):
             return False
         return True
 
-    async def get_description_info(self, ctx, message, json_info) -> bool:
+    @staticmethod
+    async def get_description_info(ctx, message, json_info) -> bool:
         await ctx.send(message)
 
         def check(m):
@@ -79,7 +80,8 @@ class StrawPoll(BaseCog):
             await ctx.send("You took too long to reply...")
             return False
 
-    async def get_multiple_choices(self, ctx, message, json_info) -> bool:
+    @staticmethod
+    async def get_multiple_choices(ctx, message, json_info) -> bool:
         await ctx.send(message)
 
         def check(m):

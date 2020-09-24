@@ -7,6 +7,6 @@ __red_end_user_data_statement__ = (
 )
 
 
-async def setup(bot: Red):
-    charlimit = Charlimit(bot)
-    bot.add_cog(charlimit)
+def setup(bot: Red):
+    cog = Charlimit(bot)
+    bot.add_cog(cog)

@@ -60,8 +60,8 @@ class SharkyTools(BASECOG):
         since_joined = (ctx.message.created_at - joined_at).days
         user_created = user.created_at.strftime("%d %b %Y %H:%M")
         since_created = (ctx.message.created_at - user.created_at).days
-        created_on = ("{}\n({} days ago)").format(user_created, since_created)
-        joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
+        created_on = "{}\n({} days ago)".format(user_created, since_created)
+        joined_on = "{}\n({} days ago)".format(user_joined, since_joined)
 
         embed = discord.Embed(color=0xEE2222, title=f"Avatar Info")
         embed.add_field(name=f"User Info:", value=f"{user_mention}\n({user_id})")
@@ -89,8 +89,8 @@ class SharkyTools(BASECOG):
         since_joined = (ctx.message.created_at - joined_at).days
         user_created = user.created_at.strftime("%d %b %Y %H:%M")
         since_created = (ctx.message.created_at - user.created_at).days
-        created_on = ("{}\n({} days ago)").format(user_created, since_created)
-        joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
+        created_on = "{}\n({} days ago)".format(user_created, since_created)
+        joined_on = "{}\n({} days ago)".format(user_joined, since_joined)
 
         bot_is = user.bot
         embed = discord.Embed(
@@ -131,7 +131,7 @@ class SharkyTools(BASECOG):
             ban_info = await guild.fetch_ban(member)
             embed.set_thumbnail(url=BAN_HAMMER)
             embed.add_field(name="User Found:", value=f"{member}\n({member.id})")
-            embed.add_field(name="Case Amount:", value=len(case_amount))
+            embed.add_field(name="Case Amount:", value=str(len(case_amount)))
             embed.add_field(name="Ban Reason:", value=ban_info[0], inline=False)
         except discord.NotFound:  # Not Banned
             embed.set_thumbnail(url=X_EMOTE)
