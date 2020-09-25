@@ -34,7 +34,7 @@ class NameGen(BASECOG):
         Splits a sequence into n sized pieces
         https://stackoverflow.com/questions/434287/what-is-the-most-pythonic-way-to-iterate-over-a-list-in-chunks
         """
-        return [seq[i: i + length] for i in range(0, len(seq), length)]
+        return [seq[i : i + length] for i in range(0, len(seq), length)]
 
     @commands.group()
     @checks.mod_or_permissions(manage_nicknames=True)
