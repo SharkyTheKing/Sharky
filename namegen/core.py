@@ -238,7 +238,7 @@ class NameGen(BASECOG):
             try:
                 await ctx.author.edit(nick=generated_name, reason="Randomized name!")
             except discord.Forbidden:
-                self.log.warn(
+                self.log.warning(
                     "Unable to rename {author} ({author_id}). Missing permissions".format(
                         author=ctx.author.name, author_id=ctx.author.id
                     )

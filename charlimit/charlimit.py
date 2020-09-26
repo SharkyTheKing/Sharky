@@ -184,7 +184,10 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
     async def notify_user(self, message: discord.Message, reasons):
         if await self.config.guild(message.guild).message() is False:
             return False
-        message_reason = f"Hey there, {message.author.name}.\n\nYour message in {message.channel.mention} has been deleted due to you:\n"
+        message_reason = (
+            f"Hey there, {message.author.name}.\n\nYour message in {message.channel.mention} has "
+            "been deleted due to you:\n"
+        )
         if reasons["character_count"] is True:
             chars = self.cache[message.channel.id]["characters"]
             message_reason += f"Exceeding the {chars} character limit.\n"

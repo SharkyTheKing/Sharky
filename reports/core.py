@@ -44,8 +44,10 @@ class Reports(BASECOG):
         report_channel = await self.config.guild(ctx.guild).report_channel()
         if report_channel is None:
             try:
-                return ctx.author.send(
-                    "We're sorry! The Moderation team on this server hasn't setup a report channel yet. Please reach out to the moderation team and ask if they could set one up!"
+                return await ctx.author.send(
+                    "We're sorry! The Moderation team on this server hasn't setup a report "
+                    "channel yet. Please reach out to the moderation team and ask if they could"
+                    "set one up!"
                 )
             except (discord.Forbidden, discord.NotFound):
                 pass

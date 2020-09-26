@@ -60,8 +60,8 @@ class SharkyTools(BASECOG):
         since_joined = (ctx.message.created_at - joined_at).days
         user_created = user.created_at.strftime("%d %b %Y %H:%M")
         since_created = (ctx.message.created_at - user.created_at).days
-        created_on = ("{}\n({} days ago)").format(user_created, since_created)
-        joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
+        created_on = "{}\n({} days ago)".format(user_created, since_created)
+        joined_on = "{}\n({} days ago)".format(user_joined, since_joined)
 
         embed = discord.Embed(color=0xEE2222, title=f"Avatar Info")
         embed.add_field(name=f"User Info:", value=f"{user_mention}\n({user_id})")
@@ -89,8 +89,8 @@ class SharkyTools(BASECOG):
         since_joined = (ctx.message.created_at - joined_at).days
         user_created = user.created_at.strftime("%d %b %Y %H:%M")
         since_created = (ctx.message.created_at - user.created_at).days
-        created_on = ("{}\n({} days ago)").format(user_created, since_created)
-        joined_on = ("{}\n({} days ago)").format(user_joined, since_joined)
+        created_on = "{}\n({} days ago)".format(user_created, since_created)
+        joined_on = "{}\n({} days ago)".format(user_joined, since_joined)
 
         bot_is = user.bot
         embed = discord.Embed(
@@ -111,7 +111,8 @@ class SharkyTools(BASECOG):
         """
         Find if a user is banned on the server or not
 
-        If you don't know how to grab a userid, please click [here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
+        If you don't know how to grab a userid, please click
+        [here](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
         """
         guild, bot = ctx.guild, ctx.bot
         embed = discord.Embed(color=0xEE2222)
@@ -122,7 +123,11 @@ class SharkyTools(BASECOG):
             except discord.NotFound:  # Not a valid user
                 embed.set_thumbnail(url=X_EMOTE)
                 embed.title = "Unknown User"
-                embed.description = f"{banneduser} is not a valid user.\n\nPlease make sure you're using a correct [UserID.](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)"
+                embed.description = (
+                    f"{banneduser} is not a valid user.\n\nPlease make sure you're using a "
+                    "correct [UserID](https://support.discordapp.com/hc/en-us/articles/"
+                    "206346498-Where-can-I-find-my-User-Server-Message-ID-)."
+                )
                 return await ctx.send(embed=embed)
         case_amount = await modlog.get_cases_for_member(
             bot=ctx.bot, guild=ctx.guild, member=member
@@ -131,7 +136,7 @@ class SharkyTools(BASECOG):
             ban_info = await guild.fetch_ban(member)
             embed.set_thumbnail(url=BAN_HAMMER)
             embed.add_field(name="User Found:", value=f"{member}\n({member.id})")
-            embed.add_field(name="Case Amount:", value=len(case_amount))
+            embed.add_field(name="Case Amount:", value=str(len(case_amount)))
             embed.add_field(name="Ban Reason:", value=ban_info[0], inline=False)
         except discord.NotFound:  # Not Banned
             embed.set_thumbnail(url=X_EMOTE)
