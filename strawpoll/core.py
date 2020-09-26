@@ -111,7 +111,7 @@ class StrawPoll(BaseCog):
         except asyncio.TimeoutError:
             return False
 
-    @checks.guild_only()
+    @commands.guild_only()
     @commands.command()
     async def strawpoll(self, ctx):
         """
