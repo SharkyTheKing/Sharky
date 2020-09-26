@@ -56,7 +56,10 @@ class Verify(BASECOG):
 
             embed = discord.Embed(color=color)
             embed.title = "{}'s Settings".format(guild.name)
-            embed.description = "Please make sure you setup the Verification Channel and Selected Role.\nOnce that's done, make sure to set the Active to True or else this won't work"
+            embed.description = (
+                "Please make sure you setup the Verification Channel and Selected Role.\nOnce "
+                "that's done, make sure to set the Active to True or else this won't work"
+            )
             embed.add_field(name="Active:", value=toggle, inline=False)
             embed.add_field(name="Selected Role:", value=role_info, inline=True)
             embed.add_field(name="Logging Channel:", value=log_info, inline=True)
@@ -137,17 +140,18 @@ class Verify(BASECOG):
             author.created_at.strftime("%d %b %Y %H:%M"),
             (ctx.message.created_at - author.created_at).days,
         )
-        created_on = ("{}\n({} days ago)").format(member_created, since_created)
-        joined_on = ("{}\n({} days ago)").format(member_joined, since_joined)
+        created_on = "{}\n({} days ago)".format(member_created, since_created)
+        joined_on = "{}\n({} days ago)".format(member_joined, since_joined)
         author_avatar = author.avatar_url_as(static_format="png")
 
         log_config = await self.config.guild(ctx.guild).logs()
         role_config = await self.config.guild(ctx.guild).role()
         if role_config is None:
-            return await ctx.send(
+            await ctx.send(
                 "Sorry, there is no role set. Please contact the moderation team of this server."
             )
             self.log.warning("No role set. Unable to process verification.")
+            return
 
         role = ctx.guild.get_role(role_config)
         if author not in role.members:

@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Optional, Union
+from typing import Union
 
 import discord
 from redbot.core import Config, checks, commands
@@ -259,7 +259,8 @@ class Lockdown(BASECOG):
             embed.add_field(
                 name="Confirmation:", value="enabled" if confirmation_message else "disabled"
             )
-            return await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
+            return
 
         # Embed information
         embed_list = []
@@ -370,9 +371,8 @@ class Lockdown(BASECOG):
 
         if len(message) > 1500:
             return await ctx.send(
-                "Please limit the amount of characters used. Don't go above 1,500 characters.\n\nYou currently have {}".format(
-                    len(message)
-                )
+                "Please limit the amount of characters used. Don't go above 1,500 characters.\n\n"
+                "You currently have {}".format(len(message))
             )
 
         await self.config.guild(ctx.guild).lockdown_message.set(message)
@@ -391,9 +391,8 @@ class Lockdown(BASECOG):
 
         if len(message) > 1500:
             return await ctx.send(
-                "Please limit the amount of characters used. Don't go above 1,500 characters.\n\nYou currently have {}".format(
-                    len(message)
-                )
+                "Please limit the amount of characters used. Don't go above 1,500 characters.\n\n"
+                "You currently have {}".format(len(message))
             )
 
         await self.config.guild(ctx.guild).unlockdown_message.set(message)
