@@ -23,18 +23,17 @@ BASECOG = getattr(commands, "Cog", object)
 # TODO Custom role to overwrite, instead of default @everyone
 # TODO Possibly look into standard message vs embed optionality
 # ---- TODO if above is done, create dict and account for migration
-# TODO Add proper logging to every failed task.
-# TODO Pagify showsettings embeds
 # TODO Change out commands.Greedy to *, look into possibility of doing this.
-# TODO Look into pre-checking channel/channels perms
 
 # ---- Doing ----
-# TODO Pagify showsettings
+# TODO Add proper logging to every failed task.
+# TODO Look into pre-checking channel/channels perms
 
 # ---- Resolved ----
 # Wipe config per guild: Locked to admin/owner only.
 # Look into making confirmation_message a staticmethod/function?
 # Look into Union for int removal or add another command specific for this.
+# Pagify showsettings
 
 
 class Lockdown(BASECOG):
@@ -267,7 +266,7 @@ class Lockdown(BASECOG):
         channel_embed = list(pagify(chan, page_length=1000))
         for idx, page in enumerate(channel_embed, start=1):
             embed = discord.Embed(
-                color=await ctx.embed_color(), title="Lockdown Settings:", description=chan,
+                color=await ctx.embed_color(), title="Lockdown Settings:", description=page,
             )
             embed.add_field(
                 name="Lock Message:", value=lock_message if lock_message else "None set"
