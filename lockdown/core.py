@@ -27,6 +27,8 @@ BASECOG = getattr(commands, "Cog", object)
 
 # ---- Doing ----
 # TODO Add proper logging to every failed task.
+# TODO Account for locking a specific channel or all channels.
+# ---- TODO If list is a huge number, warn/force to use single.
 # TODO Look into pre-checking channel/channels perms
 
 # ---- Resolved ----
@@ -263,7 +265,7 @@ class Lockdown(BASECOG):
 
         # Embed information
         embed_list = []
-        channel_embed = list(pagify(chan, page_length=1000))
+        channel_embed = list(pagify(chan, page_length=700))
         for idx, page in enumerate(channel_embed, start=1):
             embed = discord.Embed(
                 color=await ctx.embed_color(), title="Lockdown Settings:", description=page,
@@ -362,9 +364,9 @@ class Lockdown(BASECOG):
         """
         Message the bot sends when lockdown is triggered.
 
-        To disable the message, type `None` or `Clear`.
+        To disable the message, type `None`.
         """
-        if message.lower() == "none" or "clear":  # redo later
+        if message.lower() == "none":  # redo later
             await self.config.guild(ctx.guild).lockdown_message.set(None)
             return await ctx.send("Done. Cleared lockdown message.")
 
@@ -382,9 +384,9 @@ class Lockdown(BASECOG):
         """
         Message the bot sends when unlockdown is triggered.
 
-        To disable the message, type `None` or `Clear`.
+        To disable the message, type `None`.
         """
-        if message.lower() == "none" or "clear":  # redo later
+        if message.lower() == "none":  # redo later
             await self.config.guild(ctx.guild).unlockdown_message.set(None)
             return await ctx.send("Done. Cleared unlockdown message.")
 
