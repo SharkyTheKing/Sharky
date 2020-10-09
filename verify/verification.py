@@ -179,10 +179,8 @@ class Verify(commands.Cog):
         already_added = []
         for role in roles:
             if role >= ctx.author.top_role:
-                errored += (
-                    "{role}: You can't set a role equal to or higher than your own.\n".format(
-                        role=role.name
-                    )
+                errored += "{role}: You can't set a role equal to or higher than your own.\n".format(
+                    role=role.name
                 )
                 continue
             if role >= ctx.guild.me.top_role:
