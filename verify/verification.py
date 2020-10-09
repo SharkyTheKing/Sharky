@@ -2,6 +2,7 @@ import logging
 
 import discord
 from redbot.core import Config, checks, commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_list, pagify
 
 
@@ -178,8 +179,10 @@ class Verify(commands.Cog):
         already_added = []
         for role in roles:
             if role >= ctx.author.top_role:
-                errored += "{role}: You can't set a role equal to or higher than your own.\n".format(
-                    role=role.name
+                errored += (
+                    "{role}: You can't set a role equal to or higher than your own.\n".format(
+                        role=role.name
+                    )
                 )
                 continue
             if role >= ctx.guild.me.top_role:
@@ -377,3 +380,13 @@ class Verify(commands.Cog):
             True,
             humanize_list(actions).capitalize() if actions else "No action taken.",
         )
+
+    async def _maybe_update_config(self):
+        if not await self.config.version():  # We never had a version before
+            guild_dict = await self.config.all_guilds()
+            async for guild_id, info in AsyncIter(guild_dict.items()):
+                old_temporary_role = info.get("role", None)
+                if old_temporary_role:
+                    await self.config.guild_from_id(guild_id).temprole.set(old_temporary_role)
+                    await self.config.guild_from_id(guild_id).role.clear()
+            await self.config.version.set("1.0.0")
