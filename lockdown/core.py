@@ -178,7 +178,7 @@ class Lockdown(BASECOG):
                 return
 
         # Gather config
-        lock_message = await self.config.guild(ctx.guild).lockdown_message()
+        unlock_message = await self.config.guild(ctx.guild).unlockdown_message()
         channel_ids = await self.config.guild(ctx.guild).channels()
 
         if not channel_ids:
@@ -207,9 +207,9 @@ class Lockdown(BASECOG):
                         )
                     )
 
-                if lock_message:
+                if unlock_message:
                     try:
-                        await guild_channel.send(lock_message)
+                        await guild_channel.send(unlock_message)
                     except discord.Forbidden:
                         self.log.info(
                             "Could not send message to {} ({})".format(
