@@ -413,7 +413,7 @@ class Lockdown(BASECOG):
             await self.config.guild(ctx.guild).confirmation_message.set(False)
             await ctx.send("Done. Confirmation is not required anymore.")
 
-    @commands.command(name="channellock")
+    @commands.command(name="lockchannel", aliases=["channellock"])
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)  # gg shark
     async def channel_lockdown(
@@ -475,7 +475,7 @@ class Lockdown(BASECOG):
 
         await ctx.send(failed_message)
 
-    @commands.command(name="channelunlock")
+    @commands.command(name="unlockchannel", aliases=["channelunlock"])
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)  # gg shark
     async def channel_unlockdown(
