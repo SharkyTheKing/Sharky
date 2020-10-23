@@ -178,7 +178,7 @@ class Lockdown(BASECOG):
                 return
 
         # Gather config
-        lock_message = await self.config.guild(ctx.guild).lockdown_message()
+        unlock_message = await self.config.guild(ctx.guild).unlockdown_message()
         channel_ids = await self.config.guild(ctx.guild).channels()
 
         if not channel_ids:
@@ -207,9 +207,9 @@ class Lockdown(BASECOG):
                         )
                     )
 
-                if lock_message:
+                if unlock_message:
                     try:
-                        await guild_channel.send(lock_message)
+                        await guild_channel.send(unlock_message)
                     except discord.Forbidden:
                         self.log.info(
                             "Could not send message to {} ({})".format(
@@ -413,7 +413,7 @@ class Lockdown(BASECOG):
             await self.config.guild(ctx.guild).confirmation_message.set(False)
             await ctx.send("Done. Confirmation is not required anymore.")
 
-    @commands.command(name="channellock")
+    @commands.command(name="lockchannel", aliases=["channellock"])
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)  # gg shark
     async def channel_lockdown(
@@ -475,7 +475,7 @@ class Lockdown(BASECOG):
 
         await ctx.send(failed_message)
 
-    @commands.command(name="channelunlock")
+    @commands.command(name="unlockchannel", aliases=["channelunlock"])
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)  # gg shark
     async def channel_unlockdown(
