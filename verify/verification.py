@@ -20,6 +20,7 @@ class Verify(commands.Cog):
         self.config = Config.get_conf(self, identifier=123532432623423)
         def_guild = {"toggle": False, "temprole": None, "logs": None, "autoroles": []}
         self.config.register_guild(**def_guild)
+        self.config.register_global(version=None)
 
     async def red_delete_data_for_user(self, **kwargs):
         """
