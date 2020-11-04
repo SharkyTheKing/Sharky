@@ -5,7 +5,9 @@ import discord
 from redbot.core import Config, checks, commands
 
 BASECOG = getattr(commands, "Cog", object)
-DEF_GUILD = {"report_channel": None, "emote_reactions": False}
+DEF_GUILD = {"report_channel": None, "emote_reactions": False, "claim_reports": None}
+
+# TODO Remember to add cog disable system
 
 
 class Reports(BASECOG):
@@ -148,6 +150,25 @@ class Reports(BASECOG):
 
             await ctx.send(embed=embed)
 
+    @reportset.command(name="reportclaim")
+    async def report_claim(self, ctx, toggle: Optional[bool]):
+        """
+        Toggle report to be claimed.
+
+        If this is toggled on, any reaction on any reports is immediately claimed by the moderator.
+        """
+        report_toggle = self.config.guild(ctx.guild).claim_reports
+        if toggle is None:
+            return await ctx.send(
+                "Report claim are {}".format("enabled" if await report_toggle() else "disabled")
+            )
+        elif toggle is True:
+            await report_toggle.set(True)
+            return await ctx.send("The setting is now enabled.")
+        elif toggle is False:
+            await report_toggle.set(False)
+            return await ctx.send("The setting is now disabled.")
+
     @reportset.command()
     async def channel(self, ctx, channel: Optional[discord.TextChannel]):
         """
@@ -214,3 +235,50 @@ class Reports(BASECOG):
                     return  # No need to log if message was removed
                 except (discord.Forbidden, discord.HTTPException):
                     self.log.warning("Unable to react in {}".format(emote_channel))
+
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
+        """
+        Detects for when someone adds reaction
+        """
+        if not isinstance(reaction.message.guild, discord.Guild):
+            return  # No guild detected
+
+        if user.id == self.bot.user.id:
+            return  # Bot reacted? Don't do it.
+
+        config_info = await self.config.guild(reaction.message.guild).all()
+        if config_info["report_channel"] is None:
+            return  # No report channel
+
+        if config_info["claim_reports"] is False:
+            return  # Toggle is off.
+
+        report_channel = discord.utils.get(
+            reaction.message.guild.channels, id=int(config_info["report_channel"])
+        )
+        if reaction.message.channel != report_channel:
+            return  # Not correct channel
+
+        if (
+            reaction.message.embeds
+            and "Moderator Claimed:" in str(reaction.message.embeds[0].fields)
+            or "has claimed this." in reaction.message.content
+            or not reaction.message.embeds
+        ):
+            return  # Prevents multiple additions / edits after one is claimed.
+
+        message = reaction.message
+        if message.author.id != self.bot.user.id:
+            return  # Unable to edit anything but bot itself
+
+        try:
+            embed = message.embeds[0]
+            embed.add_field(
+                name="Moderator Claimed:", value="{} ({})".format(user.mention, user.id)
+            )
+            await message.edit(embed=embed)
+        except IndexError:
+            await message.edit("{} ({}) has claimed this.".format(user.mention, user.id))
+
+    # Reason for no try on editing is because we check if it's the bot's message before editing
