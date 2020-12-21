@@ -115,7 +115,7 @@ class NewsPublish(BASECOG):
         await ctx.send("Done. Set alert channel to {}".format(channel.mention))
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message_without_command(self, message):
         """
         Listens for news
         """
