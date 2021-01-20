@@ -246,7 +246,7 @@ class Verify(commands.Cog):
         for role in all_roles:
             fetched_role = ctx.guild.get_role(role)
             if not fetched_role:
-                maybe_not_found.append(role.id)
+                maybe_not_found.append(role)
                 continue
             message += "- {name} (`{id}`).\n".format(name=fetched_role.name, id=fetched_role.id)
         if maybe_not_found:
