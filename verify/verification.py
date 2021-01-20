@@ -20,6 +20,7 @@ class Verify(commands.Cog):
         self.config = Config.get_conf(self, identifier=123532432623423)
         def_guild = {"toggle": False, "temprole": None, "logs": None, "autoroles": []}
         self.config.register_guild(**def_guild)
+        self.config.register_global(version=None)
 
     async def red_delete_data_for_user(self, **kwargs):
         """
@@ -245,7 +246,7 @@ class Verify(commands.Cog):
         for role in all_roles:
             fetched_role = ctx.guild.get_role(role)
             if not fetched_role:
-                maybe_not_found.append(fetched_role.id)
+                maybe_not_found.append(role)
                 continue
             message += "- {name} (`{id}`).\n".format(name=fetched_role.name, id=fetched_role.id)
         if maybe_not_found:
