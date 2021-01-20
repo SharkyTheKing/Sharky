@@ -268,7 +268,9 @@ class Lockdown(BASECOG):
         channel_embed = list(pagify(chan, page_length=700))
         for idx, page in enumerate(channel_embed, start=1):
             embed = discord.Embed(
-                color=await ctx.embed_color(), title="Lockdown Settings:", description=page,
+                color=await ctx.embed_color(),
+                title="Lockdown Settings:",
+                description=page,
             )
             embed.add_field(
                 name="Lock Message:", value=lock_message if lock_message else "None set"
