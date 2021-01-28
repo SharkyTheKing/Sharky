@@ -6,5 +6,7 @@ __red_end_user_data_statement__ = (
 
 
 async def setup(bot):
-    settings = Verify(bot)
-    bot.add_cog(settings)
+    cog = Verify(bot)
+    bot.add_cog(cog)
+    # noinspection PyProtectedMember
+    await cog._maybe_update_config()

@@ -23,18 +23,19 @@ BASECOG = getattr(commands, "Cog", object)
 # TODO Custom role to overwrite, instead of default @everyone
 # TODO Possibly look into standard message vs embed optionality
 # ---- TODO if above is done, create dict and account for migration
-# TODO Add proper logging to every failed task.
-# TODO Pagify showsettings embeds
 # TODO Change out commands.Greedy to *, look into possibility of doing this.
-# TODO Look into pre-checking channel/channels perms
 
 # ---- Doing ----
-# TODO Pagify showsettings
+# TODO Add proper logging to every failed task.
+# TODO Account for locking a specific channel or all channels.
+# ---- TODO If list is a huge number, warn/force to use single.
+# TODO Look into pre-checking channel/channels perms
 
 # ---- Resolved ----
 # Wipe config per guild: Locked to admin/owner only.
 # Look into making confirmation_message a staticmethod/function?
 # Look into Union for int removal or add another command specific for this.
+# Pagify showsettings
 
 
 class Lockdown(BASECOG):
@@ -177,7 +178,7 @@ class Lockdown(BASECOG):
                 return
 
         # Gather config
-        lock_message = await self.config.guild(ctx.guild).lockdown_message()
+        unlock_message = await self.config.guild(ctx.guild).unlockdown_message()
         channel_ids = await self.config.guild(ctx.guild).channels()
 
         if not channel_ids:
@@ -206,9 +207,9 @@ class Lockdown(BASECOG):
                         )
                     )
 
-                if lock_message:
+                if unlock_message:
                     try:
-                        await guild_channel.send(lock_message)
+                        await guild_channel.send(unlock_message)
                     except discord.Forbidden:
                         self.log.info(
                             "Could not send message to {} ({})".format(
@@ -264,10 +265,12 @@ class Lockdown(BASECOG):
 
         # Embed information
         embed_list = []
-        channel_embed = list(pagify(chan, page_length=1000))
+        channel_embed = list(pagify(chan, page_length=700))
         for idx, page in enumerate(channel_embed, start=1):
             embed = discord.Embed(
-                color=await ctx.embed_color(), title="Lockdown Settings:", description=chan,
+                color=await ctx.embed_color(),
+                title="Lockdown Settings:",
+                description=page,
             )
             embed.add_field(
                 name="Lock Message:", value=lock_message if lock_message else "None set"
@@ -363,9 +366,9 @@ class Lockdown(BASECOG):
         """
         Message the bot sends when lockdown is triggered.
 
-        To disable the message, type `None` or `Clear`.
+        To disable the message, type `None`.
         """
-        if message.lower() == "none" or "clear":  # redo later
+        if message.lower() == "none":  # redo later
             await self.config.guild(ctx.guild).lockdown_message.set(None)
             return await ctx.send("Done. Cleared lockdown message.")
 
@@ -383,9 +386,9 @@ class Lockdown(BASECOG):
         """
         Message the bot sends when unlockdown is triggered.
 
-        To disable the message, type `None` or `Clear`.
+        To disable the message, type `None`.
         """
-        if message.lower() == "none" or "clear":  # redo later
+        if message.lower() == "none":  # redo later
             await self.config.guild(ctx.guild).unlockdown_message.set(None)
             return await ctx.send("Done. Cleared unlockdown message.")
 
@@ -412,7 +415,7 @@ class Lockdown(BASECOG):
             await self.config.guild(ctx.guild).confirmation_message.set(False)
             await ctx.send("Done. Confirmation is not required anymore.")
 
-    @commands.command(name="channellock")
+    @commands.command(name="lockchannel", aliases=["channellock"])
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)  # gg shark
     async def channel_lockdown(
@@ -474,7 +477,7 @@ class Lockdown(BASECOG):
 
         await ctx.send(failed_message)
 
-    @commands.command(name="channelunlock")
+    @commands.command(name="unlockchannel", aliases=["channelunlock"])
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)  # gg shark
     async def channel_unlockdown(
