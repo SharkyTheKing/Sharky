@@ -180,8 +180,10 @@ class Verify(commands.Cog):
         already_added = []
         for role in roles:
             if role >= ctx.author.top_role:
-                errored += "{role}: You can't set a role equal to or higher than your own.\n".format(
-                    role=role.name
+                errored += (
+                    "{role}: You can't set a role equal to or higher than your own.\n".format(
+                        role=role.name
+                    )
                 )
                 continue
             if role >= ctx.guild.me.top_role:
@@ -246,7 +248,7 @@ class Verify(commands.Cog):
         for role in all_roles:
             fetched_role = ctx.guild.get_role(role)
             if not fetched_role:
-                maybe_not_found.append(fetched_role.id)
+                maybe_not_found.append(role)
                 continue
             message += "- {name} (`{id}`).\n".format(name=fetched_role.name, id=fetched_role.id)
         if maybe_not_found:
