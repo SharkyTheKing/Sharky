@@ -12,7 +12,7 @@ BASECOG = getattr(commands, "Cog", object)
 
 class NewsPublish(BASECOG):
     """
-    For Guilds that have News Channels
+    For Guilds that have News Channels!
     """
 
     def __init__(self, bot):
@@ -40,6 +40,11 @@ class NewsPublish(BASECOG):
     @commands.guild_only()
     @checks.mod_or_permissions(manage_channels=True)
     async def publish_settings(self, ctx):
+        """
+        Adjust settings. Send nothing to preview settings
+
+        Remember to set an alert channel for yourself, Discord ratelimits will prohibit publishing in a certain time frame.
+        """
         if ctx.invoked_subcommand is None:
             alert_channel = await self.config.guild(ctx.guild).alert_channel()
             news_channels = await self.config.guild(ctx.guild).news_channels()
@@ -105,7 +110,7 @@ class NewsPublish(BASECOG):
     @publish_settings.command(name="alertchannel")
     async def alert_moderators_channel(self, ctx, channel: Optional[discord.TextChannel]):
         """
-        Sends an alert to this channel if bot failed to publish
+        Sends alert to the channel if bot failed to publish
         """
         if channel is None:
             await self.config.guild(ctx.guild).alert_channel.set(None)
@@ -115,7 +120,7 @@ class NewsPublish(BASECOG):
         await ctx.send("Done. Set alert channel to {}".format(channel.mention))
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message_without_command(self, message):
         """
         Listens for news
         """
