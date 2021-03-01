@@ -7,7 +7,7 @@ from redbot.core import Config, checks, commands
 BASECOG = getattr(commands, "Cog", object)
 DEF_GUILD = {"report_channel": None, "emote_reactions": False, "claim_reports": None}
 
-# TODO Remember to add cog disable system
+# TODO Add reportdm command to disable dms on reports. To avoid annoyed members.
 
 
 class Reports(BASECOG):
