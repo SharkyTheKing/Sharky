@@ -46,7 +46,7 @@ class Reports(BASECOG):
             try:
                 return await ctx.author.send(
                     "We're sorry! The Moderation team on this server hasn't setup a report "
-                    "channel yet. Please reach out to the moderation team and ask if they could"
+                    "channel yet. Please reach out to the moderation team and ask if they could "
                     "set one up!"
                 )
             except (discord.Forbidden, discord.NotFound):
