@@ -242,26 +242,26 @@ class Reports(BASECOG):
         Detects for when someone adds reaction
         """
         if not reaction.message.guild:
-            return  # No guild detected
+            return
 
         if await self.bot.cog_disabled_in_guild(self, reaction.message.guild):
-            return False  # Disabled? Nada.
+            return False
 
         if user.id == self.bot.user.id:
-            return  # Bot reacted? Don't do it.
+            return
 
         config_info = await self.config.guild(reaction.message.guild).all()
         if config_info["report_channel"] is None:
-            return  # No report channel
+            return
 
         if config_info["claim_reports"] is False:
-            return  # Toggle is off.
+            return
 
         report_channel = discord.utils.get(
             reaction.message.guild.channels, id=int(config_info["report_channel"])
         )
         if reaction.message.channel != report_channel:
-            return  # Not correct channel
+            return
 
         if (
             reaction.message.embeds
@@ -269,11 +269,11 @@ class Reports(BASECOG):
             or "has claimed this." in reaction.message.content
             or not reaction.message.embeds
         ):
-            return  # Prevents multiple additions / edits after one is claimed.
+            return
 
         message = reaction.message
         if message.author.id != self.bot.user.id:
-            return  # Unable to edit anything but bot itself
+            return
 
         try:
             embed = message.embeds[0]
