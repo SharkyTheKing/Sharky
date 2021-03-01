@@ -208,7 +208,7 @@ class Reports(BASECOG):
         """
         Auto-add reactions
         """
-        if not isinstance(message.guild, discord.Guild):
+        if not message.guild:
             return
 
         if await self.bot.cog_disabled_in_guild(self, message.guild):
