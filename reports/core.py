@@ -241,8 +241,11 @@ class Reports(BASECOG):
         """
         Detects for when someone adds reaction
         """
-        if not isinstance(reaction.message.guild, discord.Guild):
+        if not reaction.message.guild:
             return  # No guild detected
+
+        if await self.bot.cog_disabled_in_guild(self, reaction.message.guild):
+            return False  # Disabled? Nada.
 
         if user.id == self.bot.user.id:
             return  # Bot reacted? Don't do it.
