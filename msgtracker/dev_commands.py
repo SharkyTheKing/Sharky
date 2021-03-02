@@ -52,6 +52,21 @@ class MessageTrackerDev:
         await ctx.send("Done. Config has been nuked.")
 
     @checks.is_owner()
+    @message_dev_tracker.command(name="blockignore")
+    async def block_user_ignoring(self, ctx):
+        """
+        Disables `[p]trackignore` command for users
+        """
+        current_setting = await self.config.disable_block_commands()
+
+        if current_setting is False:
+            await self.config.disable_block_commands.set(True)
+            return await ctx.send("Members can no longer set the bot to ignore them.")
+        else:
+            await self.config.disable_block_commands.set(False)
+            return await ctx.send("Members can set the bot to ignore them now.")
+
+    @checks.is_owner()
     @message_dev_tracker.command(name="cache")
     async def messagetrackcache(self, ctx):
         """

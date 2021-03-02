@@ -23,8 +23,9 @@ GUILD_CONFIG = {
     "ignored_users": [],
     "enabled_system": False,
     "ignore_staff": False,
-    "disable_block_command": False,
 }
+
+GLOBAL_CONFIG = {"disable_block_commands": False}
 
 MEMBER_CONFIG = {"counter": 0}
 
@@ -39,7 +40,7 @@ MEMBER_CONFIG = {"counter": 0}
 def customcheck():
     async def is_config_active(ctx: commands.Context):
         config = ctx.bot.get_cog("MsgTracker").config
-        enable_config = await config.guild(ctx.guild).disable_block_command()
+        enable_config = await config.disable_block_commands()
         return True if not enable_config else False
 
     return commands.check(is_config_active)
@@ -58,6 +59,7 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
         self.config = Config.get_conf(self, identifier=252140347403141120, force_registration=True)
         self.config.register_guild(**GUILD_CONFIG)
         self.config.register_member(**MEMBER_CONFIG)
+        self.config.register_global(**GLOBAL_CONFIG)
         self.task_loop = self.bot.loop.create_task(self.task_update_config())
 
     def cog_unload(self):
@@ -78,6 +80,7 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
 
         return True, None
 
+    @commands.guild_only()
     @commands.command()
     @customcheck()
     async def trackignore(self, ctx):
@@ -124,6 +127,8 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
             update_config = await self.update_guild_config_from_cache(
                 ctx.guild
             )  # updates from cache
+            await self.remove_non_members_from_config()  # clears non_members
+
             if update_config is False:
                 return await ctx.send("Something happened with updating. Please try again.")
         except KeyError:  # If it fails to have anything, we may assume that no messages have been sent.
@@ -218,6 +223,8 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
     @tasks.loop(minutes=5)
     async def task_update_config(self):
         await self.update_config_from_cache()
+        await self.remove_non_members_from_config()
+        print("Updated through Task")
 
     async def update_guild_config_from_cache(self, guild: discord.Guild) -> bool:
         """
@@ -235,14 +242,18 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
 
         sorted_list = sorted(user_messages.items(), key=lambda x: x[1]["message"], reverse=True)
         for userid, counter in sorted_list:
-            try:
-                member = guild.get_member(userid)
-            except discord.NotFound:
+            member = guild.get_member(userid)
+            if not member:
                 try:
                     member = await guild.fetch_member(userid)
                 except discord.NotFound:
                     get_non_member_config = self.config.member_from_ids(guild.id, userid)
                     await get_non_member_config.clear()
+                    try:
+                        del self.counted_message[guild.id][userid]
+                    except KeyError:
+                        pass
+
                     continue
 
             current_points = self.config.member(member).counter
@@ -250,6 +261,25 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
 
             await current_points.set(adding_points)
         self.counted_message[guild.id] = {}
+
+    async def remove_non_members_from_config(self):
+        config_info = await self.config.all_members()
+        for guild in config_info:
+            for user in config_info[guild]:
+                guild_ob = self.bot.get_guild(guild)
+                if not guild_ob:
+                    guild_ob = await self.bot.fetch_guild(guild)
+                member = guild_ob.get_member(user)
+                if not member:
+                    try:
+                        member = await guild_ob.fetch_member(user)
+                    except discord.NotFound:
+                        member_from_config = self.config.member_from_ids(guild_ob.id, user)
+                        await member_from_config.clear()
+                        try:
+                            del self.counted_message[guild.id][user]
+                        except KeyError:
+                            pass
 
     async def update_config_from_cache(self):
         if not self.counted_message:  # No point attempting all of this if cache is nothing
@@ -276,14 +306,18 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
             )
 
             for userid, counter in sorted_list:
-                try:
-                    member = guild.get_member(userid)
-                except discord.NotFound:
+                member = guild.get_member(userid)
+                if not member:
                     try:
                         member = await guild.fetch_member(userid)
                     except discord.NotFound:
                         get_non_member_config = self.config.member_from_ids(guild.id, userid)
                         await get_non_member_config.clear()
+                        try:
+                            del self.counted_message[guild.id][userid]
+                        except KeyError:
+                            pass
+
                         continue
 
                 current_points = self.config.member(member).counter
@@ -298,8 +332,8 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
         if not message.guild:
             return False
 
-        # if await self.bot.cog_disabled_in_guild(self, member.guild):
-        # return False
+        if await self.bot.cog_disabled_in_guild(self, message.guild):
+            return False
 
         if message.author.bot:
             return False
