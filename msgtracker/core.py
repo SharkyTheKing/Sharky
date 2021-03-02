@@ -276,7 +276,7 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
                         member_from_config = self.config.member_from_ids(guild_ob.id, user)
                         await member_from_config.clear()
                         try:
-                            del self.counted_message[guild.id][user]
+                            del self.counted_message[guild][user]
                         except KeyError:
                             pass
 
