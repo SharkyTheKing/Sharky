@@ -224,7 +224,6 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
     async def task_update_config(self):
         await self.update_config_from_cache()
         await self.remove_non_members_from_config()
-        print("Updated through Task")
 
     async def update_guild_config_from_cache(self, guild: discord.Guild) -> bool:
         """
