@@ -161,20 +161,16 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
             )
             footer_message = "Page {page_num}/{page_len}."  # Work this in somehow.
 
-            base = discord.Embed(title="Shin's leaderboard", description="")
+            base = discord.Embed(title="{guild}'s leaderboard".format(guild=ctx.guild.name), description="")
             embed_list = []
             pos = 1
             new_embed = base.copy()
             embed_message = embed_header
 
             for user_id, counter in sorting_list:
-                try:
-                    user = ctx.guild.get_member(user_id)
-                except discord.Forbidden:
-                    try:
-                        user = await ctx.guild.fetch_member(user_id)
-                    except discord.Forbidden:
-                        user = user_id
+                user = ctx.guild.get_member(user_id)
+                if user is None:
+                    user = user_id
 
                 if user_id != ctx.author.id:
                     embed_message += (
