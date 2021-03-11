@@ -60,10 +60,10 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
         self.config.register_guild(**GUILD_CONFIG)
         self.config.register_member(**MEMBER_CONFIG)
         self.config.register_global(**GLOBAL_CONFIG)
-        self.task_loop = self.bot.loop.create_task(self.task_update_config())
+        self.task_update_config.start()
 
     def cog_unload(self):
-        self.task_loop.cancel()
+        self.task_update_config.cancel()
 
     async def _return_yes_or_no(self, ctx):
         """
@@ -216,8 +216,9 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
             DEFAULT_CONTROLS if len(embed_list) > 1 else {"\N{CROSS MARK}": close_menu},
         )
 
-    @tasks.loop(minutes=5)
+    @tasks.loop(minutes=1)
     async def task_update_config(self):
+        await self.bot.wait_until_red_ready()
         await self.update_config_from_cache()
         await self.remove_non_members_from_config()
 
