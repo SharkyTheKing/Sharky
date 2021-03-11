@@ -216,7 +216,7 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
             DEFAULT_CONTROLS if len(embed_list) > 1 else {"\N{CROSS MARK}": close_menu},
         )
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(minutes=5)
     async def task_update_config(self):
         await self.bot.wait_until_red_ready()
         await self.update_config_from_cache()
