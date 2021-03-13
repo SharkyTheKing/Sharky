@@ -5,7 +5,7 @@ from typing import Optional
 import discord
 from redbot.core import Config, checks, commands
 
-DEF_GUILD = {"news_channels": [], "alert_channel": None}
+DEF_GUILD = {"news_channels": [], "alert_channel": None, "notify_failed": False, "notify_success": False}
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -46,8 +46,11 @@ class NewsPublish(BASECOG):
         Remember to set an alert channel for yourself, Discord ratelimits will prohibit publishing in a certain time frame.
         """
         if ctx.invoked_subcommand is None:
-            alert_channel = await self.config.guild(ctx.guild).alert_channel()
-            news_channels = await self.config.guild(ctx.guild).news_channels()
+            guild_config = await self.config.guild(ctx.guild).all()
+            alert_channel = guild_config["alert_channel"]
+            news_channels = guild_config["news_channels"]
+            failed_alerts = guild_config["notify_failed"]
+            success_alerts = guild_config["notify_success"]
             channels = ""
             if news_channels:
                 for channel in news_channels:
@@ -61,6 +64,8 @@ class NewsPublish(BASECOG):
                 value="<#{}>".format(alert_channel) if alert_channel else "None",
             )
             embed.add_field(name="News Channel", value=channels)
+            embed.add_field(name="Alert Fails", value="Enabled" if failed_alerts else "Disabled")
+            embed.add_field(mame="Alert Success", value="Enabled" if success_alerts else "Disabled")
             await ctx.send(embed=embed)
 
     @publish_settings.command(name="addnews")
@@ -89,6 +94,30 @@ class NewsPublish(BASECOG):
             news.append(channel.id)
 
         await ctx.send("Added {} to publish watchlist.".format(channel.mention))
+
+    @publish_settings.command(name="enablefail")
+    async def enable_fail_alerts(self, ctx):
+        """
+        Enables / Disables alerts for fail publishes.
+        """
+        if await self.config.guild(ctx.guild).notify_failed() is False:
+            await self.config.guild(ctx.guild).notify_failed.set(True)
+            await ctx.send("Will now send alerts on failed publishes.")
+        else:
+            await self.config.guild(ctx.guild).notify_failed.set(False)
+            await ctx.send("Will not send alerts on failed publishes.")
+
+    @publish_settings.command(name="enablesuccess")
+    async def enable_success_alerts(self, ctx):
+        """
+        Enables / Disables alerts for success publishes.
+        """
+        if await self.config.guild(ctx.guild).notify_success() is False:
+            await self.config.guild(ctx.guild).notify_success.set(True)
+            await ctx.send("Will now send alerts on publish success.")
+        else:
+            await self.config.guild(ctx.guild).notify_success.set(False)
+            await ctx.send("Will not send alerts on publish success.")
 
     @publish_settings.command(name="removenews")
     async def remove_news_channel(self, ctx, channel: discord.TextChannel):
@@ -142,18 +171,25 @@ class NewsPublish(BASECOG):
             # Make it so it's possible to send alerts on publish
         except asyncio.TimeoutError:
             self.log.info("Couldn't publish within a minute..forwarding to alert channel")
-            return await self.send_alert(message=message, error_type="HTTPException")
+            return await self.send_failed_alert(message=message, alert_type="HTTPException")
 
-    async def send_alert(self, message, error_type):
+    async def send_alert_message(self, message, alert_type):
         """
         Sends alert if it exists.
         Guild = message.guild
         """
         channel, guild = message.channel, message.guild
-        alert_channel = await self.config.guild(guild).alert_channel()
+        guild_config = await self.config.guild(guild).all()
+        alert_channel = guild_config["alert_channel"]
+        failed_alerts = guild_config["notify_failed"]
+        success_alerts = guild_config["notify_success"]
+
         if alert_channel is None:
             return  # Don't alert
-        if error_type == "HTTPException":
+        if alert_type == "HTTPException":
+            if not failed_alerts:  # Don't send alerts if this isn't enabled.
+                return
+
             try:
                 return await self.bot.get_channel(alert_channel).send(
                     "Can't publish message in {}. Hit 10 publish per user cap.\nLink: {}".format(
@@ -161,4 +197,17 @@ class NewsPublish(BASECOG):
                     )
                 )
             except discord.Forbidden:
-                self.log.info("Forbidden. Couldn't send message to alert channel.")
+                self.log.info("Forbidden. Couldn't send message to {} - {} channel.".format(guild.id, alert_channel))
+
+        if alert_type == "Success":
+            if not success_alerts:  # Don't send alerts if this isn't enabled.
+                return
+
+            try:
+                return await self.bot.get_channel(alert_channel).send(
+                    "Published new message in {}.\nLink: {}".format(
+                        channel.mention, message.jump_url
+                    )
+                )
+            except discord.Forbiden:
+                self.log.info("Forbidden. Couldn't send message to {} - {} channel.".format(guild.id, alert_channel))
