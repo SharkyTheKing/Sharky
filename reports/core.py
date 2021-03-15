@@ -134,21 +134,33 @@ class Reports(BASECOG):
         """
         Manage reports system
         """
-        if ctx.invoked_subcommand is None:
-            report_channel = await self.config.guild(ctx.guild).report_channel()
-            emotes_toggle = await self.config.guild(ctx.guild).emote_reactions()
+        pass
 
-            embed = discord.Embed()
-            embed.title = "{}'s Report Settings".format(ctx.guild.name)
-            embed.add_field(
-                name="Report Channel",
-                value="<#{}>".format(report_channel) if report_channel else "No channel set",
-            )
-            embed.add_field(
-                name="Auto Emote Reaction", value="enabled" if emotes_toggle else "disabled"
-            )
+    @reportset.command(name="list")
+    async def show_settings(self, ctx):
+        """
+        Displays report settings
+        """
+        guild_config = await self.config.guild(ctx.guild).all()
+        report_channel = guild_config["report_channel"]
+        emotes_toggle = guild_config["emote_reactions"]
+        claim_toggle = guild_config["claim_reports"]
 
-            await ctx.send(embed=embed)
+        embed = discord.Embed()
+        embed.title = "{}'s Report Settings".format(ctx.guild.name)
+        embed.add_field(
+            name="Report Channel",
+            value="<#{}>".format(report_channel) if report_channel else "No channel set",
+            inline=False
+        )
+        embed.add_field(
+            name="Auto Emote Reaction", value="enabled" if emotes_toggle else "disabled"
+        )
+        embed.add_field(
+            name="Moderation Claim", value="enabled" if claim_toggle else "disabled"
+        )
+
+        await ctx.send(embed=embed)
 
     @reportset.command(name="reportclaim")
     async def report_claim(self, ctx, toggle: Optional[bool]):
