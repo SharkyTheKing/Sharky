@@ -234,7 +234,7 @@ class Reports(BASECOG):
                 except discord.NotFound:
                     return  # No need to log if message was removed
                 except (discord.Forbidden, discord.HTTPException):
-                    self.log.warning("Unable to react in {}".format(emote_channel))
+                    self.log.info("Unable to react in {}".format(emote_channel))
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
