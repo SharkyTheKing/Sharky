@@ -151,14 +151,12 @@ class Reports(BASECOG):
         embed.add_field(
             name="Report Channel",
             value="<#{}>".format(report_channel) if report_channel else "No channel set",
-            inline=False
+            inline=False,
         )
         embed.add_field(
             name="Auto Emote Reaction", value="enabled" if emotes_toggle else "disabled"
         )
-        embed.add_field(
-            name="Moderation Claim", value="enabled" if claim_toggle else "disabled"
-        )
+        embed.add_field(name="Moderation Claim", value="enabled" if claim_toggle else "disabled")
 
         await ctx.send(embed=embed)
 
