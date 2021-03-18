@@ -15,6 +15,9 @@ class NewsPublish(BASECOG):
     For Guilds that have News Channels!
     """
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot):
         self.bot = bot
         self.log = logging.getLogger("red.cogs.newspublish")
@@ -26,6 +29,11 @@ class NewsPublish(BASECOG):
         Nothing to delete
         """
         return
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     async def is_in_list(self, guild: discord.Guild, channel: discord.TextChannel):
         """

@@ -17,6 +17,9 @@ class Reports(BASECOG):
     Members can type `[p]report <user> <reason>` and it'll show up in your selected channel!
     """
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=2233914253021)
@@ -29,6 +32,11 @@ class Reports(BASECOG):
         Nothing to delete
         """
         return
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     @commands.guild_only()
     @commands.cooldown(2, 15, commands.BucketType.user)

@@ -22,6 +22,9 @@ class StrawPoll(BaseCog):
     Making a strawpoll!
     """
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot):
         self.url = "https://strawpoll.com/api/poll"
         self.bot = bot
@@ -33,6 +36,11 @@ class StrawPoll(BaseCog):
         Called when cog is unloaded or bot is restarted
         """
         self.bot.loop.create_task(self.session.close())
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     async def red_delete_data_for_user(self, **kwargs):
         """
