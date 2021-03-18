@@ -12,6 +12,9 @@ class SharkyTools(BASECOG):
     Tools built by Sharky The King
     """
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -20,6 +23,11 @@ class SharkyTools(BASECOG):
         Nothing to delete
         """
         return
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     @commands.command()
     @commands.bot_has_permissions(embed_links=True, send_messages=True)

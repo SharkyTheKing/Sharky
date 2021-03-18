@@ -13,6 +13,9 @@ class Verify(commands.Cog):
     Setting up a verification process so members have to verify they read or accept the rules
     """
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.bot = bot
@@ -21,6 +24,11 @@ class Verify(commands.Cog):
         def_guild = {"toggle": False, "temprole": None, "logs": None, "autoroles": []}
         self.config.register_guild(**def_guild)
         self.config.register_global(version=None)
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     async def red_delete_data_for_user(self, **kwargs):
         """
