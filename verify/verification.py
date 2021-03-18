@@ -13,7 +13,7 @@ class Verify(commands.Cog):
     Setting up a verification process so members have to verify they read or accept the rules
     """
 
-    __author__ = ["SharkyTheKing"]
+    __author__ = ["SharkyTheKing", "Predeactor"]
     __version__ = "1.0.0"
 
     def __init__(self, bot, *args, **kwargs):
@@ -28,7 +28,7 @@ class Verify(commands.Cog):
     def format_help_for_context(self, ctx: commands.Context) -> str:
         context = super().format_help_for_context(ctx)
         authors = ", ".join(self.__author__)
-        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
+        return f"{context}\n\nAuthors: {authors}\nVersion: {self.__version__}"
 
     async def red_delete_data_for_user(self, **kwargs):
         """
