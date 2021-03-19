@@ -5,7 +5,7 @@ import discord
 from redbot.core import Config, checks, commands
 
 BASECOG = getattr(commands, "Cog", object)
-DEF_GUILD = {"report_channel": None, "emote_reactions": False, "claim_reports": None}
+DEF_GUILD = {"report_channel": None, "emote_reactions": False, "claim_reports": False}
 
 # TODO Add reportdm command to disable dms on reports. To avoid annoyed members.
 
@@ -18,7 +18,7 @@ class Reports(BASECOG):
     """
 
     __author__ = ["SharkyTheKing"]
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
 
     def __init__(self, bot):
         self.bot = bot
