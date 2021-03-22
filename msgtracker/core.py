@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 from math import ceil
 from typing import Awaitable, Literal
 
@@ -53,6 +54,9 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
     Idea prompted by ShinJuri Discord, specifically Frostyy#1313 (526672641701183509)
     """
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot):
         self.bot = bot
         self.counted_message = {}
@@ -64,6 +68,11 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
 
     def cog_unload(self):
         self.task_update_config.cancel()
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     async def _return_yes_or_no(self, ctx):
         """
@@ -114,6 +123,28 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
 
         await ctx.send(status_message)
 
+    @commands.command()
+    @commands.cooldown(3, 10, commands.BucketType.guild)
+    async def messages(self, ctx, user: discord.Member = None):
+        """
+        Displays how many messages the user has.
+
+        If user is none, defaults to author.
+        Thank you `The Discord Historian#0666`!
+        """
+        await self.update_guild_config_from_cache(ctx.guild)
+        if not user:
+            user = ctx.author
+
+        count = await self.config.member(user).counter()
+        embed = discord.Embed(color=discord.Color.random(), timestamp=datetime.datetime.utcnow())
+        embed.title = "Messages"
+        embed.description = "{user} has {count} messages".format(
+            user=user.display_name, count=count
+        )
+        await ctx.send(embed=embed)
+
+    @commands.cooldown(3, 10, commands.BucketType.guild)
     @commands.guild_only()
     @commands.command(name="msgleaderboard", aliases=["msglb"])
     async def message_leaderboard(self, ctx):
