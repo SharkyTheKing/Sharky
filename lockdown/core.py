@@ -45,6 +45,9 @@ class Lockdown(BASECOG):
     Note: You must have permissions set properly for the bot for this to work properly.
     """
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot):
         self.bot = bot
         self.log = logging.getLogger("red.cogs.lockdown")
@@ -57,6 +60,11 @@ class Lockdown(BASECOG):
         Nothing to delete
         """
         return
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     @staticmethod
     def retrieve_overwrite(
