@@ -67,10 +67,10 @@ class Reports(BASECOG):
                 status = False
 
         await ctx.author.send(
-            "Done. You will now {status}".format(
+            "Done. You will {status}".format(
                 status="not recieve DMs when you report."
                 if status
-                else "recieve DMs when you report."
+                else "now recieve DMs when you report."
             )
         )
 
