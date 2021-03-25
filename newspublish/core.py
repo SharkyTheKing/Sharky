@@ -214,7 +214,7 @@ class NewsPublish(BASECOG):
             self.log.info("Published message in {} - {}".format(message.guild.id, channel.name))
             return await self.send_alert_message(message=message, alert_type="Success")
         except asyncio.TimeoutError:
-            self.log.info("Couldn't publish within a minute..forwarding to alert channel")
+            self.log.info("Failed to publish message in {} - {}".format(message.guild.id, channel.name))
             return await self.send_alert_message(message=message, alert_type="HTTPException")
 
     async def send_alert_message(self, message, alert_type):
