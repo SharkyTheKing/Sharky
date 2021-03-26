@@ -249,9 +249,9 @@ class Lockdown(BASECOG):
         unlock_message = config_info["unlockdown_message"]
         confirmation_message = config_info["confirmation_message"]
 
-        chan = ""
-        for channel in channel_list:
-            chan += "<#{}> - {}\n".format(channel, channel)
+        chan = "".join(
+            "<#{}> - {}\n".format(channel, channel) for channel in channel_list
+        )
 
         if not chan:
             embed = discord.Embed(
@@ -259,12 +259,8 @@ class Lockdown(BASECOG):
                 title="Lockdown Settings:",
                 description="No channels added",
             )
-            embed.add_field(
-                name="Lock Message:", value=lock_message if lock_message else "None set"
-            )
-            embed.add_field(
-                name="Unlock Message:", value=unlock_message if unlock_message else "None set"
-            )
+            embed.add_field(name="Lock Message:", value=lock_message or "None set")
+            embed.add_field(name="Unlock Message:", value=unlock_message or "None set")
             embed.add_field(
                 name="Confirmation:", value="enabled" if confirmation_message else "disabled"
             )
@@ -280,12 +276,8 @@ class Lockdown(BASECOG):
                 title="Lockdown Settings:",
                 description=page,
             )
-            embed.add_field(
-                name="Lock Message:", value=lock_message if lock_message else "None set"
-            )
-            embed.add_field(
-                name="Unlock Message:", value=unlock_message if unlock_message else "None set"
-            )
+            embed.add_field(name="Lock Message:", value=lock_message or "None set")
+            embed.add_field(name="Unlock Message:", value=unlock_message or "None set")
             embed.add_field(
                 name="Confirmation:", value="enabled" if confirmation_message else "disabled"
             )
@@ -320,7 +312,7 @@ class Lockdown(BASECOG):
 
         You must confirm this with a `True` argument. You will then be asked if you are sure. This is for safety.
         """
-        if toggle is False:
+        if not toggle:
             await ctx.send("You can't use any boolean except for True. Try again.")
             return await ctx.send_help()
 
@@ -353,18 +345,13 @@ class Lockdown(BASECOG):
                 if channel.id not in chan:
                     chan.append(channel.id)
                     status = "Added"
-                    status_list.append("{} {}".format(channel.mention, status))
                 else:
                     chan.remove(channel.id)
                     status = "Removed"
-                    status_list.append("{} {}".format(channel.mention, status))
-
-        status_message = ""
+                status_list.append("{} {}".format(channel.mention, status))
         if not status_list:
             return await ctx.send("Uh oh...Something happened. Unable to process channel(s)\n")
-        for stat in status_list:
-            status_message += "{}\n".format(stat)
-
+        status_message = "".join("{}\n".format(stat) for stat in status_list)
         msg = "New status for listed channels:\n{}".format(status_message)
         for page in pagify(msg):
             await ctx.send(page)
@@ -416,7 +403,7 @@ class Lockdown(BASECOG):
 
         Default behavior is false. Type `true` or `false` to change settings
         """
-        if toggle is True:
+        if toggle:
             await self.config.guild(ctx.guild).confirmation_message.set(True)
             await ctx.send("Done. Confirmation is now required.")
         else:

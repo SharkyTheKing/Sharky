@@ -48,38 +48,40 @@ class Verify(commands.Cog):
         """
         Manages the settings for the guild.
         """
-        if ctx.invoked_subcommand is None:
-            guild = ctx.guild
-            data = await self.config.guild(guild).all()
-            color = await ctx.embed_color()
-            role_config = data["temprole"], data["autoroles"]
-            logs, toggle = data["logs"], data["toggle"]
-            temprole = "No temporary role set, use `[p]verifyset temprole` to use one."
-            autoroles = "See `{prefix}verifyset autorole list` for a list of roles given.".format(
-                prefix=ctx.prefix
-            )
-            if role_config[0]:
-                temprole = discord.utils.get(ctx.guild.roles, id=role_config[0])
+        if ctx.invoked_subcommand is not None:
+            return
 
-            if logs is None:
-                log_info = (
-                    "No channel for logging has been set, use `{prefix}verifyset log`"
-                    "first.".format(prefix=ctx.prefix)
-                )
-            else:
-                log_info = discord.utils.get(ctx.guild.text_channels, id=int(logs))
+        guild = ctx.guild
+        data = await self.config.guild(guild).all()
+        color = await ctx.embed_color()
+        role_config = data["temprole"], data["autoroles"]
+        logs, toggle = data["logs"], data["toggle"]
+        temprole = "No temporary role set, use `[p]verifyset temprole` to use one."
+        autoroles = "See `{prefix}verifyset autorole list` for a list of roles given.".format(
+            prefix=ctx.prefix
+        )
+        if role_config[0]:
+            temprole = discord.utils.get(ctx.guild.roles, id=role_config[0])
 
-            embed = discord.Embed(color=color)
-            embed.title = "{}'s Settings".format(guild.name)
-            embed.description = (
-                "Please make sure you setup the Verification Channel and Selected Role.\nOnce "
-                "that's done, make sure to set the Active to True or else this won't work."
+        if logs is None:
+            log_info = (
+                "No channel for logging has been set, use `{prefix}verifyset log`"
+                "first.".format(prefix=ctx.prefix)
             )
-            embed.add_field(name="Active:", value=toggle, inline=False)
-            embed.add_field(name="Temporary Role:", value=temprole, inline=True)
-            embed.add_field(name="Role to give after verification:", value=autoroles, inline=True)
-            embed.add_field(name="Logging Channel:", value=log_info, inline=True)
-            await ctx.send(embed=embed)
+        else:
+            log_info = discord.utils.get(ctx.guild.text_channels, id=int(logs))
+
+        embed = discord.Embed(color=color)
+        embed.title = "{}'s Settings".format(guild.name)
+        embed.description = (
+            "Please make sure you setup the Verification Channel and Selected Role.\nOnce "
+            "that's done, make sure to set the Active to True or else this won't work."
+        )
+        embed.add_field(name="Active:", value=toggle, inline=False)
+        embed.add_field(name="Temporary Role:", value=temprole, inline=True)
+        embed.add_field(name="Role to give after verification:", value=autoroles, inline=True)
+        embed.add_field(name="Logging Channel:", value=log_info, inline=True)
+        await ctx.send(embed=embed)
 
     # If verification must be activated.
 

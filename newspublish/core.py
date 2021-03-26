@@ -47,7 +47,7 @@ class NewsPublish(BASECOG):
         Returns True if in config, returns False if not.
         """
         config_list = await self.config.guild(guild).news_channels()
-        return True if channel.id in config_list else False
+        return channel.id in config_list
 
     @commands.group(name="publishset")
     @commands.guild_only()

@@ -62,7 +62,6 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         If you put 0 for a channel, it'll remove the character limit.
         `example: [p]charlimit set char #general 0`
         """
-        toggle = characters
         if characters == 0:
             await self.config.channel(channel).character_limit.set(None)
             await ctx.send(f"Done, cleared the character limit for {channel.mention}")
@@ -72,6 +71,7 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
                 pass
         else:
             await self.config.channel(channel).character_limit.set(characters)
+            toggle = characters
             await ctx.send(f"Done, {channel.mention} is now set to {toggle} characters")
             try:
                 self.cache[channel.id]["characters"] = characters
@@ -110,12 +110,12 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         """
         guild = ctx.guild
         config = self.config.guild(guild).message
-        if toggle is True:
+        if toggle:
             await config.set(True)
             await ctx.send(
                 "The bot will now message the users if they exceed the character limit."
             )
-        elif toggle is False:
+        else:
             await config.set(False)
             await ctx.send("The bot will not message the users.")
 
@@ -153,28 +153,34 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         if await self.bot.cog_disabled_in_guild(self, message.guild):
             return False
 
-        if isinstance(message.author, discord.Member):
-            if await self.bot.is_automod_immune(message.author):
-                return False
+        if isinstance(
+            message.author, discord.Member
+        ) and await self.bot.is_automod_immune(message.author):
+            return False
 
         if not self.cache:
             await self.get_cache(guild=message.guild)
-            if not self.cache:
-                return False  # Stops from continuing on
+        if not self.cache:
+            return False  # Stops from continuing on
 
         try:
-            if self.cache[current.id]["characters"]:
-                if len(message.content) > self.cache[current.id]["characters"]:
-                    reasons["character_count"] = True
-                    reasons["send_message"] = True
+            if (
+                self.cache[current.id]["characters"]
+                and len(message.content) > self.cache[current.id]["characters"]
+            ):
+                reasons["character_count"] = True
+                reasons["send_message"] = True
         except KeyError:
             pass
 
         try:
-            if self.cache[current.id]["lines"]:
-                if len(message.content.split("\n")) > self.cache[current.id]["lines"]:
-                    reasons["line_count"] = True
-                    reasons["send_message"] = True
+            if (
+                self.cache[current.id]["lines"]
+                and len(message.content.split("\n"))
+                > self.cache[current.id]["lines"]
+            ):
+                reasons["line_count"] = True
+                reasons["send_message"] = True
         except KeyError:
             pass
 

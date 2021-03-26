@@ -322,8 +322,7 @@ class Reports(BASECOG):
             return
 
         if (
-            reaction.message.embeds
-            and "Moderator Claimed:" in str(reaction.message.embeds[0].fields)
+            "Moderator Claimed:" in str(reaction.message.embeds[0].fields)
             or "has claimed this." in reaction.message.content
             or not reaction.message.embeds
         ):
