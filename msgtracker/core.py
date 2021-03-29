@@ -6,7 +6,7 @@ from typing import Awaitable, Literal
 import discord
 from discord.ext import tasks
 from redbot.core import Config, checks, commands
-from redbot.core.utils.chat_formatting import box, pagify, humanize_number
+from redbot.core.utils.chat_formatting import box, humanize_number, pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu
 from redbot.core.utils.mod import is_mod_or_superior
 from redbot.core.utils.predicates import MessagePredicate
