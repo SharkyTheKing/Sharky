@@ -32,7 +32,6 @@ MEMBER_CONFIG = {"counter": 0}
 
 # @cog_i18n(_)
 
-# Possibly create a task to sync changes to config.
 
 # TODO
 # # Look into red_data_deletions
@@ -123,6 +122,7 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
 
         await ctx.send(status_message)
 
+    @commands.guild_only()
     @commands.command()
     @commands.cooldown(3, 10, commands.BucketType.guild)
     async def messages(self, ctx, user: discord.Member = None):
