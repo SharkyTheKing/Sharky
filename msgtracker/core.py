@@ -6,7 +6,7 @@ from typing import Awaitable, Literal
 import discord
 from discord.ext import tasks
 from redbot.core import Config, checks, commands
-from redbot.core.utils.chat_formatting import box, pagify
+from redbot.core.utils.chat_formatting import box, pagify, humanize_number
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu
 from redbot.core.utils.mod import is_mod_or_superior
 from redbot.core.utils.predicates import MessagePredicate
@@ -140,7 +140,7 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
         embed = discord.Embed(color=discord.Color.random(), timestamp=datetime.datetime.utcnow())
         embed.title = "Messages"
         embed.description = "{user} has {count} messages".format(
-            user=user.display_name, count=count
+            user=user.display_name, count=humanize_number(count)
         )
         await ctx.send(embed=embed)
 
@@ -208,12 +208,12 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
                 if user_id != ctx.author.id:
                     embed_message += (
                         f"{f'{pos}.': <{pound_len+2}} "
-                        f"{counter['counter']: <{top_message_len + 6}} {user}\n"
+                        f"{humanize_number(counter['counter']): <{top_message_len + 6}} {user}\n"
                     )
                 else:
                     embed_message += (
                         f"{f'{pos}.': <{pound_len+2}} "
-                        f"{counter['counter']: <{top_message_len + 6}} <<{ctx.author.display_name}>>\n"
+                        f"{humanize_number(counter['counter']): <{top_message_len + 6}} <<{ctx.author.display_name}>>\n"
                     )
 
                 if pos % 10 == 0:
