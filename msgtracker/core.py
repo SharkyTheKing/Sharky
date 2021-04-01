@@ -123,6 +123,53 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
         await ctx.send(status_message)
 
     @commands.guild_only()
+    @commands.command(name="msgtop10")
+    @commands.cooldown(3, 15, commands.BucketType.guild)
+    async def message_top_10(self, ctx: commands.Context):
+        """
+        Displays the top 10 members in the leaderboard
+        """
+        await self.update_guild_config_from_cache(ctx.guild)
+
+        async with ctx.typing():
+            all_members = await self.config.all_members(ctx.guild)
+            sorting_list = sorted(all_members.items(), key=lambda x: x[1]["counter"], reverse=True)
+
+            top_10 = sorting_list[:10]
+
+            pound_len = len(str(len(sorting_list)))
+            top_message_len = len(str(sorting_list[0][1]["counter"]))
+
+            embed_message = ""
+
+            embed_header = "{pound:{pound_len}}{score:{bal_len}}{name:2}\n".format(
+                pound="#",
+                name="Name",
+                score="Messages",
+                bal_len=top_message_len + 8,
+                pound_len=pound_len + 2,
+            )
+
+            pos = 1
+            embed_message = embed_header
+            embed = discord.Embed()
+            embed.title = f"{ctx.guild.name}'s top 10 members"
+
+            for user_id, counter in top_10:
+                user = ctx.guild.get_member(user_id).display_name
+                if user is None:
+                    user = user_id
+
+                embed_message += (
+                    f"{f'{pos}.': <{pound_len+2}} "
+                    f"{humanize_number(counter['counter']): <{top_message_len + 6}} {user}\n"
+                )
+                pos += 1
+            embed.description = box(embed_message, lang="md")
+
+        await ctx.send(embed=embed)
+
+    @commands.guild_only()
     @commands.command()
     @commands.cooldown(3, 10, commands.BucketType.guild)
     async def messages(self, ctx, user: discord.Member = None):
