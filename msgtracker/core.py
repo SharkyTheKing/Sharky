@@ -344,7 +344,9 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
             for user in config_info[guild]:
                 guild_ob = self.bot.get_guild(guild)
                 if not guild_ob:
-                    guild_ob = await self.bot.fetch_guild(guild)
+                    removing_guild = discord.Object(guild)
+                    await self.config.clear_all_members(removing_guild)
+                    continue
                 member = guild_ob.get_member(user)
                 if not member:
                     try:
