@@ -78,21 +78,9 @@ class ModCommands:
         if not confirm and message is None:
             return await ctx.send("Okay, won't delete the server's record.")
 
-        member_infos = await self.config.all_members(ctx.guild)
-        if not member_infos:
-            return await ctx.send("There's no record kept. Nothing to clear.")
-        for member in member_infos:
-            try:
-                user = ctx.guild.get_member(member)
-                await self.config.member(user).clear()
-            except (discord.Forbidden, discord.NotFound):
-                try:
-                    user = await ctx.guild.fetch_member(member)
-                    await self.config.member(user).clear()
-                except (discord.Forbidden, discord.NotFound):
-                    await self.config.member_from_ids(ctx.guild.id, member).clear()
+        await self.config.clear_all_members(ctx.guild)
 
-        await ctx.send("Cleared guild.")
+        await ctx.send("Done. Wiped guild's message history.")
 
     @messagecounter_settings.command(name="enable", usage="")
     async def enable_disable_system(self, ctx):
