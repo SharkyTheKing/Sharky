@@ -3,7 +3,7 @@
         "Sharky The King"
     ],
     "name": "Message Tracker",
-    "install_msg": "Thank you for installing msgtracker! Please note you can disable members from having access to `[p]trackignore`.",
+    "install_msg": "Thank you for installing msgtracker! Please note you can disable members from having access to `[p]trackignore` if needed.",
     "description": "Message tracker counter, count how many people have messaged in your server and display it in a leaderboard.",
     "short": "Message Tracker",
     "tags": [
@@ -12,5 +12,5 @@
         "Leaderboard"
     ],
     "type": "COG",
-    "end_user_data_statement": "This cog stores User IDs and counts how many messages you send in a server, unless you / the staff of the server has set you ignored from the bot. This cog is accepting full removal and blocking."
+    "end_user_data_statement": "This cog stores User IDs and how many messages you have sent to a server that has this enabled. It does NOT store the message contents, only counting how many you've sent.\n\nYou can disable this function by going into the server of your choosing and type `[p]trackignore`, assuming the bot owner hasn't disabled this function.\n\nThis cog will support data removal requests."
 }
