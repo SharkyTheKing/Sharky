@@ -298,9 +298,12 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
 
     @tasks.loop(minutes=5)
     async def task_update_config(self):
-        await self.bot.wait_until_red_ready()
         await self.update_config_from_cache()
         await self.remove_non_members_from_config()
+
+    @task_update_config.before_loop
+    async def before_task_update_config(self):
+        await self.bot.wait_until_red_ready()
 
     async def update_guild_config_from_cache(self, guild: discord.Guild) -> bool:
         """
