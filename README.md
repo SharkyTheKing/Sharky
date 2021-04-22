@@ -26,6 +26,11 @@ Commands:
 - Lockdownset Lockmsg: Gives the bot a message to put in the channels if the Lockdown command is thrown.
 - Lockdownset Unlockmsg: Gives the bot a message to put in channels if the UnLockdown comand is thrown.
 
+## MsgTracker
+Counts how many messages a person sends in the guild if enabled. Sorts them into a leaderboard to display, allows for the members to set themselves to be ignored from the bot. Staff members have to allow them to be tracked if the member changes their mind.
+
+> Note: As a bot owner, you have the ability to disable the command that sets members to be ignored. This is up to you, though this Cog will still handle data deletions regardless of the command setting.
+
 ## NameGen
 Gives a random name based on first name and last name lists created by you.
 
