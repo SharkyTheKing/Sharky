@@ -144,7 +144,7 @@ class NewsPublish(BASECOG):
     @publishset_blacklist.command(name="clear")
     async def publishset_blacklist_clear(self, ctx):
         """Clear the newspublish blacklist."""
-        blacklist = async with self.config.guild(ctx.guild).blacklist() as b:
+        async with self.config.guild(ctx.guild).blacklist() as b:
             if not b:
                 return await ctx.send("There are no users on the newspublish blacklist.")
             b.clear()
