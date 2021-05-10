@@ -4,7 +4,7 @@ from typing import Optional
 
 import discord
 from redbot.core import Config, checks, commands
-from redbot.core.utils.chat_formatting import pagify
+from redbot.core.utils.chat_formatting import pagify, box
 
 DEF_GUILD = {
     "news_channels": [],
@@ -149,7 +149,7 @@ class NewsPublish(BASECOG):
                 annotation = f"({user_obj})"
             message += f"\t{user} {annotation}"
         for page in pagify(message):
-            await ctx.send(page)
+            await ctx.send(box(page, lang="yaml"))
 
     @publishset_blacklist.command(name="clear")
     async def publishset_blacklist_clear(self, ctx):
