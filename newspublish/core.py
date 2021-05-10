@@ -28,9 +28,7 @@ class NewsPublish(BASECOG):
     def __init__(self, bot):
         self.bot = bot
         self.log = logging.getLogger("red.cogs.newspublish")
-        self.config = Config.get_conf(
-            self, identifier=23462345, force_registration=True
-        )
+        self.config = Config.get_conf(self, identifier=23462345, force_registration=True)
         self.config.register_guild(**DEF_GUILD)
 
     async def red_delete_data_for_user(self, **kwargs):
@@ -79,14 +77,10 @@ class NewsPublish(BASECOG):
                 channel_obj = discord.utils.get(ctx.guild.channels, id=channel)
 
                 if not channel_obj:
-                    async with self.config.guild(
-                        ctx.guild
-                    ).news_channels() as news_chan:
+                    async with self.config.guild(ctx.guild).news_channels() as news_chan:
                         news_chan.remove(channel)
                     continue
-
                 list_of_channels.append(channel_obj)
-
         if list_of_channels:
             channels = ", ".join(chan.mention for chan in list_of_channels)
         else:
@@ -98,12 +92,8 @@ class NewsPublish(BASECOG):
             value="<#{}>".format(alert_channel) if alert_channel else "None",
         )
         embed.add_field(name="News Channel", value=channels, inline=False)
-        embed.add_field(
-            name="Alert Fails", value="Enabled" if failed_alerts else "Disabled"
-        )
-        embed.add_field(
-            name="Alert Success", value="Enabled" if success_alerts else "Disabled"
-        )
+        embed.add_field(name="Alert Fails", value="Enabled" if failed_alerts else "Disabled")
+        embed.add_field(name="Alert Success", value="Enabled" if success_alerts else "Disabled")
         await ctx.send(embed=embed)
 
     @publish_settings.group(name="blacklist", aliases=["blocklist", "ignoredlist"])
@@ -118,9 +108,7 @@ class NewsPublish(BASECOG):
                 b.append(member.id)
                 await ctx.send(f"{member.name} was added to the newspublish blacklist.")
             else:
-                await ctx.send(
-                    f"{member.name} is already on the newspublish blacklist."
-                )
+                await ctx.send(f"{member.name} is already on the newspublish blacklist.")
 
     @publishset_blacklist.command(name="remove")
     async def publishset_blacklist_remove(self, ctx, member: discord.Member):
@@ -128,9 +116,7 @@ class NewsPublish(BASECOG):
         async with self.config.guild(ctx.guild).blacklist() as b:
             if member.id in b:
                 b.remove(member.id)
-                await ctx.send(
-                    f"{member.name} was removed from the newspublish blacklist."
-                )
+                await ctx.send(f"{member.name} was removed from the newspublish blacklist.")
             else:
                 await ctx.send(f"{member.name} is not on the newspublish blacklist.")
 
@@ -156,9 +142,7 @@ class NewsPublish(BASECOG):
         """Clear the newspublish blacklist."""
         async with self.config.guild(ctx.guild).blacklist() as b:
             if not b:
-                return await ctx.send(
-                    "There are no users on the newspublish blacklist."
-                )
+                return await ctx.send("There are no users on the newspublish blacklist.")
             b.clear()
             await ctx.tick()
 
@@ -170,24 +154,18 @@ class NewsPublish(BASECOG):
         """
         if not channel.is_news():
             return await ctx.send("{} is not a News Channel.".format(channel.mention))
-
         if channel.permissions_for(ctx.guild.me).manage_messages is False:
             return await ctx.send(
                 "I do not have `manage_messages` in {} to publish. Please adjust my permissions.".format(
                     channel.mention
                 )
             )
-
         if await self.is_in_list(guild=ctx.guild, channel=channel):
             return await ctx.send(
-                "{} is already in the publish list. Nothing for me to add.".format(
-                    channel.mention
-                )
+                "{} is already in the publish list. Nothing for me to add.".format(channel.mention)
             )
-
         async with self.config.guild(ctx.guild).news_channels() as news:
             news.append(channel.id)
-
         await ctx.send("Added {} to publish watchlist.".format(channel.mention))
 
     @publish_settings.group(name="alert")
@@ -229,27 +207,20 @@ class NewsPublish(BASECOG):
         """
         if not await self.is_in_list(guild=ctx.guild, channel=channel):
             return await ctx.send(
-                "{} is not in the publish list. Nothing for me to remove.".format(
-                    channel.mention
-                )
+                "{} is not in the publish list. Nothing for me to remove.".format(channel.mention)
             )
-
         async with self.config.guild(ctx.guild).news_channels() as news:
             news.remove(channel.id)
-
         await ctx.send("Removed {} from the publish watchlist.".format(channel.mention))
 
     @alert_settings.command(name="channel")
-    async def alert_moderators_channel(
-        self, ctx, channel: Optional[discord.TextChannel]
-    ):
+    async def alert_moderators_channel(self, ctx, channel: Optional[discord.TextChannel]):
         """
         Sends alert to the channel if bot failed to publish
         """
         if channel is None:
             await self.config.guild(ctx.guild).alert_channel.set(None)
             return await ctx.send("Done. Cleared the alert channel.")
-
         if (
             await self.config.guild(ctx.guild).notify_failed() is False
             and await self.config.guild(ctx.guild).notify_success() is False
@@ -257,7 +228,6 @@ class NewsPublish(BASECOG):
             await ctx.send(
                 "**Warning: This will not send anything if the publish fails / succeeds. Please enable either of these options.**"
             )
-
         await self.config.guild(ctx.guild).alert_channel.set(channel.id)
         await ctx.send("Done. Set alert channel to {}".format(channel.mention))
 
@@ -270,32 +240,22 @@ class NewsPublish(BASECOG):
 
         if not isinstance(message.guild, discord.Guild):
             return
-
         if await self.bot.cog_disabled_in_guild(self, message.guild):
             return
-
         if not await self.is_in_list(guild=guild, channel=channel):
             return
-
         async with self.config.guild(message.guild).blacklist() as b:
             if message.author.id in b:
                 return
-
         try:
             await asyncio.wait_for(message.publish(), timeout=60)
-            self.log.info(
-                "Published message in {} - {}".format(message.guild.id, channel.name)
-            )
+            self.log.info("Published message in {} - {}".format(message.guild.id, channel.name))
             return await self.send_alert_message(message=message, alert_type="Success")
         except asyncio.TimeoutError:
             self.log.info(
-                "Failed to publish message in {} - {}".format(
-                    message.guild.id, channel.name
-                )
+                "Failed to publish message in {} - {}".format(message.guild.id, channel.name)
             )
-            return await self.send_alert_message(
-                message=message, alert_type="HTTPException"
-            )
+            return await self.send_alert_message(message=message, alert_type="HTTPException")
 
     async def send_alert_message(self, message, alert_type):
         """
@@ -315,10 +275,11 @@ class NewsPublish(BASECOG):
         if alert_type == "HTTPException":
             if failed_alerts is False:  # Don't send alerts if this isn't enabled.
                 return
-
             embed.title = "Failed Publish"
-            embed.description = "Can't publish [message in {}]({}). Hit 10 publish per user cap.".format(
-                channel.mention, message.jump_url
+            embed.description = (
+                "Can't publish [message in {}]({}). Hit 10 publish per user cap.".format(
+                    channel.mention, message.jump_url
+                )
             )
 
             try:
@@ -329,11 +290,9 @@ class NewsPublish(BASECOG):
                         guild.id, alert_channel
                     )
                 )
-
         if alert_type == "Success":
             if success_alerts is False:  # Don't send alerts if this isn't enabled.
                 return
-
             embed.title = "Success Publish"
             embed.description = "[Published new message in {}.]({})".format(
                 channel.mention, message.jump_url
