@@ -278,7 +278,7 @@ class NewsPublish(BASECOG):
             return
 
         async with self.config.guild(message.guild).blacklist() as b:
-            if not message.author.id in b:
+            if message.author.id in b:
                 return
 
         try:
