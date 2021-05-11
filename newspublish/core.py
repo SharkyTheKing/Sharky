@@ -4,7 +4,7 @@ from typing import Optional
 
 import discord
 from redbot.core import Config, checks, commands
-from redbot.core.utils.chat_formatting import pagify, box
+from redbot.core.utils.chat_formatting import box, pagify
 
 DEF_GUILD = {
     "news_channels": [],
