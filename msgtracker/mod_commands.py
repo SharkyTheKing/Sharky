@@ -14,7 +14,7 @@ class ModCommands:
 
     @commands.guild_only()
     @checks.mod_or_permissions(manage_channels=True)
-    @commands.group(name="msgtrackset", aliases=["msgtset"])
+    @commands.group(name="mtset", aliases=["msgtset"])
     async def messagecounter_settings(self, ctx):
         """
         Message Count Settings.
@@ -32,6 +32,97 @@ class ModCommands:
         Allows you to nuke someone's history from record or adjust their count.
         """
         pass
+
+    @checks.is_owner()
+    @admin_control.command(name="nukeconfig")
+    async def nuke_message_config(self, ctx):
+        """
+        [BOT OWNER] Nukes all recorded counters.
+
+        This will nuke every messages that's been counted. Do so at your own risk.
+        """
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        await ctx.send(
+            "Are you sure you want to nuke all member's config? This will reset counters for everyone on every server. (Yes/No)"
+        )
+
+        try:
+            confirm_action = await ctx.bot.wait_for("message", check=check, timeout=60)
+        except asyncio.TimeoutError:
+            await ctx.send("You took too long to reply...")
+            return False
+
+        if confirm_action.content.lower() != "yes":
+            await ctx.send("Okay. Won't nuke config.")
+            return
+
+        await self.config.clear_all_members()
+        await ctx.send("Done. Config has been nuked.")
+
+    @checks.is_owner()
+    @admin_control.command(name="blockignore")
+    async def block_user_ignoring(self, ctx):
+        """
+        [BOT OWNER] Disables `[p]trackignore` command for users
+        """
+        current_setting = await self.config.disable_block_commands()
+
+        if current_setting is False:
+            await self.config.disable_block_commands.set(True)
+            return await ctx.send("Members can no longer set the bot to ignore them.")
+        else:
+            await self.config.disable_block_commands.set(False)
+            return await ctx.send("Members can set the bot to ignore them now.")
+
+    @checks.is_owner()
+    @admin_control.command(name="cache")
+    async def message_track_cache(self, ctx):
+        """
+        [BOT OWNER] Check cached messages counter for this server.
+        """
+        if not self.counted_message:
+            return await ctx.send("No messages tracked.")
+
+        list_words = []
+
+        try:
+            sorting_list = sorted(
+                self.counted_message[ctx.guild.id].items(),
+                key=lambda x: x[1]["message"],
+                reverse=True,
+            )
+        except KeyError:
+            return await ctx.send(
+                "Sorry, there's currently no messages being tracked for this server."
+            )
+
+        for userid, counter in sorting_list:
+            list_words.append("{} {} messages".format(userid, counter["message"]))
+
+        if not list_words:
+            return False
+
+        message_to_user = "Leaderboard:"
+
+        for msg in list_words:
+            message_to_user += "\n\t- {}".format(msg)
+
+        for page in pagify(message_to_user):
+            await ctx.send(box(page))
+
+    @checks.is_owner()
+    @admin_control.command(name="updateconfig")
+    async def update_message_config(self, ctx):
+        """
+        [BOT OWNER] Updates to config manually
+        """
+        if not self.counted_message:
+            return await ctx.send("Nothing to update")
+        await self.update_config_from_cache()
+        await ctx.send("Done. Config updated and cache reset.")
 
     @admin_control.command()
     async def counter(self, ctx, member: discord.Member, points: int):
@@ -203,8 +294,8 @@ class ModCommands:
         """
         Display guild specific settings.
 
-        This will not display blocked users, please use `[p]msgtrackset ignorelist`.
-        This will not display ignored channels, please use `[p]msgtrackset channellist`.
+        This will not display blocked users, please use `[p]mtset ignorelist`.
+        This will not display ignored channels, please use `[p]mtset channellist`.
         """
         guild_config = await self.config.guild(ctx.guild).all()
         block_info = await self.config.disable_block_commands()

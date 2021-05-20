@@ -11,7 +11,6 @@ from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu
 from redbot.core.utils.mod import is_mod_or_superior
 from redbot.core.utils.predicates import MessagePredicate
 
-from .dev_commands import MessageTrackerDev
 from .mod_commands import ModCommands
 
 # from redbot.core.i18n import Translator, cog_i18n
@@ -46,7 +45,7 @@ def customcheck():
     return commands.check(is_config_active)
 
 
-class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
+class MsgTracker(BASECOG, ModCommands):
     """
     Tracks how many messages people send.
 
@@ -72,6 +71,20 @@ class MsgTracker(BASECOG, MessageTrackerDev, ModCommands):
         context = super().format_help_for_context(ctx)
         authors = ", ".join(self.__author__)
         return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
+
+    async def red_delete_data_for_user(
+        self,
+        *,
+        requester: Literal["discord_deleted_user", "owner", "user", "user_strict"],
+        user_id: int,
+    ):
+        """
+        Deletes Data from the user upon request.
+        """
+        config_info = await self.config.all_guilds()
+        for guild_id, members in config_info.items():
+            if user_id in members:
+                await self.config.member_from_ids(guild_id, user_id).clear()
 
     async def _return_yes_or_no(self, ctx):
         """
