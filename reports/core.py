@@ -5,7 +5,12 @@ import discord
 from redbot.core import Config, checks, commands
 
 BASECOG = getattr(commands, "Cog", object)
-DEF_GUILD = {"report_channel": None, "emote_reactions": False, "claim_reports": False}
+DEF_GUILD = {
+    "report_channel": None,
+    "emote_reactions": False,
+    "claim_reports": False,
+    "recieve_dms": [],
+}
 
 # TODO Add reportdm command to disable dms on reports. To avoid annoyed members.
 
@@ -18,7 +23,7 @@ class Reports(BASECOG):
     """
 
     __author__ = ["SharkyTheKing"]
-    __version__ = "1.0.1"
+    __version__ = "1.1.0"
 
     def __init__(self, bot):
         self.bot = bot
@@ -37,6 +42,37 @@ class Reports(BASECOG):
         context = super().format_help_for_context(ctx)
         authors = ", ".join(self.__author__)
         return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
+
+    @commands.guild_only()
+    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.command(usage="")
+    async def reportdm(self, ctx):
+        """
+        Enables/Disables the messages the bot sends on report
+
+        By default this changes depending on your current setting.
+        """
+        try:
+            await ctx.message.delete()
+        except (discord.Forbidden, discord.HTTPException):
+            pass
+
+        status = None
+        async with self.config.guild(ctx.guild).recieve_dms() as dmreport:
+            if ctx.author.id not in dmreport:
+                dmreport.append(ctx.author.id)
+                status = True
+            else:
+                dmreport.remove(ctx.author.id)
+                status = False
+
+        await ctx.author.send(
+            "Done. You will {status}".format(
+                status="not recieve DMs when you report."
+                if status
+                else "now recieve DMs when you report."
+            )
+        )
 
     @commands.guild_only()
     @commands.cooldown(2, 15, commands.BucketType.user)
@@ -61,6 +97,7 @@ class Reports(BASECOG):
                 )
             except (discord.Forbidden, discord.NotFound):
                 pass
+
         try:
             await ctx.message.delete()
         except (discord.Forbidden, discord.HTTPException):
@@ -109,6 +146,9 @@ class Reports(BASECOG):
             self.log.warning("Unable to send message in {}".format(channel_report))
         except discord.HTTPException as e:
             self.log.warning("HTTPException {} - {}".format(e.code, e.status))
+
+        if ctx.author.id in await self.config.guild(ctx.guild).recieve_dms():
+            return
 
         try:
             await ctx.author.send(
