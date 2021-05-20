@@ -49,7 +49,7 @@ class MsgTracker(BASECOG, ModCommands):
     """
     Tracks how many messages people send.
 
-    Idea prompted by ShinJuri Discord, specifically Frostyy#1313 (526672641701183509)
+    Idea prompted by Esports Discord, specifically Frostyy#1313 (526672641701183509)
     """
 
     __author__ = ["SharkyTheKing"]
