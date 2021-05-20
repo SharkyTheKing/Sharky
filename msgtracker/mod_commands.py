@@ -277,14 +277,14 @@ class ModCommands:
         """
         ignore_staffs = await self.config.guild(ctx.guild).ignore_staff()
         if ignore_staffs is False:
-            await self.config.guild(ctx.guild).enabled_system.set(True)
+            await self.config.guild(ctx.guild).ignore_staff.set(True)
             return await ctx.send(
-                "Will now ignore staff members, as assigned by the bot in [{}]set.".format(
+                "Will now ignore staff members, as assigned by the bot in `{}set.`".format(
                     ctx.prefix
                 )
             )
         else:
-            await self.config.guild(ctx.guild).enabled_system.set(False)
+            await self.config.guild(ctx.guild).ignore_staff.set(False)
             return await ctx.send("Will now listen to staff members.")
 
     @messagecounter_settings.command(
