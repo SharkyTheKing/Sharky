@@ -2,7 +2,7 @@
 Codes that I've been working on for use, feedback and issues are welcomed!
 
 ## Where to find me
-| [Red Cog Support](https://discord.gg/GET4DVk) | [Personal Server](https://discord.gg/SKEtjnA) |
+[Red Cog Support](https://discord.gg/GET4DVk) | [Personal Server](https://discord.gg/SKEtjnA)
 
 ## Install
 These codes are for [Red Discord Bot](https://github.com/Cog-Creators/Red-DiscordBot), you MUST have a up-todate RedBot to use and/or install these codes. 
