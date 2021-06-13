@@ -120,6 +120,8 @@ class MorseShark(BASECOG):
     async def morse(self, ctx):
         """
         Decode or Encode Morse code!
+
+        If you would like to help add support for different characters/morse codes. Please contact me through the [Cog Support](https://discord.gg/GET4DVk) server. I'm happy to work with you to add more features.
         """
         pass
 
