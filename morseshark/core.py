@@ -58,8 +58,24 @@ class MorseShark(BASECOG):
             "---..": "8",
             "----.": "9",
             "-----": "0",
+            "--..--": ",",
+            "..--..": "?",
+            "-.-.--": "!",
+            "---...": ":",
+            ".-..-.": '"',
+            ".----.": "`",
+            "-...-": "=",
+            "-.--.": "(",
+            "-.--.-": ")",
+            ".-...": "&",
+            "-.-.-.": ";",
+            ".-.-.": "+",
+            "..--.-": "_",
+            "...-..-": "$",
+            ".--.-.": "@",
         }
-        self.character_check = re.compile(r"(?i)[a-z0-9]+")
+        # need to double check ".----.": "`",in the future
+        self.character_check = re.compile(r"(?i)[a-z0-9@$_+;&)(+`\":!\?,]+")
         self.morse_check = re.compile(r"(?i)[-.\\]+")
 
     async def red_delete_data_for_user(self, **kwargs):
@@ -92,7 +108,7 @@ class MorseShark(BASECOG):
         alpha_code = {}
         alpha_code = {v: k for k, v in self.morse_code.items()}
         word_list = ""
-        string = self.split(message.lower().strip("!@#$%^&*()_+<>?/,"))
+        string = self.split(message.lower().strip("#%^*<>/,"))
         for s in string:
             if s in alpha_code:
                 word_list += "{} ".format(alpha_code[s])
@@ -104,8 +120,6 @@ class MorseShark(BASECOG):
     async def morse(self, ctx):
         """
         Decode or Encode Morse code!
-
-        Purely for fun
         """
         pass
 
@@ -116,7 +130,7 @@ class MorseShark(BASECOG):
 
         You must provide only morse characters. `-` or `.` The only exception is `/` to explain where each words are.
 
-        Example: `[p]decode .. / .- -- / ... .... .- .-. -.- -.--`
+        Example: `[p]morse decode .. / .- -- / ... .... .- .-. -.- -.-- -.-.--`
         """
         confirm_decode = self.morse_check.match(message)
         if confirm_decode is None:
@@ -125,6 +139,11 @@ class MorseShark(BASECOG):
                 "the only exception is `/` to explain where each words are."
             )
         decoded = self.decode_morse(message)
+        if not decoded:
+            return await ctx.send(
+                "Sorry. I was unable to decode the morse code string.\n"
+                "If this is a recurring issue, please contact Sharky through red's cog support server."
+            )
         for page in pagify(decoded):
             await ctx.send(page)
 
@@ -143,7 +162,7 @@ class MorseShark(BASECOG):
         if not encoded:
             return await ctx.send(
                 "Was unable to encode your text into morse code."
-                "\nIf this is a reoccuring issue, please reach out to my support channel."
+                "\nIf this is a recurring issue, please reach out to my support channel."
                 " Which is in red's cog support server."
             )
         for page in pagify(encoded):
