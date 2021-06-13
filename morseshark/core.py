@@ -1,7 +1,8 @@
-import discord
-from redbot.core import commands, checks
-from redbot.core.utils.chat_formatting import pagify
 import re
+
+import discord
+from redbot.core import checks, commands
+from redbot.core.utils.chat_formatting import pagify
 
 BASECOG = getattr(commands, "Cog", object)
 
