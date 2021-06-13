@@ -10,6 +10,9 @@ BaseCog = getattr(commands, "Cog", object)
 class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you know about humor.
     """Limit the amount of characters / lines per channel"""
 
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
+
     def __init__(self, bot: Red):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=98757087587)
@@ -24,6 +27,11 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
         self.cache = {}
         self.manual = False  # If set to True then requires manual input
         self.log = logging.getLogger("red.cogs.charlimit")
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
 
     async def red_delete_data_for_user(self, **kwargs):
         """

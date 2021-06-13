@@ -1,5 +1,9 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Support
+  - name: Cog Support Server
+    url: https://discord.gg/GET4DVk
+    about: Check \#support_othercogs and you can find me there for further help / questions!
+
+  - name: Personal Support Server
     url: https://discord.gg/SKEtjnA
-    about: For questions on how to use my cogs
+    about: Personal discord server, though I have a channel for bot/cog supports if needed.
