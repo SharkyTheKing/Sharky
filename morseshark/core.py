@@ -1,5 +1,6 @@
 import discord
 from redbot.core import commands, checks
+from redbot.core.utils.chat_formatting import pagify
 import re
 
 BASECOG = getattr(commands, "Cog", object)
@@ -7,8 +8,15 @@ BASECOG = getattr(commands, "Cog", object)
 
 class MorseShark(BASECOG):
     """
-    In progress
+    Encoder/Decoder for morse codes!
+
+    You can decode morse code into text or encode text into morse code.
+
+    This was a simple cog to make, so if you want to take from this for your own, feel free.
     """
+
+    __author__ = ["SharkyTheKing"]
+    __version__ = "1.0.0"
 
     def __init__(self, bot):
         self.bot = bot
@@ -53,6 +61,17 @@ class MorseShark(BASECOG):
         self.character_check = re.compile(r"(?i)[a-z0-9]+")
         self.morse_check = re.compile(r"(?i)[-.\\]+")
 
+    async def red_delete_data_for_user(self, **kwargs):
+        """
+        Nothing to delete
+        """
+        return
+
+    def format_help_for_context(self, ctx: commands.Context) -> str:
+        context = super().format_help_for_context(ctx)
+        authors = ", ".join(self.__author__)
+        return f"{context}\n\nAuthor: {authors}\nVersion: {self.__version__}"
+
     @staticmethod
     def split(message):
         return [char for char in message]
@@ -87,9 +106,17 @@ class MorseShark(BASECOG):
 
         Purely for fun
         """
+        pass
 
     @morse.command()
     async def decode(self, ctx, *, message: str):
+        """
+        Decode morse code into text!
+
+        You must provide only morse characters. `-` or `.` The only exception is `/` to explain where each words are.
+
+        Example: `[p]decode .. / .- -- / ... .... .- .-. -.- -.--`
+        """
         confirm_decode = self.morse_check.match(message)
         if confirm_decode is None:
             return await ctx.send(
@@ -97,15 +124,26 @@ class MorseShark(BASECOG):
                 "the only exception is `/` to explain where each words are."
             )
         decoded = self.decode_morse(message)
-        await ctx.send(decoded)
+        for page in pagify(decoded):
+            await ctx.send(page)
 
     @morse.command()
     async def encode(self, ctx, *, message: str):
+        """
+        Encode text into morse code!
+
+        You must provide alphanumeric characters/numbers only.
+        """
         confirm_letters = self.character_check.match(message)
         if not confirm_letters:
             return await ctx.send("You must provide only alphanumeric characters / numbers.")
 
         encoded = self.encode_morse(message)
         if not encoded:
-            return await ctx.send("Something happened. Please try again.")
-        await ctx.send(encoded)
+            return await ctx.send(
+                "Was unable to encode your text into morse code."
+                "\nIf this is a reoccuring issue, please reach out to my support channel."
+                " Which is in red's cog support server."
+            )
+        for page in pagify(encoded):
+            await ctx.send(page)
