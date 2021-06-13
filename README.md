@@ -29,6 +29,18 @@ Commands:
 - Lockdownset Lockmsg: Gives the bot a message to put in the channels if the Lockdown command is thrown.
 - Lockdownset Unlockmsg: Gives the bot a message to put in channels if the UnLockdown comand is thrown.
 
+## MorseShark
+Allows you to encode string into morsecode and lets you decode morsecode into text. Currently only English's standard text is available, if you'd like to help allow for more customizability, please reach out through the red's cog support server.
+
+This is just a simple morse code cog, if you want to take from this cog and use it in your own example, please feel free to.
+
+> Note: This can be spammy, as it accounts for users who have 4k character limit.
+
+Commands:
+- Morse: Default command group
+- Morse Encode: Encode a string into morse code.
+- Morse Decode: Decodes morse code text into readable text.
+
 ## MsgTracker
 Counts how many messages a person sends in the guild if enabled. Sorts them into a leaderboard to display, allows for the members to set themselves to be ignored from the bot. Staff members have to allow them to be tracked if the member changes their mind.
 
