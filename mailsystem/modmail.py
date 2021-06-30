@@ -40,7 +40,7 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
     **This is currently in testing. Please review the warning message.** `[p]mailset warn`
     """
 
-    __version__ = "0.0.1"
+    __version__ = "0.0.3"
     __author__ = ["SharkyTheKing", "Kreusada"]
 
     def __init__(self, bot):
