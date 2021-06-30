@@ -11,6 +11,7 @@ from .embedmodel import EmbedModels
 from .mail_logic import MailLogic
 from .settings import MailSettings
 from .usercommands import UserCommands
+from .mixins import MetaClass
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -23,6 +24,8 @@ GUILD_CONFIG = {
     "enable_embeds": True,
 }
 
+mixinargs = (MailSettings, UserCommands, BASECOG)
+
 
 def customcheck():
     async def is_config_active(ctx: commands.Context):
@@ -33,7 +36,7 @@ def customcheck():
     return commands.check(is_config_active)
 
 
-class MailSystem(BASECOG, MailSettings, UserCommands):
+class MailSystem(*mixinargs, metaclass=MetaClass):
     """
     Mail System, members DM the bot to send mails for your staff.
 
