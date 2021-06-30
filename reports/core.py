@@ -66,13 +66,14 @@ class Reports(BASECOG):
                 dmreport.remove(ctx.author.id)
                 status = False
 
-        await ctx.author.send(
-            "Done. You will {status}".format(
-                status="not recieve DMs when you report."
-                if status
-                else "now recieve DMs when you report."
-            )
+        message = "Done. You will {status} receive DMs when you report".format(
+            status="not" if status else "now"
         )
+
+        try:
+            await ctx.author.send(message)
+        except discord.HTTPException:
+            await ctx.send(message)
 
     @commands.guild_only()
     @commands.cooldown(2, 15, commands.BucketType.user)
