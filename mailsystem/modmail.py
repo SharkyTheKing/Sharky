@@ -43,7 +43,6 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
     **This is currently in testing. Please review the warning message.** `[p]mailset warn`
     """
 
-
     __version__ = "0.0.3"
     __author__ = ["SharkyTheKing", "Kreusada"]
 
