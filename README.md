@@ -90,7 +90,7 @@ This is a simple report members cog, you set it up and members can report member
 
 Commands:
 - Report: Reports a member, sends to selected channel in server for moderator's preview.
-- ReportDM: Enables/Disables the messages the bot sends on report. By default this changes depending on your current setting.
+- ReportDM: Toggle whether to be DMed when you report.
 - ReportSet Channel: Sets the channel reports goes into.
 - ReportSet Emotes: Sets if the bot automatically adds emotes to the reports sent.
 
