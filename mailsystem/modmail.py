@@ -265,23 +265,6 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
 
         await MailLogic._record_channel_deletion(self, ctx, reason, user_from_channel)
 
-    @checks.is_owner()
-    @commands.command(name="test")
-    async def dev_test(self, ctx):
-        """
-        Testing dev commands
-        """
-        dict_guild = await MailLogic.get_mutual_guilds(self, ctx)
-
-        guild_choice = await MailLogic.get_guild_from_user(
-            self=self, ctx=ctx, dict_guild=dict_guild
-        )
-
-        if not guild_choice:
-            return await ctx.send("Guild choice was not given...or this was an error.")
-
-        await ctx.send(guild_choice)
-
     async def _update_cache(self):
         """
         Update cache with config information
