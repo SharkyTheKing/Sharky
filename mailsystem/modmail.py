@@ -4,14 +4,14 @@ from typing import Optional
 
 import discord
 from redbot.core import Config, checks, commands
-from redbot.core.utils.chat_formatting import box, humanize_list, pagify
+from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.predicates import MessagePredicate
 
 from .embedmodel import EmbedModels
 from .mail_logic import MailLogic
+from .mixins import MetaClass
 from .settings import MailSettings
 from .usercommands import UserCommands
-from .mixins import MetaClass
 
 BASECOG = getattr(commands, "Cog", object)
 
