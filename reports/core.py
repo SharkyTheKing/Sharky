@@ -69,7 +69,7 @@ class Reports(BASECOG):
         message = "Done. You will {status} receive DMs when you report".format(
             status="not" if status else "now"
         )
-        
+
         try:
             await ctx.author.send(message)
         except discord.HTTPException:
