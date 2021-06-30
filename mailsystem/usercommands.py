@@ -4,11 +4,12 @@ import discord
 from redbot.core import commands
 
 from .mail_logic import MailLogic
+from .mixins import MailSystemMixin
 
 # NOTE: For now, don't allow for on_message. I will need to code
 
 
-class UserCommands:
+class UserCommands(MailSystemMixin):
     """
     Commands related to users only.
 

@@ -4,11 +4,12 @@ from typing import Optional
 
 import discord
 from redbot.core import Config, checks, commands
-from redbot.core.utils.chat_formatting import box, humanize_list, pagify
+from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.predicates import MessagePredicate
 
 from .embedmodel import EmbedModels
 from .mail_logic import MailLogic
+from .mixins import MetaClass
 from .settings import MailSettings
 from .usercommands import UserCommands
 
@@ -23,6 +24,8 @@ GUILD_CONFIG = {
     "enable_embeds": True,
 }
 
+mixinargs = (MailSettings, UserCommands, BASECOG)
+
 
 def customcheck():
     async def is_config_active(ctx: commands.Context):
@@ -33,14 +36,14 @@ def customcheck():
     return commands.check(is_config_active)
 
 
-class MailSystem(BASECOG, MailSettings, UserCommands):
+class MailSystem(*mixinargs, metaclass=MetaClass):
     """
     Mail System, members DM the bot to send mails for your staff.
 
     **This is currently in testing. Please review the warning message.** `[p]mailset warn`
     """
 
-    __version__ = "0.0.1"
+    __version__ = "0.0.2"
     __author__ = ["SharkyTheKing", "Kreusada"]
 
     def __init__(self, bot):
@@ -83,11 +86,9 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
         except asyncio.TimeoutError:
             await ctx.send("Took to long to reply, canceling process.")
             return False
-
         if not confirm_yes_no.result:
             await ctx.send("Okay, canceled process.")
             return False
-
         return True
 
     async def _return_channel_or_no(self, ctx: commands.Context):
@@ -103,7 +104,6 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
         except asyncio.TimeoutError:
             await ctx.send("You took too long to reply, canceling action.")
             return False
-
         return message
 
     async def _return_user_object(self, ctx: commands.Context, user_id):
@@ -218,7 +218,6 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
 
         if not channel_cache:
             return await ctx.send("This channel is not tied to a user. Please delete channel.")
-
         user_embed = self._return_embed_to_user(ctx=ctx, contents=contents, toggle=anonymous)
 
         user = await self._return_user_object(ctx, channel_cache)
@@ -226,11 +225,9 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
             return await ctx.send(
                 "Unable to find user. Either this is done in error or they went poof from Discord."
             )
-
         sent_mail = await self._send_user_embed(user, user_embed)
         if not sent_mail:
             return await ctx.send("Unable to send mesasge to user.")
-
         mod_embed = self._return_user_embed_for_mod(ctx=ctx, embed=user_embed, toggle=anonymous)
 
         await ctx.send(embed=mod_embed)
@@ -245,20 +242,16 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
         guild_config = await self.config.guild(ctx.guild).all()
         if ctx.channel.category.id != guild_config["category"]:
             return await ctx.send("This channel is not in the MailSystem category.")
-
         if ctx.channel.id == guild_config["mail_log_channel"]:
             return await ctx.send("You can't close the log channel.")
-
         user_from_channel = self._return_user_tied_to_channel(ctx.channel)
 
         delete_channel = await MailLogic.delete_channel_for_user(self, ctx.channel)
 
         if not delete_channel:
             return await ctx.send("**Error: Unable to delete channel.**")
-
         if not user_from_channel:
             return await MailLogic._record_channel_deletion(self, ctx, reason)
-
         remove_config_cache_info = await MailLogic._remove_channel_info(self, ctx.channel)
 
         # keeping this for future idea
@@ -279,7 +272,6 @@ class MailSystem(BASECOG, MailSettings, UserCommands):
 
         if not guild_choice:
             return await ctx.send("Guild choice was not given...or this was an error.")
-
         await ctx.send(guild_choice)
 
     async def _update_cache(self):
