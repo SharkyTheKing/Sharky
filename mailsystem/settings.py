@@ -6,9 +6,10 @@ from redbot.core import checks, commands
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .embedmodel import EmbedSettings
+from .mixins import MailSystemMixin
 
 
-class MailSettings:
+class MailSettings(MailSystemMixin):
     """
     Staff commands that adjust MailSystem settings
     """
