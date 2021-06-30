@@ -29,6 +29,14 @@ Commands:
 - Lockdownset Lockmsg: Gives the bot a message to put in the channels if the Lockdown command is thrown.
 - Lockdownset Unlockmsg: Gives the bot a message to put in channels if the UnLockdown comand is thrown.
 
+## MailSystem
+> Warning: This is a pre-release, this is not close to being completed, I need more feedback and information from Red users.
+> This means that by installing this cog, you understand there is a risk that issues could happen for you, your bot, or the members using your bot.
+
+I am still working on this cog and thinking of ways to handle different things. Currently, this doesn't support restricting modmail to a specific guild. By installing you are allowing every guild owner (or staff that is considered an admin or has manage_channel permissions) the ability to set this up for their guild.
+
+Until this is fully released, there will be no help for the commands listed in this README. Do not submit random PRs without talking to me or Kreusada, the code is set the way it is for future plans that I won't discuss publicly yet.
+
 ## MorseShark
 Allows you to encode string into morsecode and lets you decode morsecode into text. Currently only English's standard text is available, if you'd like to help allow for more customizability, please reach out through the red's cog support server.
 
