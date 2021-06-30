@@ -11,5 +11,6 @@ class MailSystemMixin(ABC):
         self.config: Config
         self.bot: Red
 
+
 class MetaClass(type(Cog), type(ABC)):
     pass
