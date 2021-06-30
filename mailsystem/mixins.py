@@ -6,7 +6,6 @@ from redbot.core.commands import Cog
 
 
 class MailSystemMixin(ABC):
-
     def __init__(self, *nargs):
         self.config: Config
         self.bot: Red
