@@ -46,7 +46,7 @@ class EmbedModels:
         bool: False - Displays staff name and icon.
         """
         embed = discord.Embed(description=contents, title="{} replied".format(ctx.guild.name))
-        embed.color = self.recieved_mail
+        embed.color = self.received_mail
         embed.timestamp = ctx.message.created_at
 
         if anonymous:
