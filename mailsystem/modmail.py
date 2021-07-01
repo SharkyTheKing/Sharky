@@ -200,7 +200,7 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
     def _return_user_tied_to_channel(self, channel):
         return MailLogic.check_tied_for_channel(self, channel.id)
 
-    @commands.command(usage="<Message To User>")
+    @commands.command(usage="[anonymous=False] <Message To User>")
     @commands.guild_only()
     async def reply(
         self, ctx: commands.Context, anonymous: Optional[bool] = False, *, contents: str
