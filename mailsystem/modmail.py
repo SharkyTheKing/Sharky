@@ -43,7 +43,7 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
     **This is currently in testing. Please review the warning message.** `[p]mailset warn`
     """
 
-    __version__ = "0.0.4"
+    __version__ = "0.0.5"
     __author__ = ["SharkyTheKing", "Kreusada"]
 
     def __init__(self, bot):
@@ -200,7 +200,7 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
     def _return_user_tied_to_channel(self, channel):
         return MailLogic.check_tied_for_channel(self, channel.id)
 
-    @commands.command(usage="<Message To User>")
+    @commands.command(usage="[anonymous=False] <Message To User>")
     @commands.guild_only()
     async def reply(
         self, ctx: commands.Context, anonymous: Optional[bool] = False, *, contents: str
