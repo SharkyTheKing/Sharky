@@ -122,7 +122,8 @@ class EmbedSettings:
         embed.add_field(
             name="Logging Channel",
             value=self.bot.get_channel(config_info["mail_log_channel"]).mention
-            or "No logging category set",
+            if config_info["mail_log_channel"]
+            else "No logging category set",
             inline=False,
         )
 
