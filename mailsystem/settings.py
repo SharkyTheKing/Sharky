@@ -53,10 +53,6 @@ class MailSettings(MailSystemMixin):
             await self.config.guild(ctx.guild).mail_log_channel.set(None)
             return await ctx.send("Will no longer log channel deletions/creations.")
 
-        #  May not make it require same category, we'll see.
-        if channel.category.id != await self.config.guild(ctx.guild).category():
-            return await ctx.send("You must put the logging channel in the MailSystem Category.")
-
         await self.config.guild(ctx.guild).mail_log_channel.set(channel.id)
         await ctx.send("Will now log channel deletions/creations to {}".format(channel.mention))
 
