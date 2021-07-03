@@ -12,6 +12,7 @@ from .mail_logic import MailLogic
 from .mixins import MetaClass
 from .settings import MailSettings
 from .usercommands import UserCommands
+from .devcommands import DevCommands
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -22,9 +23,10 @@ GUILD_CONFIG = {
     "activation": False,
     "mail_log_channel": None,
     "enable_embeds": True,
+    "ignore_users" : []
 }
 
-mixinargs = (MailSettings, UserCommands, BASECOG)
+mixinargs = (MailSettings, UserCommands, DevCommands, BASECOG)
 
 
 def customcheck():

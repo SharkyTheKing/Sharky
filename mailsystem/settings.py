@@ -117,7 +117,7 @@ class MailSettings(MailSystemMixin):
         Displays MailSystem settings
         """
         config_info = await self.config.guild(ctx.guild).all()
-        embed = await EmbedSettings.embed_list_setting(self, ctx, config_info)
+        embed = await EmbedSettings.embed_list_setting(self, ctx, config_info, None)
 
         await ctx.send(embed=embed)
 
