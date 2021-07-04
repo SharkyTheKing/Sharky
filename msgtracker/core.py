@@ -360,8 +360,12 @@ class MsgTracker(BASECOG, ModCommands):
             for user in config_info[guild]:
                 guild_ob = self.bot.get_guild(guild)
                 if not guild_ob:
-                    removing_guild = discord.Object(guild)
-                    await self.config.clear_all_members(removing_guild)
+                    try:
+                        removing_guild = discord.Object(guild)
+                        await self.config.clear_all_members(removing_guild)
+                    except discord.Forbidden:
+                        guild_from_config = self.config.guild_from_id(guild)
+                        await guild_from_config.clear()
                     continue
                 member = guild_ob.get_member(user)
                 if not member:
