@@ -53,7 +53,7 @@ class MsgTracker(BASECOG, ModCommands):
     """
 
     __author__ = ["SharkyTheKing"]
-    __version__ = "1.0.1"
+    __version__ = "1.0.2"
 
     def __init__(self, bot):
         self.bot = bot
@@ -389,7 +389,10 @@ class MsgTracker(BASECOG, ModCommands):
         for guild_id in list_of_ids:
             guild = self.bot.get_guild(guild_id)  # something errored out here
             if not guild:
-                guild = await self.bot.fetch_guild(guild_id)
+                try:
+                    guild = await self.bot.fetch_guild(guild_id)
+                except discord.HTTPException:
+                    continue
             try:
                 user_messages = cache[guild.id]
             except KeyError:
