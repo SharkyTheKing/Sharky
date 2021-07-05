@@ -3,6 +3,7 @@ from typing import Optional
 
 import discord
 from redbot.core import commands, checks
+from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .mixins import MailSystemMixin
@@ -26,7 +27,6 @@ class DevCommands(MailSystemMixin):
         """
         pass
 
-    @checks.is_owner()
     @developer_commands.command()
     async def activemail(self, ctx: commands.Context):
         """
@@ -54,7 +54,6 @@ class DevCommands(MailSystemMixin):
         for page in pagify(message):
             await ctx.send(page)
 
-    @checks.is_owner()
     @developer_commands.command(name="guildconfig")
     async def check_guild_config(self, ctx: commands.Context, guild: discord.Guild):
         """
@@ -75,7 +74,6 @@ class DevCommands(MailSystemMixin):
         """
         await ctx.send("The current version is: `{version}`".format(version=self.__version__))
 
-    @checks.is_owner()
     @developer_commands.command()
     async def blockguild(self, ctx: commands.Context, guild: discord.Guild):
         """
@@ -108,7 +106,6 @@ class DevCommands(MailSystemMixin):
             )
         )
 
-    @checks.is_owner()
     @developer_commands.command()
     async def unblockguild(self, ctx: commands.Context, guild: discord.Guild):
         """
@@ -130,7 +127,6 @@ class DevCommands(MailSystemMixin):
             )
         )
 
-    @checks.is_owner()
     @developer_commands.command()
     async def listblock(self, ctx: commands.Context):
         """
@@ -144,3 +140,19 @@ class DevCommands(MailSystemMixin):
 
         for page in pagify(message):
             await ctx.send(box(page))
+
+    @mailsystem_settings.command(name="warn")
+    async def warn_message_for_owner(self, ctx: commands.Context):
+        """
+        Displays this cog's current warn message.
+        """
+        warn_message = "**Warning: This Cog is still in testing, by installing and USING this Cog, you understand it comes with risks.**\n\nThis pre-release is to gather information, feedback, and issues from the community to improve the code. If you feel uncomfortable using this cog in its current state, uninstall it now.\n\nIf you have feedback or have an issue (bugs, breakage, bot blocking, etc) please send them to the proper place."
+        embed = discord.Embed(
+            title="MailSystem Warning", color=discord.Color.random(), description=warn_message
+        )
+        embed.add_field(name="Current version:", value=self.__version__)
+        embed.add_field(name="Authors:", value=humanize_list(self.__author__))
+        embed.add_field(
+            name="Repo:", value="[Sharky's Cogs](https://github.com/SharkyTheKing/Sharky)"
+        )
+        await ctx.send(embed=embed)

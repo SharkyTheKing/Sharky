@@ -13,6 +13,7 @@ from .mixins import MetaClass
 from .settings import MailSettings
 from .usercommands import UserCommands
 from .devcommands import DevCommands
+from .modcommands import ModCommands
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -26,7 +27,7 @@ GUILD_CONFIG = {
     "ignore_users" : []
 }
 
-mixinargs = (MailSettings, UserCommands, DevCommands, BASECOG)
+mixinargs = (MailSettings, UserCommands, DevCommands, ModCommands, BASECOG)
 
 
 def customcheck():

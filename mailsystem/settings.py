@@ -3,7 +3,6 @@ from typing import Optional
 
 import discord
 from redbot.core import checks, commands
-from redbot.core.utils.chat_formatting import humanize_list
 
 from .embedmodel import EmbedSettings
 from .mixins import MailSystemMixin
@@ -120,23 +119,5 @@ class MailSettings(MailSystemMixin):
         embed = await EmbedSettings.embed_list_setting(self, ctx, config_info, None)
 
         await ctx.send(embed=embed)
-
-    @checks.is_owner()
-    @mailsystem_settings.command(name="warn")
-    async def warn_message_for_owner(self, ctx: commands.Context):
-        """
-        Displays this cog's current warn message.
-        """
-        warn_message = "**Warning: This Cog is still in testing, by installing and USING this Cog, you understand it comes with risks.**\n\nThis pre-release is to gather information, feedback, and issues from the community to improve the code. If you feel uncomfortable using this cog in its current state, uninstall it now.\n\nIf you have feedback or have an issue (bugs, breakage, bot blocking, etc) please send them to the proper place."
-        embed = discord.Embed(
-            title="MailSystem Warning", color=discord.Color.random(), description=warn_message
-        )
-        embed.add_field(name="Current version:", value=self.__version__)
-        embed.add_field(name="Authors:", value=humanize_list(self.__author__))
-        embed.add_field(
-            name="Repo:", value="[Sharky's Cogs](https://github.com/SharkyTheKing/Sharky)"
-        )
-        await ctx.send(embed=embed)
-
 
 # TODO Once things are in proper terms, I will work on autosetup.
