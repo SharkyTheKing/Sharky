@@ -76,9 +76,71 @@ class DevCommands(MailSystemMixin):
         await ctx.send("The current version is: `{version}`".format(version=self.__version__))
 
     @checks.is_owner()
-    @developer_commands.command(hidden=True)
+    @developer_commands.command()
     async def blockguild(self, ctx: commands.Context, guild: discord.Guild):
         """
         Blocks guilds from setting up mailsystem.
+
+        This will completely wipe the guild's config and block them from setting up mailsystem.
+
+        **Arguments:**
+        - ``<guild>``: The guild you're wanting to block.
         """
-        ...
+        if guild in await self.config.ignore_guilds():
+            return await ctx.send("Error. Guild already in block list.")
+
+        await ctx.send(
+            "Are you sure you want to block {guild} ({guild_id})".format(
+                guild=guild.name, guild_id=guild.id
+            )
+        )
+
+        confirmation_message = await self._return_yes_or_no(ctx)
+        if not confirmation_message:
+            return
+
+        await self.config.guild(guild).clear()
+        async with self.config.ignore_guilds() as block_guild:
+            block_guild.append(guild.id)
+        await ctx.send(
+            "Successfully wiped {guild} ({guild_id})'s config and blocked it from setting up mailsystem.".format(
+                guild=guild.name, guild_id=guild.id
+            )
+        )
+
+    @checks.is_owner()
+    @developer_commands.command()
+    async def unblockguild(self, ctx: commands.Context, guild: discord.Guild):
+        """
+        Unblocks a guild from setting up mailsystem.
+
+        This will unblock the guild and allow them to set up mailsystem again.
+
+        **Arguments:**
+        - ``<guild>``: The guild you're wanting to unblock.
+        """
+        if guild not in await self.config.ignore_guilds():
+            return await ctx.send("Error. Guild wasn't in the list.")
+
+        async with self.config.ignore_guilds() as unblock_guild:
+            unblock_guild.remove(guild.id)
+        await ctx.send(
+            "Successfully unblocked {guild} ({guild_id}). They can now setup mailsystem again.".format(
+                guild=guild.name, guild_id=guild.id
+            )
+        )
+
+    @checks.is_owner()
+    @developer_commands.command()
+    async def listblock(self, ctx: commands.Context):
+        """
+        Lists all the guilds that are blocked.
+
+        Will list every guild that is currently blocked from setting up mailsystem.
+        """
+        message = ", ".join(str(ctx.bot.get_guild(w)) for w in await self.config.ignore_guilds())
+        if not message:
+            return await ctx.send("There are no blocked guilds.")
+
+        for page in pagify(message):
+            await ctx.send(box(page))
