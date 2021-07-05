@@ -360,12 +360,8 @@ class MsgTracker(BASECOG, ModCommands):
             for user in config_info[guild]:
                 guild_ob = self.bot.get_guild(guild)
                 if not guild_ob:
-                    try:
-                        removing_guild = discord.Object(guild)
-                        await self.config.clear_all_members(removing_guild)
-                    except discord.Forbidden:
-                        guild_from_config = self.config.guild_from_id(guild)
-                        await guild_from_config.clear()
+                    removing_guild = discord.Object(guild)
+                    await self.config.clear_all_members(removing_guild)
                     continue
                 member = guild_ob.get_member(user)
                 if not member:
@@ -393,7 +389,10 @@ class MsgTracker(BASECOG, ModCommands):
         for guild_id in list_of_ids:
             guild = self.bot.get_guild(guild_id)  # something errored out here
             if not guild:
-                guild = await self.bot.fetch_guild(guild_id)
+                try:
+                    guild = await self.bot.fetch_guild(guild_id)
+                except discord.HTTPException:
+                    continue
             try:
                 user_messages = cache[guild.id]
             except KeyError:
