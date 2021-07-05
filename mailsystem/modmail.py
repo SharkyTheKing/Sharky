@@ -17,7 +17,7 @@ from .devcommands import DevCommands
 BASECOG = getattr(commands, "Cog", object)
 
 CHANNEL_CONFIG = {"user": None}
-GLOBAL_CONFIG = {"enable_commands": True}
+GLOBAL_CONFIG = {"enable_commands": True, "ignore_guilds": []}
 GUILD_CONFIG = {
     "category": None,
     "activation": False,

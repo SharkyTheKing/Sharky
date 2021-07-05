@@ -77,7 +77,7 @@ class DevCommands(MailSystemMixin):
 
     @checks.is_owner()
     @developer_commands.command(hidden=True)
-    async def blockguild(self, ctx: commands.Context):
+    async def blockguild(self, ctx: commands.Context, guild: discord.Guild):
         """
         Blocks guilds from setting up mailsystem.
         """
