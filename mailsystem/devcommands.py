@@ -11,14 +11,14 @@ from .embedmodel import EmbedSettings
 
 class DevCommands(MailSystemMixin):
     """
-    Dev Commands for bot owner and guild staff
+    Dev Commands for bot owner
     """
 
     @commands.group(name="mailset")
     async def mailsystem_settings(self, ctx: commands.Context):
         pass
 
-    @checks.mod_or_permissions(manage_guild=True)
+    @checks.is_owner()
     @mailsystem_settings.group(name="dev")
     async def developer_commands(self, ctx: commands.Context):
         """
