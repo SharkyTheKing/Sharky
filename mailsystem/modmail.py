@@ -32,7 +32,7 @@ mixinargs = (MailSettings, UserCommands, DevCommands, ModCommands, BASECOG)
 
 def customcheck():
     async def is_config_active(ctx: commands.Context):
-        config = ctx.bot.get_cog("MailSystem").config
+        config = ctx.cog.config
         enable_config = await config.enable_commands()
         return False if not enable_config else True
 
@@ -46,7 +46,7 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
     **This is currently in testing. Please review the warning message.** `[p]mailset warn`
     """
 
-    __version__ = "0.1.0"
+    __version__ = "0.1.1"
     __author__ = ["SharkyTheKing", "Kreusada"]
 
     def __init__(self, bot):
