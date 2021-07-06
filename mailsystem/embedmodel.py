@@ -82,18 +82,25 @@ class EmbedSettings:
     Embed models for mailsystem's settings
     """
 
-    async def embed_list_setting(self, ctx: commands.Context, config_info):
+    async def embed_list_setting(
+        self, ctx: commands.Context, config_info, guild: Optional[discord.Guild]
+    ):
         """
         Display config settings to embed
         """
+        if guild:
+            guild = guild
+        else:
+            guild = ctx.guild
+
         embed = discord.Embed(
-            title="{guild_name}'s Mail Settings".format(guild_name=ctx.guild.name),
+            title="{guild_name}'s Mail Settings".format(guild_name=guild.name),
             color=await ctx.embed_colour(),
         )
 
         embed.add_field(
             name="Category Name",
-            value=discord.utils.get(ctx.guild.channels, id=config_info["category"])
+            value=discord.utils.get(guild.channels, id=config_info["category"])
             if config_info["category"]
             else "No category set",
             inline=False,

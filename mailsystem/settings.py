@@ -3,7 +3,6 @@ from typing import Optional
 
 import discord
 from redbot.core import checks, commands
-from redbot.core.utils.chat_formatting import humanize_list
 
 from .embedmodel import EmbedSettings
 from .mixins import MailSystemMixin
@@ -49,6 +48,12 @@ class MailSettings(MailSystemMixin):
 
         If nothing is inputted, it'll clear the results.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         if not channel:
             await self.config.guild(ctx.guild).mail_log_channel.set(None)
             return await ctx.send("Will no longer log channel deletions/creations.")
@@ -61,6 +66,12 @@ class MailSettings(MailSystemMixin):
         """
         Sets whether to use embeds or regular message
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         return await ctx.send(
             "Currently this is unavailable. If you have suggestions or would like to help finish this, please reach out to the cog owner(s)."
         )
@@ -82,6 +93,12 @@ class MailSettings(MailSystemMixin):
 
         If category isn't given, it'll clear the setting.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         if not category:
             await self.config.guild(ctx.guild).category.clear()
             return await ctx.send("No category was provided, so the setting has been cleared.")
@@ -102,6 +119,12 @@ class MailSettings(MailSystemMixin):
         """
         Sets the system to be enabled or disabled
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         if not await self.config.guild(ctx.guild).category():
             return await ctx.send(
                 "There is no category set yet. I cannot be enabled until a category is setup."
@@ -116,26 +139,15 @@ class MailSettings(MailSystemMixin):
         """
         Displays MailSystem settings
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         config_info = await self.config.guild(ctx.guild).all()
-        embed = await EmbedSettings.embed_list_setting(self, ctx, config_info)
+        embed = await EmbedSettings.embed_list_setting(self, ctx, config_info, None)
 
-        await ctx.send(embed=embed)
-
-    @checks.is_owner()
-    @mailsystem_settings.command(name="warn")
-    async def warn_message_for_owner(self, ctx: commands.Context):
-        """
-        Displays this cog's current warn message.
-        """
-        warn_message = "**Warning: This Cog is still in testing, by installing and USING this Cog, you understand it comes with risks.**\n\nThis pre-release is to gather information, feedback, and issues from the community to improve the code. If you feel uncomfortable using this cog in its current state, uninstall it now.\n\nIf you have feedback or have an issue (bugs, breakage, bot blocking, etc) please send them to the proper place."
-        embed = discord.Embed(
-            title="MailSystem Warning", color=discord.Color.random(), description=warn_message
-        )
-        embed.add_field(name="Current version:", value=self.__version__)
-        embed.add_field(name="Authors:", value=humanize_list(self.__author__))
-        embed.add_field(
-            name="Repo:", value="[Sharky's Cogs](https://github.com/SharkyTheKing/Sharky)"
-        )
         await ctx.send(embed=embed)
 
 
