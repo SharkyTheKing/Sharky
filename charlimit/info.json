@@ -1,13 +1,13 @@
 {
-  "author": [
-    "Sharky The King"
-  ],
-  "name": "Charlimit",
-  "install_msg": "Thank you for installing Charlimit!",
-  "description": "v3 version of Kowlin's v2 character limit",
-  "short": "charlimit",
-  "tags": [],
-  "type": "COG",
-  "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
-  "min_bot_version": "3.4.0"
+    "author": [
+        "Sharky The King"
+    ],
+    "name": "Charlimit",
+    "install_msg": "Thank you for installing Charlimit!",
+    "description": "v3 version of Kowlin's v2 character limit",
+    "short": "charlimit",
+    "tags": [],
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+    "min_bot_version": "3.4.0"
 }

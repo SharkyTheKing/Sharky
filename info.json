@@ -1,5 +1,7 @@
 {
-    "author": ["Sharky The King"],
+    "author": [
+        "Sharky The King"
+    ],
     "install_msg": "Thank you for installing! If you come across an issue, please make an issue on my github.",
     "name": "Sharky",
     "short": "Cogs from Sharky",

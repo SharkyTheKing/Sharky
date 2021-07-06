@@ -5,14 +5,14 @@ Codes that I've been working on for use, feedback and issues are welcomed!
 [Red Cog Support](https://discord.gg/GET4DVk) | [Personal Server](https://discord.gg/SKEtjnA)
 
 ## Install
-These codes are for [Red Discord Bot](https://github.com/Cog-Creators/Red-DiscordBot), you MUST have a up-todate RedBot to use and/or install these codes. 
+These codes are for [Red Discord Bot](https://github.com/Cog-Creators/Red-DiscordBot), you MUST have a up-todate RedBot to use and/or install these codes.
 
 ## Charlimit
 Limits amount of characters and lines your members are able to send in a channel.
 
 This works perfect for LFG channels that you want to limit the amount of spam they put into their messages.
 
-It'll also send a message saying how many characters / lines is needed to not be removed, though this is defauled to being off. You must turn this on to allow for it to send a message. Currently, not adjustable message. 
+It'll also send a message saying how many characters / lines is needed to not be removed, though this is defauled to being off. You must turn this on to allow for it to send a message. Currently, not adjustable message.
 
 > Note: You MUST have set the proper permissions for the bot to be able to manage_messages in each of the channels affected or else this could cause issues.
 
@@ -116,4 +116,3 @@ Server verification system, requires people to type command to be allowed access
 
 > Note: This requires your knowledge of locking people out via role. This does not automatically handle this, it assumes you are or the person using this is capable of setting Discord permissions to disallow member viewing any channel except Rules and whatever channel used to send the command in.
 > Due to this, this requires Manage_Roles
-
