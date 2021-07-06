@@ -116,4 +116,3 @@ Server verification system, requires people to type command to be allowed access
 
 > Note: This requires your knowledge of locking people out via role. This does not automatically handle this, it assumes you are or the person using this is capable of setting Discord permissions to disallow member viewing any channel except Rules and whatever channel used to send the command in.
 > Due to this, this requires Manage_Roles
-
