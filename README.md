@@ -41,7 +41,7 @@ Do not submit random PRs without talking to me or Kreusada, the code is set the 
 
 Commands:
 - DmMail: DM command - Starts the process to send a mail ticket to chosen server.
-- StopMail: DM command - Not finished. 
+- StopMail: DM command - Not finished.
 
 - Mailset: Default command group for Mailsystem Settings
 - Mailset Activate: Sets the system to be enabled or disabled.
