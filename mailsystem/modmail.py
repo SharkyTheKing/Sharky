@@ -18,7 +18,7 @@ from .modcommands import ModCommands
 BASECOG = getattr(commands, "Cog", object)
 
 CHANNEL_CONFIG = {"user": None}
-GLOBAL_CONFIG = {"enable_commands": True, "ignore_guilds": []}
+GLOBAL_CONFIG = {"enable_commands": True, "ignore_guilds": [], "ignore_users": []}
 GUILD_CONFIG = {
     "category": None,
     "activation": False,

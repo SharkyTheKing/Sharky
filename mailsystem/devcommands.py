@@ -66,7 +66,6 @@ class DevCommands(MailSystemMixin):
 
         await ctx.send(embed=embed)
 
-    @checks.is_owner()
     @developer_commands.command(name="version")
     async def current_cog_version(self, ctx: commands.Context):
         """
@@ -128,7 +127,7 @@ class DevCommands(MailSystemMixin):
         )
 
     @developer_commands.command()
-    async def listblock(self, ctx: commands.Context):
+    async def listguildblock(self, ctx: commands.Context):
         """
         Lists all the guilds that are blocked.
 
