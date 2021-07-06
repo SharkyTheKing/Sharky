@@ -120,4 +120,5 @@ class MailSettings(MailSystemMixin):
 
         await ctx.send(embed=embed)
 
+
 # TODO Once things are in proper terms, I will work on autosetup.

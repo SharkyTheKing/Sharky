@@ -82,7 +82,9 @@ class EmbedSettings:
     Embed models for mailsystem's settings
     """
 
-    async def embed_list_setting(self, ctx: commands.Context, config_info, guild: Optional[discord.Guild]):
+    async def embed_list_setting(
+        self, ctx: commands.Context, config_info, guild: Optional[discord.Guild]
+    ):
         """
         Display config settings to embed
         """

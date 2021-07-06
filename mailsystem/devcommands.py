@@ -2,12 +2,11 @@ import asyncio
 from typing import Optional
 
 import discord
-from redbot.core import commands, checks
-from redbot.core.utils.chat_formatting import humanize_list
-from redbot.core.utils.chat_formatting import box, pagify
+from redbot.core import checks, commands
+from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
-from .mixins import MailSystemMixin
 from .embedmodel import EmbedSettings
+from .mixins import MailSystemMixin
 
 
 class DevCommands(MailSystemMixin):

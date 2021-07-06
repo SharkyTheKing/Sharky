@@ -7,13 +7,13 @@ from redbot.core import Config, checks, commands
 from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.predicates import MessagePredicate
 
+from .devcommands import DevCommands
 from .embedmodel import EmbedModels
 from .mail_logic import MailLogic
 from .mixins import MetaClass
+from .modcommands import ModCommands
 from .settings import MailSettings
 from .usercommands import UserCommands
-from .devcommands import DevCommands
-from .modcommands import ModCommands
 
 BASECOG = getattr(commands, "Cog", object)
 
@@ -24,7 +24,7 @@ GUILD_CONFIG = {
     "activation": False,
     "mail_log_channel": None,
     "enable_embeds": True,
-    "ignore_users" : []
+    "ignore_users": [],
 }
 
 mixinargs = (MailSettings, UserCommands, DevCommands, ModCommands, BASECOG)
