@@ -1,14 +1,14 @@
 {
-  "author": [
-    "Sharky The King",
-    "Predeactor"
-  ],
-  "name": "Verify",
-  "install_msg": "Thank you for installing Verify!",
-  "description": "Verification System",
-  "short": "Verify system",
-  "tags": [],
-  "type": "COG",
-  "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
-  "min_bot_version": "3.4.0"
+    "author": [
+        "Sharky The King",
+        "Predeactor"
+    ],
+    "name": "Verify",
+    "install_msg": "Thank you for installing Verify!",
+    "description": "Verification System",
+    "short": "Verify system",
+    "tags": [],
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+    "min_bot_version": "3.4.0"
 }
