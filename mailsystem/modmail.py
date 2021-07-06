@@ -46,7 +46,7 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
     **This is currently in testing. Please review the warning message.** `[p]mailset warn`
     """
 
-    __version__ = "0.1.1"
+    __version__ = "0.1.2"
     __author__ = ["SharkyTheKing", "Kreusada"]
 
     def __init__(self, bot):
