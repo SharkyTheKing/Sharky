@@ -69,6 +69,12 @@ class UserCommands(MailSystemMixin):
         """
         Send mail to the staff of a server
         """
+        confirm_global_block = await self._return_global_user_block(ctx.author.id)
+        if confirm_global_block:
+            return await ctx.send(
+                "The bot owner has blocked you from accessing the mailsystem commands."
+            )
+
         user_cache = MailLogic.check_tied_for_user(self, ctx.author.id)
 
         if not user_cache:

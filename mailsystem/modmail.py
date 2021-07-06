@@ -66,6 +66,26 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
         authors = humanize_list(self.__author__)
         return f"{context}\n\nAuthors: {authors}\nVersion: {self.__version__}"
 
+    async def _return_guild_block(self, guild: discord.Guild):
+        """
+        Returns whether the guild is blocked from setting up mailsystem or not.
+
+        True if its blocked, False if its not.
+        """
+        return True if guild.id in await self.config.ignore_guilds() else False
+
+    async def _return_global_user_block(self, user_id: int):
+        """
+        Returns whether the bot owner has blocked the user or not.
+        """
+        return True if user_id in await self.config.ignore_users() else False
+
+    async def _return_guild_user_block(self, guild: discord.Guild, user_id: int):
+        """
+        Returns whether a guild has a user blocked or not.
+        """
+        return True if user_id in await self.config.guild(guild).ignore_users() else False
+
     async def returning_content(self, ctx: commands.Context, contents: str, anonymous: bool):
         """
         A regular message that get's sent to either staff or user
@@ -217,6 +237,12 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
         - ``[anonymous]``: Whether to make the reply anonymous. Defaults to False.
         - ``<contents>``: The message to reply back to the user with.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         channel_cache = MailLogic.check_tied_for_channel(self, ctx.channel.id)
 
         if not channel_cache:
@@ -242,6 +268,12 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
         """
         Closes the modmail between the channel and user.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         guild_config = await self.config.guild(ctx.guild).all()
         if ctx.channel.category.id != guild_config["category"]:
             return await ctx.send("This channel is not in the MailSystem category.")

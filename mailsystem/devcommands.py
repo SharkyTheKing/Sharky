@@ -82,7 +82,7 @@ class DevCommands(MailSystemMixin):
         **Arguments:**
         - ``<guild>``: The guild you're wanting to block.
         """
-        if guild in await self.config.ignore_guilds():
+        if guild.id in await self.config.ignore_guilds():
             return await ctx.send("Error. Guild already in block list.")
 
         await ctx.send(
@@ -114,7 +114,7 @@ class DevCommands(MailSystemMixin):
         **Arguments:**
         - ``<guild>``: The guild you're wanting to unblock.
         """
-        if guild not in await self.config.ignore_guilds():
+        if guild.id not in await self.config.ignore_guilds():
             return await ctx.send("Error. Guild wasn't in the list.")
 
         async with self.config.ignore_guilds() as unblock_guild:

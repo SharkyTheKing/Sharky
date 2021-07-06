@@ -17,7 +17,7 @@ class ModCommands(MailSystemMixin):
         pass
 
     @checks.mod_or_permissions(manage_channels=True)
-    @mailsystem_settings.group(name="mod")
+    @mailsystem_settings.group(name="mod", hidden=True)
     async def moderator_commands(self, ctx: commands.Context):
         """
         Moderator commands for Mailset
@@ -34,6 +34,12 @@ class ModCommands(MailSystemMixin):
         **Arguments:**
         - ``Users``: The user(s) you're wanting to block.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         if users is None:
             return await ctx.send_help()
 
@@ -70,6 +76,12 @@ class ModCommands(MailSystemMixin):
 
         This will display all users who are blocked from making a mailsystem ticket.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         ignore_config = await self.config.guild(ctx.guild).ignore_users()
 
         if not ignore_config:

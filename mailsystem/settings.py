@@ -48,6 +48,12 @@ class MailSettings(MailSystemMixin):
 
         If nothing is inputted, it'll clear the results.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         if not channel:
             await self.config.guild(ctx.guild).mail_log_channel.set(None)
             return await ctx.send("Will no longer log channel deletions/creations.")
@@ -60,6 +66,12 @@ class MailSettings(MailSystemMixin):
         """
         Sets whether to use embeds or regular message
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         return await ctx.send(
             "Currently this is unavailable. If you have suggestions or would like to help finish this, please reach out to the cog owner(s)."
         )
@@ -81,6 +93,12 @@ class MailSettings(MailSystemMixin):
 
         If category isn't given, it'll clear the setting.
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         if not category:
             await self.config.guild(ctx.guild).category.clear()
             return await ctx.send("No category was provided, so the setting has been cleared.")
@@ -101,6 +119,12 @@ class MailSettings(MailSystemMixin):
         """
         Sets the system to be enabled or disabled
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         if not await self.config.guild(ctx.guild).category():
             return await ctx.send(
                 "There is no category set yet. I cannot be enabled until a category is setup."
@@ -115,6 +139,12 @@ class MailSettings(MailSystemMixin):
         """
         Displays MailSystem settings
         """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
         config_info = await self.config.guild(ctx.guild).all()
         embed = await EmbedSettings.embed_list_setting(self, ctx, config_info, None)
 
