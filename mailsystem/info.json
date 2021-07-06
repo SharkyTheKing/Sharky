@@ -7,7 +7,11 @@
     "install_msg": "**Warning: This Cog is still in testing, by installing and USING this Cog, you understand it comes with risks.**\n\nThis pre-release is to gather information, feedback, and issues from the community to improve the code. If you feel uncomfortable using this cog in its current state, uninstall it now.\n\nIf you have feedback or have an issue (bugs, breakage, bot blocking, etc) please send them to the proper place.",
     "description": "**This is currently in testing.** A Mail System (ModMail) for multiple guilds.",
     "short": "Pre-released MailSystem",
-    "tags": ["ModMail", "Mail", "Mod"],
+    "tags": [
+        "ModMail",
+        "Mail",
+        "Mod"
+    ],
     "type": "COG",
     "hidden": true
 }
