@@ -4,6 +4,7 @@ import discord
 from redbot.core import checks, commands
 from redbot.core.utils.chat_formatting import box, pagify
 
+from .mail_logic import MailLogic
 from .mixins import MailSystemMixin
 
 
@@ -23,6 +24,21 @@ class ModCommands(MailSystemMixin):
         Moderator commands for Mailset
         """
         pass
+
+    async def handle_user_config(self, ctx, user: int):
+        check_tied = MailLogic.check_tied_for_user(self, user)
+        if not check_tied:
+            return False
+
+        channel_obj = await self._return_channel_object(ctx, check_tied)
+
+        if not channel_obj:
+            return False
+
+        if channel_obj.id not in ctx.guild.channels:
+            return False
+
+        await self.config.channel(channel_obj).user.clear()
 
     @moderator_commands.command(usage="<users>")
     async def blockuser(self, ctx: commands.Context, users: commands.Greedy[discord.User] = None):
@@ -52,6 +68,8 @@ class ModCommands(MailSystemMixin):
                     blocked_user.append(user.id)
                     status = "Added"
                     status_list.append("{} {}".format(user.mention, status))
+                    await ModCommands.handle_user_config(self, ctx, user.id)
+                    # need to handle logging if it does wipe the config...plan for the future.
                 else:
                     blocked_user.remove(user.id)
                     status = "Removed"
