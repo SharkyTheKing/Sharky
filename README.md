@@ -35,7 +35,22 @@ Commands:
 
 I am still working on this cog and thinking of ways to handle different things. Currently, this doesn't support restricting modmail to a specific guild. By installing you are allowing every guild owner (or staff that is considered an admin or has manage_channel permissions) the ability to set this up for their guild.
 
-Until this is fully released, there will be no help for the commands listed in this README. Do not submit random PRs without talking to me or Kreusada, the code is set the way it is for future plans that I won't discuss publicly yet.
+Do not submit random PRs without talking to me or Kreusada, the code is set the way it is for future plans that I won't discuss publicly yet.
+
+> Note: These are subject to change at any moment's notice due to the pre-release.
+
+Commands:
+- DmMail: DM command - Starts the process to send a mail ticket to chosen server.
+- StopMail: DM command - Not finished. 
+
+- Mailset: Default command group for Mailsystem Settings
+- Mailset Activate: Sets the system to be enabled or disabled.
+    - Must have the category set first, otherwise won't be activated.
+- Mailset Category: Sets the category that channels will be created in.
+- Mailset Commands: Not finished.
+- Mailset Embeds: Not finished.
+- Mailset LogChannel: Sets the logging channel for when a modmail has been created or closed.
+- Mailset ShowSettings: Shows the guild's current settings.
 
 ## MorseShark
 Allows you to encode string into morsecode and lets you decode morsecode into text. Currently only English's standard text is available, if you'd like to help allow for more customizability, please reach out through the red's cog support server.
