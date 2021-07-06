@@ -43,11 +43,11 @@ class DevCommands(MailSystemMixin):
                         continue
                 guild_list.append(guild_obj)
 
-        msg = ""
-
         counter = 1
-        for entry in guild_list:
-            msg += f"[{counter}]:   {entry.name} - {entry.id}\n"
+        msg = "".join(
+            f"[{counter}]:   {entry.name} - {entry.id}\n" for entry in guild_list
+        )
+
 
         message = "Active guilds: " + box(msg, lang="md")
         for page in pagify(message):

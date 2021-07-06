@@ -118,12 +118,7 @@ class UserCommands(MailSystemMixin):
                 )
 
             send = await self._send_channel_embed(new_ticket, embed)
-            if not send:
-                return await ctx.send(
-                    "Error. Couldn't send ticket. Please contact the staff of the server."
-                )
-
-        elif user_cache:
+        else:
             channel = await self._return_channel_object(ctx, user_cache)
 
             check_guild_block = await self._return_guild_user_block(channel.guild, ctx.author.id)
@@ -135,10 +130,10 @@ class UserCommands(MailSystemMixin):
             embed = self._return_embed_to_mod(ctx, contents)
 
             send = await self._send_channel_embed(channel, embed)
-            if not send:
-                return await ctx.send(
-                    "Error. Couldn't send ticket. Please contact the staff of the server."
-                )
+        if not send:
+            return await ctx.send(
+                "Error. Couldn't send ticket. Please contact the staff of the server."
+            )
 
         embed = self._return_mod_embed_for_user(embed)
 

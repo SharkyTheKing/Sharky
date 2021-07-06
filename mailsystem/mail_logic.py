@@ -57,9 +57,10 @@ class MailLogic:
         """
         Retrieves the guild from the user
         """
-        dict_message = ""
-        for key, val in dict_guild.items():
-            dict_message += "[{counter}]: {guild_name}\n".format(counter=key, guild_name=val)
+        dict_message = "".join(
+            "[{counter}]: {guild_name}\n".format(counter=key, guild_name=val)
+            for key, val in dict_guild.items()
+        )
 
         choose_message = "Please choose a server:\n" + box(dict_message, lang="css")
         for page in pagify(choose_message):
@@ -131,9 +132,7 @@ class MailLogic:
         send_log = await MailLogic._send_to_log(
             self=self, guild=ctx.guild, content=None, embed=embed
         )
-        if not send_log:
-            return False
-        return True
+        return bool(send_log)
 
     async def create_channel_for_user(self, ctx: commands.Context, guild: discord.Guild, user):
         """
@@ -185,9 +184,7 @@ class MailLogic:
         send_log = await MailLogic._send_to_log(
             self=self, guild=channel.guild, content=None, embed=embed
         )
-        if not send_log:
-            return False
-        return True
+        return bool(send_log)
 
     async def _send_to_log(
         self, guild: discord.Guild, content: Optional[str], embed: Optional[discord.Embed]

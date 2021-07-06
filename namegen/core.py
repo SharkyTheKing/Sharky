@@ -96,10 +96,10 @@ class NameGen(BASECOG):
         Default settings are set to sending message. To change, type:
         `[p]nameset rename True`
         """
-        if toggle is True:
+        if toggle:
             await self.config.guild(ctx.guild).rename_members.set(True)
             return await ctx.send("Done. Will now rename members.")
-        elif toggle is False:
+        else:
             await self.config.guild(ctx.guild).rename_members.set(False)
             return await ctx.send("Done. Will now send message.")
 

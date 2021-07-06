@@ -34,13 +34,6 @@ class MailSettings(MailSystemMixin):
             "Currently this is unavailable. If you have suggestions or would like to help finish this, please reach out to the cog owner(s)."
         )
 
-        if toggle is True:
-            await self.config.enable_commands.set(True)
-            return await ctx.send("Users MUST use a command for a new mail ticket.")
-        elif toggle is False:
-            await self.config.enable_commands.set(False)
-            return await ctx.send("Users MUST send a regular DM to the bot for a new mail ticket.")
-
     @mailsystem_settings.command(name="logchannel", aliases=["log", "logging"])
     async def set_log_channel(self, ctx: commands.Context, channel: Optional[discord.TextChannel]):
         """
@@ -75,14 +68,6 @@ class MailSettings(MailSystemMixin):
         return await ctx.send(
             "Currently this is unavailable. If you have suggestions or would like to help finish this, please reach out to the cog owner(s)."
         )
-
-        if toggle is True:
-            await self.config.guild(ctx.guild).enable_embeds.set(True)
-            return await ctx.send("New Modmails will now use embeds.")
-
-        elif toggle is False:
-            await self.config.guild(ctx.guild).enable_embeds.set(False)
-            return await ctx.send("New Modmails will now use regular messages.\nt")
 
     @mailsystem_settings.command(name="category")
     async def set_mail_category(

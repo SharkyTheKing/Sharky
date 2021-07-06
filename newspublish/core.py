@@ -48,7 +48,7 @@ class NewsPublish(BASECOG):
         Returns True if in config, returns False if not.
         """
         config_list = await self.config.guild(guild).news_channels()
-        return True if channel.id in config_list else False
+        return channel.id in config_list
 
     @commands.group(name="publishset")
     @commands.guild_only()
@@ -104,7 +104,7 @@ class NewsPublish(BASECOG):
     async def publishset_blacklist_add(self, ctx, member: discord.Member):
         """Add a member to the newspublish blacklist."""
         async with self.config.guild(ctx.guild).blacklist() as b:
-            if not member.id in b:
+            if member.id not in b:
                 b.append(member.id)
                 await ctx.send(f"{member.name} was added to the newspublish blacklist.")
             else:
@@ -129,10 +129,7 @@ class NewsPublish(BASECOG):
         message = "Users on the newspublish blacklist:\n\n"
         for user in blacklist:
             user_obj = self.bot.get_user(user)
-            if not user_obj:
-                annotation = "(Unknown or deleted user)"
-            else:
-                annotation = f"({user_obj})"
+            annotation = "(Unknown or deleted user)" if not user_obj else f"({user_obj})"
             message += f"\t{user} {annotation}"
         for page in pagify(message):
             await ctx.send(box(page, lang="yaml"))
