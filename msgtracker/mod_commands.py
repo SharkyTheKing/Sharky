@@ -86,8 +86,6 @@ class ModCommands:
         if not self.counted_message:
             return await ctx.send("No messages tracked.")
 
-        list_words = []
-
         try:
             sorting_list = sorted(
                 self.counted_message[ctx.guild.id].items(),
@@ -99,8 +97,11 @@ class ModCommands:
                 "Sorry, there's currently no messages being tracked for this server."
             )
 
-        for userid, counter in sorting_list:
-            list_words.append("{} {} messages".format(userid, counter["message"]))
+        list_words = [
+            "{} {} messages".format(userid, counter["message"])
+            for userid, counter in sorting_list
+        ]
+
 
         if not list_words:
             return False
@@ -148,7 +149,7 @@ class ModCommands:
         if not confirm and message is not None:
             return False
 
-        if not confirm and message is None:
+        if not confirm:
             return await ctx.send("Okay, won't delete {}'s record.".format(member.display_name))
         await self.config.member(member).clear()
         await ctx.send("Done. Removed {}'s history".format(member.display_name))
@@ -166,7 +167,7 @@ class ModCommands:
         if not confirm and message is not None:
             return False
 
-        if not confirm and message is None:
+        if not confirm:
             return await ctx.send("Okay, won't delete the server's record.")
 
         await self.config.clear_all_members(ctx.guild)
@@ -215,19 +216,14 @@ class ModCommands:
                 if user.id not in blocked_user:
                     blocked_user.append(user.id)
                     status = "Added"
-                    status_list.append("{} {}".format(user.mention, status))
                 else:
                     blocked_user.remove(user.id)
                     status = "Removed"
-                    status_list.append("{} {}".format(user.mention, status))
-
-        status_message = ""
+                status_list.append("{} {}".format(user.mention, status))
         if not status_list:
             return await ctx.send("Uh oh...Something happened. Unable to process user(s)")
 
-        for status in status_list:
-            status_message += "{}\n".format(status)
-
+        status_message = "".join("{}\n".format(status) for status in status_list)
         message = "New status for listed users:\n{}".format(status_message)
 
         for page in pagify(message):
@@ -252,18 +248,13 @@ class ModCommands:
                 if channel.id not in chan:
                     chan.append(channel.id)
                     status = "Added"
-                    status_list.append("{} {}".format(channel.mention, status))
                 else:
                     chan.remove(channel.id)
                     status = "Removed"
-                    status_list.append("{} {}".format(channel.mention, status))
-
-        status_message = ""
+                status_list.append("{} {}".format(channel.mention, status))
         if not status_list:
             return await ctx.send("Uh oh...Something happened. Unable to process channel(s)\n")
-        for stat in status_list:
-            status_message += "{}\n".format(stat)
-
+        status_message = "".join("{}\n".format(stat) for stat in status_list)
         msg = "New status for listed channels:\n{}".format(status_message)
         for page in pagify(msg):
             await ctx.send(page)

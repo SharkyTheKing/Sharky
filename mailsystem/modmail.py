@@ -34,7 +34,7 @@ def customcheck():
     async def is_config_active(ctx: commands.Context):
         config = ctx.bot.get_cog("MailSystem").config
         enable_config = await config.enable_commands()
-        return False if not enable_config else True
+        return bool(enable_config)
 
     return commands.check(is_config_active)
 
@@ -72,19 +72,19 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
 
         True if its blocked, False if its not.
         """
-        return True if guild.id in await self.config.ignore_guilds() else False
+        return guild.id in await self.config.ignore_guilds()
 
     async def _return_global_user_block(self, user_id: int):
         """
         Returns whether the bot owner has blocked the user or not.
         """
-        return True if user_id in await self.config.ignore_users() else False
+        return user_id in await self.config.ignore_users()
 
     async def _return_guild_user_block(self, guild: discord.Guild, user_id: int):
         """
         Returns whether a guild has a user blocked or not.
         """
-        return True if user_id in await self.config.guild(guild).ignore_users() else False
+        return user_id in await self.config.guild(guild).ignore_users()
 
     async def returning_content(self, ctx: commands.Context, contents: str, anonymous: bool):
         """
@@ -97,7 +97,7 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
 
     async def _return_embed_or_content(self, ctx) -> bool:
         context = await self.config.guild(ctx.guild).embed_embeds()
-        return True if context else False
+        return bool(context)
 
     async def _return_yes_or_no(self, ctx: commands.Context):
         """

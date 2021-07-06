@@ -51,19 +51,14 @@ class ModCommands(MailSystemMixin):
                 if user.id not in blocked_user:
                     blocked_user.append(user.id)
                     status = "Added"
-                    status_list.append("{} {}".format(user.mention, status))
                 else:
                     blocked_user.remove(user.id)
                     status = "Removed"
-                    status_list.append("{} {}".format(user.mention, status))
-
-        status_message = ""
+                status_list.append("{} {}".format(user.mention, status))
         if not status_list:
             return await ctx.send("Uh oh...Something happened. Unable to process user(s)")
 
-        for status in status_list:
-            status_message += "{}\n".format(status)
-
+        status_message = "".join("{}\n".format(status) for status in status_list)
         message = "New status for listed users:\n{}".format(status_message)
 
         for page in pagify(message):

@@ -40,7 +40,7 @@ def customcheck():
     async def is_config_active(ctx: commands.Context):
         config = ctx.bot.get_cog("MsgTracker").config
         enable_config = await config.disable_block_commands()
-        return True if not enable_config else False
+        return not enable_config
 
     return commands.check(is_config_active)
 
@@ -163,12 +163,11 @@ class MsgTracker(BASECOG, ModCommands):
                 pound_len=pound_len + 2,
             )
 
-            pos = 1
             embed_message = embed_header
             embed = discord.Embed()
             embed.title = f"{ctx.guild.name}'s top 10 members"
 
-            for user_id, counter in top_10:
+            for pos, (user_id, counter) in enumerate(top_10, start=1):
                 user = ctx.guild.get_member(user_id).display_name
                 if user is None:
                     user = user_id
@@ -177,7 +176,6 @@ class MsgTracker(BASECOG, ModCommands):
                     f"{f'{pos}.': <{pound_len+2}} "
                     f"{humanize_number(counter['counter']): <{top_message_len + 6}} {user}\n"
                 )
-                pos += 1
             embed.description = box(embed_message, lang="md")
 
         await ctx.send(embed=embed)
@@ -256,11 +254,10 @@ class MsgTracker(BASECOG, ModCommands):
                 title="{guild}'s leaderboard".format(guild=ctx.guild.name), description=""
             )
             embed_list = []
-            pos = 1
             new_embed = base.copy()
             embed_message = embed_header
 
-            for user_id, counter in sorting_list:
+            for pos, (user_id, counter) in enumerate(sorting_list, start=1):
                 user = ctx.guild.get_member(user_id).display_name
                 if user is None:
                     user = user_id
@@ -287,8 +284,6 @@ class MsgTracker(BASECOG, ModCommands):
                     )
                     embed_list.append(new_embed)
                     embed_message = embed_header
-
-                pos += 1
 
             if embed_message != embed_header:
                 new_embed = base.copy()
@@ -381,11 +376,7 @@ class MsgTracker(BASECOG, ModCommands):
 
         cache = self.counted_message
         guilds = await self.config.all_guilds()
-        list_of_ids = []
-        for guild in guilds:
-            if guilds[guild]["enabled_system"]:
-                list_of_ids.append(guild)
-
+        list_of_ids = [guild for guild in guilds if guilds[guild]["enabled_system"]]
         for guild_id in list_of_ids:
             guild = self.bot.get_guild(guild_id)  # something errored out here
             if not guild:
@@ -446,9 +437,10 @@ class MsgTracker(BASECOG, ModCommands):
         if message.channel.id in config_data["ignored_channels"]:
             return False
 
-        if config_data["ignore_staff"] is True:
-            if await self.bot.is_mod_or_superior(message.author):
-                return False
+        if config_data[
+            "ignore_staff"
+        ] is True and await self.bot.is_mod_or_superior(message.author):
+            return False
 
         try:
             self.counted_message[message.guild.id]

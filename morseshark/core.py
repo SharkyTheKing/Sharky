@@ -101,8 +101,7 @@ class MorseShark(BASECOG):
                 word_list.append(self.morse_code[s])
             if s == "/":
                 word_list.append(" ")
-        word_string = "".join(word_list)
-        return word_string
+        return "".join(word_list)
 
     def encode_morse(self, message: str):
         alpha_code = {}

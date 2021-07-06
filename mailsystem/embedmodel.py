@@ -51,7 +51,7 @@ class EmbedModels:
 
         if anonymous:
             embed.set_author(name="Anonymous Reply", icon_url=ctx.guild.icon_url)
-        elif not anonymous:
+        else:
             embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
 
         return embed
@@ -71,7 +71,7 @@ class EmbedModels:
         if anonymous:
             embed.title = "Anonymous Message Sent"
             embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        elif not anonymous:
+        else:
             embed.title = "Message Sent"
 
         return embed
@@ -88,11 +88,7 @@ class EmbedSettings:
         """
         Display config settings to embed
         """
-        if guild:
-            guild = guild
-        else:
-            guild = ctx.guild
-
+        guild = guild or ctx.guild
         embed = discord.Embed(
             title="{guild_name}'s Mail Settings".format(guild_name=guild.name),
             color=await ctx.embed_colour(),
