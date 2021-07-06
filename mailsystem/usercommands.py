@@ -35,11 +35,20 @@ class UserCommands(MailSystemMixin):
             confirm = await self._return_yes_or_no(ctx)
 
             if not confirm:
+                await ctx.send("Canceled. Will not create the ticket.")
+                return False
+
+            check_guild_block = await self._return_guild_user_block(dict_guild[1], ctx.author.id)
+            if check_guild_block:
+                await ctx.send("Sorry, the guild has blocked you from making tickets.")
                 return False
 
             channel = await MailLogic.create_channel_for_user(self, ctx, dict_guild[1], ctx.author)
 
             if not channel:
+                await ctx.send(
+                    "Error. Unable to create the channel. Please contact the staff team of the server."
+                )
                 return False
 
             await MailLogic._update_channel_info(self, ctx, ctx.author, channel)
@@ -50,11 +59,19 @@ class UserCommands(MailSystemMixin):
             )
 
             if not guild_choice:
-                return
+                return False
+
+            check_guild_block = await self._return_guild_user_block(guild_choice, ctx.author.id)
+            if check_guild_block:
+                await ctx.send("Sorry, the guild has blocked you from making tickets.")
+                return False
 
             channel = await MailLogic.create_channel_for_user(self, ctx, guild_choice, ctx.author)
 
             if not channel:
+                await ctx.send(
+                    "Error. Unable to create the channel. Please contact the staff team of the server."
+                )
                 return False
 
             await MailLogic._update_channel_info(
@@ -81,9 +98,9 @@ class UserCommands(MailSystemMixin):
             new_ticket = await self._create_new_ticket(ctx=ctx)
 
             if not new_ticket:
-                return await ctx.send(
-                    "Error. Something went wrong when trying to make a new ticket."
-                )
+                return  # await ctx.send(
+                # "Error. Something went wrong when trying to make a new ticket."
+                # )
 
             embed = self._return_embed_to_mod(ctx, contents)
             if not embed:
@@ -108,6 +125,12 @@ class UserCommands(MailSystemMixin):
 
         elif user_cache:
             channel = await self._return_channel_object(ctx, user_cache)
+
+            check_guild_block = await self._return_guild_user_block(channel.guild, ctx.author.id)
+            if check_guild_block:
+                await ctx.send("Sorry, the guild has blocked you from making tickets.")
+                return False
+                # This shouldn't happen, though on the off chance it does...handled.
 
             embed = self._return_embed_to_mod(ctx, contents)
 

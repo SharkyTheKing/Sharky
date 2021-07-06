@@ -17,7 +17,7 @@ class ModCommands(MailSystemMixin):
         pass
 
     @checks.mod_or_permissions(manage_channels=True)
-    @mailsystem_settings.group(name="mod", hidden=True)
+    @mailsystem_settings.group(name="mod")
     async def moderator_commands(self, ctx: commands.Context):
         """
         Moderator commands for Mailset
