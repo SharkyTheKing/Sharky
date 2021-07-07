@@ -1,4 +1,5 @@
 import asyncio
+import io
 from typing import Optional
 
 import discord
@@ -154,3 +155,46 @@ class DevCommands(MailSystemMixin):
             name="Repo:", value="[Sharky's Cogs](https://github.com/SharkyTheKing/Sharky)"
         )
         await ctx.send(embed=embed)
+
+    @checks.is_owner()
+    @commands.command()
+    async def testhtml(self, ctx):
+        """
+        Test
+        """
+        command_file = io.BytesIO()
+        channel = ctx.bot.get_channel(853775084346540032)
+
+        written_content = "<!DOCTYPE html>\n"
+
+        written_content += "<body style='background-color:#36393f'>\n"
+        written_content += "<style>\n.clipped {\n\tclip-path: circle();\n\n}\n</style>\n"
+        written_content += "<style>\n.wrapwords {\n\tword-wrap: break-word;\ncolor:#bcddbf;\nfont-family: 'verdana'\n}\n</style>"
+        written_content += (
+            "<style>\n.authorname {\n\tcolor: white; font-family: 'verdana'\n}\n</style>\n"
+        )
+        written_content += "<style>\n.resizable {\n\tdisplay: inline-block;\n\tbackground: red;\n\tresize: both;\n\toverflow: hidden;\n\tline-height: 0;\n\twidth: 300px;\n\theight: auto;\n}\n"
+        written_content += ".resizable img {\n\twidth: 100%;\n\theight: 100%;\n}\n</style>\n"
+
+        async for m in channel.history(limit=5000, oldest_first=True):
+            if m.embeds:
+                written_content += "\n<img style='display:inline' src={avatar} width='30' height='30' class='clipped'/> <div style='display:inline' class='authorname'>{author_name}</div>\n".format(
+                    avatar=m.embeds[0].author.icon_url, author_name=m.embeds[0].author.name
+                )
+                written_content += "<p class=wrapwords>{content}</p>".format(
+                    content=m.embeds[0].description
+                )
+            else:
+                if m.attachments:
+                    written_content += "<br><div class='resizable'>"
+                    written_content += "<img src='{attachment}' alt='Test' width='30' height='30'>\n</div></br>\n".format(
+                        attachment=m.attachments[0].url
+                    )
+                    confirm_options = True
+        written_content += "</body>"
+        await ctx.send(len(written_content.encode()))
+        command_file.write(written_content.encode())
+        command_file.seek(0)
+        await ctx.send(
+            file=discord.File(command_file, filename="{}.html".format(ctx.channel.name))
+        )
