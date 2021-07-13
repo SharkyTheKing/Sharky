@@ -24,9 +24,8 @@ class UserCommands(MailSystemMixin):
         dict_guild = await MailLogic.get_mutual_guilds(self, ctx)
 
         if not dict_guild:
-            return await ctx.send(
-                "I'm sorry, there's no mutual servers that have modmail activated."
-            )
+            await ctx.send("I'm sorry, there's no mutual servers that have modmail activated.")
+            return False
 
         if len(dict_guild) == 1:
             await ctx.send(
