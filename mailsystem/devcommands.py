@@ -158,43 +158,87 @@ class DevCommands(MailSystemMixin):
 
     @checks.is_owner()
     @commands.command()
-    async def testhtml(self, ctx):
+    async def testhtml(self, ctx, channel_id: int):
         """
         Test
         """
         command_file = io.BytesIO()
-        channel = ctx.bot.get_channel(853775084346540032)
+        channel = ctx.bot.get_channel(channel_id)
+        if not channel:
+            return await ctx.send("Unable to find channel...")
 
-        written_content = "<!DOCTYPE html>\n"
+        written_content = """<!DOCTTYPE html>
+<body style='background-color:#36393f'>
+<style>
+.clipped {
+    clip-path: circle();
 
-        written_content += "<body style='background-color:#36393f'>\n"
-        written_content += "<style>\n.clipped {\n\tclip-path: circle();\n\n}\n</style>\n"
-        written_content += "<style>\n.wrapwords {\n\tword-wrap: break-word;\ncolor:#bcddbf;\nfont-family: 'verdana'\n}\n</style>"
-        written_content += (
-            "<style>\n.authorname {\n\tcolor: white; font-family: 'verdana'\n}\n</style>\n"
-        )
-        written_content += "<style>\n.resizable {\n\tdisplay: inline-block;\n\tbackground: red;\n\tresize: both;\n\toverflow: hidden;\n\tline-height: 0;\n\twidth: 300px;\n\theight: auto;\n}\n"
-        written_content += ".resizable img {\n\twidth: 100%;\n\theight: 100%;\n}\n</style>\n"
+}
+</style>
 
-        async for m in channel.history(limit=5000, oldest_first=True):
-            if m.embeds:
-                written_content += "\n<img style='display:inline' src={avatar} width='30' height='30' class='clipped'/> <div style='display:inline' class='authorname'>{author_name}</div>\n".format(
-                    avatar=m.embeds[0].author.icon_url, author_name=m.embeds[0].author.name
-                )
-                written_content += "<p class=wrapwords>{content}</p>".format(
-                    content=m.embeds[0].description
-                )
-            else:
-                if m.attachments:
-                    written_content += "<br><div class='resizable'>"
-                    written_content += "<img src='{attachment}' alt='Test' width='30' height='30'>\n</div></br>\n".format(
-                        attachment=m.attachments[0].url
+<style>
+.wrapwords {
+    word-wrap: break-word;
+    color: #bcddbf;
+    font_family: 'verdana'
+
+}
+</style>
+
+<style>
+.authorname {
+    color: white; font-family: 'verdana'
+
+}
+</style>
+
+<style>
+.resizable {
+    display: inline-block;
+    background: red;
+    resize: both;
+    overflow: hidden;
+    line-height: 0;
+    width: 300px;
+    height: auto;
+}
+</style>
+
+<style>
+.resizable img {
+    width: 100%;
+    height: 100%;
+}
+</style>
+        """
+        async with ctx.typing():
+            async for m in channel.history(limit=5000, oldest_first=False):
+                if m.embeds:
+                    written_content += "\n<img style='display:inline' src={avatar} width='30' height='30' class='clipped'/> <div style='display:inline' class='authorname'>{author_name}</div>\n".format(
+                        avatar=m.embeds[0].author.icon_url, author_name=m.embeds[0].author.name
                     )
-                    confirm_options = True
+                    written_content += "<p class=wrapwords>{content}</p>".format(
+                        content=m.embeds[0].description
+                    )
+                else:
+                    if m.content:
+                        written_content += "\n<img style='display:inline' src={avatar} width='30' height='30' class='clipped'/> <div style='display:inline' class='authorname'>{author_name}</div>\n".format(
+                            avatar=m.author.avatar_url, author_name=m.author.name
+                        )
+                        written_content += "<p class=wrapwords>{content}</p>".format(
+                            content=m.content
+                        )
+                    if m.attachments:
+                        written_content += "\n<img style='display:inline' src={avatar} width='30' height='30' class='clipped'/> <div style='display:inline' class='authorname'>{author_name}</div>\n".format(
+                            avatar=m.author.avatar_url, author_name=m.author.name
+                        )
+                        written_content += "<br><div class='resizable'>"
+                        written_content += " <img src='{attachment}' alt='Test' width='30' height='30'>\n</div></br>\n".format(
+                            attachment=m.attachments[0].url
+                        )
+                        confirm_options = True
         written_content += "</body>"
         await ctx.send(len(written_content.encode()))
         command_file.write(written_content.encode())
         command_file.seek(0)
-        await ctx.send(
-            file=discord.File(command_file, filename="{}.html".format(ctx.channel.name))
-        )
+        await ctx.send(file=discord.File(command_file, filename="{}.html".format(channel.name)))
