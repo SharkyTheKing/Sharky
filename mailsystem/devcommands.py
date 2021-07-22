@@ -226,7 +226,7 @@ class DevCommands(MailSystemMixin):
                             avatar=m.author.avatar_url, author_name=m.author.name
                         )
                         written_content += "<p class=wrapwords>{content}</p>".format(
-                            content=m.content
+                            content=m.clean_content
                         )
                     if m.attachments:
                         written_content += "\n<img style='display:inline' src={avatar} width='30' height='30' class='clipped'/> <div style='display:inline' class='authorname'>{author_name}</div>\n".format(
