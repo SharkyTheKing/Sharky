@@ -1,4 +1,5 @@
 import asyncio
+from typing import Optional
 
 import discord
 from redbot.core import checks, commands
@@ -79,7 +80,7 @@ class ModCommands:
 
     @checks.is_owner()
     @admin_control.command(name="cache")
-    async def message_track_cache(self, ctx):
+    async def message_track_cache(self, ctx, guild: Optional[discord.Guild]):
         """
         [BOT OWNER] Check cached messages counter for this server.
         """
@@ -88,9 +89,11 @@ class ModCommands:
 
         list_words = []
 
+        guild = guild or ctx.guild
+
         try:
             sorting_list = sorted(
-                self.counted_message[ctx.guild.id].items(),
+                self.counted_message[guild.id].items(),
                 key=lambda x: x[1]["message"],
                 reverse=True,
             )
@@ -98,6 +101,8 @@ class ModCommands:
             return await ctx.send(
                 "Sorry, there's currently no messages being tracked for this server."
             )
+        except AttributeError:
+            return await ctx.send("Sorry, there's currently no messages for that.")
 
         for userid, counter in sorting_list:
             list_words.append("{} {} messages".format(userid, counter["message"]))
