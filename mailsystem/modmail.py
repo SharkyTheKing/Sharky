@@ -223,18 +223,15 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
     def _return_user_tied_to_channel(self, channel):
         return MailLogic.check_tied_for_channel(self, channel.id)
 
-    @commands.command(usage="[anonymous=False] <Message To User>")
+    @commands.command(usage="<Message To User>")
     @commands.guild_only()
-    async def reply(
-        self, ctx: commands.Context, anonymous: Optional[bool] = False, *, contents: str
-    ):
+    async def reply(self, ctx: commands.Context, *, contents: str):
         """
         Sends a message back to the user.
 
         This will display the moderator's name back to the user.
 
         **Arguments:**
-        - ``[anonymous]``: Whether to make the reply anonymous. Defaults to False.
         - ``<contents>``: The message to reply back to the user with.
         """
         confirm_block = await self._return_guild_block(ctx.guild)
@@ -247,7 +244,7 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
 
         if not channel_cache:
             return await ctx.send("This channel is not tied to a user. Please delete channel.")
-        user_embed = self._return_embed_to_user(ctx=ctx, contents=contents, toggle=anonymous)
+        user_embed = self._return_embed_to_user(ctx=ctx, contents=contents, toggle=False)
 
         user = await self._return_user_object(ctx, channel_cache)
         if user is False:
@@ -257,7 +254,42 @@ class MailSystem(*mixinargs, metaclass=MetaClass):
         sent_mail = await self._send_user_embed(user, user_embed)
         if not sent_mail:
             return await ctx.send("Unable to send mesasge to user.")
-        mod_embed = self._return_user_embed_for_mod(ctx=ctx, embed=user_embed, toggle=anonymous)
+        mod_embed = self._return_user_embed_for_mod(ctx=ctx, embed=user_embed, toggle=False)
+
+        await ctx.send(embed=mod_embed)
+
+    @commands.command(usage="<Anonymous Message To User>")
+    @commands.guild_only()
+    async def areply(self, ctx: commands.Context, *, contents: str):
+        """
+        Sends an anonymous message back to the user.
+
+        This **will NOT** display the moderator's name back to the user.
+
+        **Arguments:**
+        - ``<contents>``: The message to reply back to the user with.
+        """
+        confirm_block = await self._return_guild_block(ctx.guild)
+        if confirm_block:
+            return await ctx.send(
+                "Sorry, this guild is blocked from accessing the MailSystem commands."
+            )
+
+        channel_cache = MailLogic.check_tied_for_channel(self, ctx.channel.id)
+
+        if not channel_cache:
+            return await ctx.send("This channel is not tied to a user. Please delete channel.")
+        user_embed = self._return_embed_to_user(ctx=ctx, contents=contents, toggle=True)
+
+        user = await self._return_user_object(ctx, channel_cache)
+        if user is False:
+            return await ctx.send(
+                "Unable to find user. Either this is done in error or they went poof from Discord."
+            )
+        sent_mail = await self._send_user_embed(user, user_embed)
+        if not sent_mail:
+            return await ctx.send("Unable to send mesasge to user.")
+        mod_embed = self._return_user_embed_for_mod(ctx=ctx, embed=user_embed, toggle=True)
 
         await ctx.send(embed=mod_embed)
 
