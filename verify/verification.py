@@ -14,7 +14,7 @@ class Verify(commands.Cog):
     """
 
     __author__ = ["SharkyTheKing", "Predeactor"]
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
 
     def __init__(self, bot, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -293,8 +293,8 @@ class Verify(commands.Cog):
 
         data = await self.config.guild(ctx.guild).all()
         log_config = data["logs"]
-        role_config = (data["temprole"], data["autoroles"])
-        if role_config.count(None) == 2:
+
+        if not data["temprole"] and not data["autoroles"]:
             await ctx.send(
                 (
                     "Sorry, there is no role configuration set. Please contact the moderation "
