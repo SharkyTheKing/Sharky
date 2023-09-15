@@ -14,7 +14,7 @@ class Verify(commands.Cog):
     """
 
     __author__ = ["SharkyTheKing", "Predeactor"]
-    __version__ = "1.0.1"
+    __version__ = "1.0.2"
 
     def __init__(self, bot, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -289,7 +289,7 @@ class Verify(commands.Cog):
         )
         created_on = "{}\n({} days ago)".format(member_created, since_created)
         joined_on = "{}\n({} days ago)".format(member_joined, since_joined)
-        author_avatar = author.avatar_url_as(static_format="png")
+        author_avatar = author.avatar
 
         data = await self.config.guild(ctx.guild).all()
         log_config = data["logs"]

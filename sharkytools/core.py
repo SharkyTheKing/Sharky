@@ -13,7 +13,7 @@ class SharkyTools(BASECOG):
     """
 
     __author__ = ["SharkyTheKing"]
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
 
     def __init__(self, bot):
         self.bot = bot
@@ -35,8 +35,8 @@ class SharkyTools(BASECOG):
         """Get a user's avatar even if they aren't on the server"""
         try:
             user_acc = await ctx.bot.fetch_user(user)
-            user_av, user_name, user_disc, = (
-                user_acc.avatar_url_as(static_format="png"),
+            (user_av, user_name, user_disc,) = (
+                user_acc.avatar,
                 user_acc.name,
                 user_acc.discriminator,
             )
@@ -61,7 +61,7 @@ class SharkyTools(BASECOG):
             user.discriminator,
             user.name,
             user.id,
-            user.avatar_url_as(static_format="png"),
+            user.avatar,
         )
         joined_at = user.joined_at
         user_joined = user.joined_at.strftime("%d %b %Y %H:%M")
@@ -90,7 +90,7 @@ class SharkyTools(BASECOG):
             user.mention,
             user.name,
             user.discriminator,
-            user.avatar_url_as(static_format="png"),
+            user.avatar,
         )
         joined_at = user.joined_at
         user_joined = user.joined_at.strftime("%d %b %Y %H:%M")

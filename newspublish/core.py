@@ -23,7 +23,7 @@ class NewsPublish(BASECOG):
     """
 
     __author__ = ["SharkyTheKing"]
-    __version__ = "1.1.0"
+    __version__ = "1.1.1"
 
     def __init__(self, bot):
         self.bot = bot

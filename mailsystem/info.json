@@ -13,5 +13,6 @@
         "Mod"
     ],
     "type": "COG",
-    "hidden": true
+    "hidden": true,
+    "min_bot_version": "3.5.0"
 }

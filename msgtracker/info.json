@@ -12,5 +12,6 @@
         "Leaderboard"
     ],
     "type": "COG",
-    "end_user_data_statement": "This cog stores User IDs and how many messages you have sent to a server that has this enabled. It does NOT store the message contents, only counting how many you've sent.\n\nYou can disable this function by going into the server of your choosing and type `[p]trackignore`, assuming the bot owner hasn't disabled this function.\n\nThis cog will support data removal requests."
+    "end_user_data_statement": "This cog stores User IDs and how many messages you have sent to a server that has this enabled. It does NOT store the message contents, only counting how many you've sent.\n\nYou can disable this function by going into the server of your choosing and type `[p]trackignore`, assuming the bot owner hasn't disabled this function.\n\nThis cog will support data removal requests.",
+    "min_bot_version": "3.5.0"
 }

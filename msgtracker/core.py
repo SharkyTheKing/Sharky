@@ -53,7 +53,7 @@ class MsgTracker(BASECOG, ModCommands):
     """
 
     __author__ = ["SharkyTheKing"]
-    __version__ = "1.0.3"
+    __version__ = "1.0.4"
 
     def __init__(self, bot):
         self.bot = bot
@@ -222,7 +222,9 @@ class MsgTracker(BASECOG, ModCommands):
 
             if update_config is False:
                 return await ctx.send("Something happened with updating. Please try again.")
-        except KeyError:  # If it fails to have anything, we may assume that no messages have been sent.
+        except (
+            KeyError
+        ):  # If it fails to have anything, we may assume that no messages have been sent.
             pass
         config_info = await self.config.all_members(ctx.guild)
 
@@ -236,7 +238,6 @@ class MsgTracker(BASECOG, ModCommands):
             # Even if it's turned off, we should still allow it to be shown.
 
         async with ctx.typing():
-
             sorting_list = sorted(config_info.items(), key=lambda x: x[1]["counter"], reverse=True)
 
             pound_len = len(str(len(sorting_list)))
