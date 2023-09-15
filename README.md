@@ -2,7 +2,7 @@
 Codes that I've been working on for use, feedback and issues are welcomed!
 
 ## Where to find me
-[Red Cog Support](https://discord.gg/GET4DVk) | [Personal Server](https://discord.gg/SKEtjnA)
+[Red Cog Support](https://discord.gg/GET4DVk)
 
 ## Install
 These codes are for [Red Discord Bot](https://github.com/Cog-Creators/Red-DiscordBot), you MUST have a up-todate RedBot to use and/or install these codes.
@@ -120,11 +120,6 @@ Commands:
 - Uav: Allows you to preview a user's avatar. (Must be userid)
 - Avatar: Shows member's avatar (Note: Can cause conflict with other cogs for same command)
 - Age: Shows member's age (Join date, account creation, etc)
-
-## StrawPoll
-Create polls through StrawPoll's API!
-
-Allows members to make a poll through StrawPoll. Returns a link to the poll after questionaire is finished. This allows for one member per guild active at a time so it doesn't get spammed on the bot.
 
 ## Verify
 Server verification system, requires people to type command to be allowed access in server

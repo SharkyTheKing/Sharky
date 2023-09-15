@@ -35,7 +35,11 @@ class SharkyTools(BASECOG):
         """Get a user's avatar even if they aren't on the server"""
         try:
             user_acc = await ctx.bot.fetch_user(user)
-            (user_av, user_name, user_disc,) = (
+            (
+                user_av,
+                user_name,
+                user_disc,
+            ) = (
                 user_acc.avatar,
                 user_acc.name,
                 user_acc.discriminator,
