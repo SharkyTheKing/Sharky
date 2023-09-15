@@ -11,7 +11,7 @@ class Charlimit(BaseCog):  # Charrlimit! Get it?! Charr?! Ah fk... what do you k
     """Limit the amount of characters / lines per channel"""
 
     __author__ = ["SharkyTheKing"]
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
 
     def __init__(self, bot: Red):
         self.bot = bot
