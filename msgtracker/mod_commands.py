@@ -305,7 +305,7 @@ class ModCommands:
         guild_config = await self.config.guild(ctx.guild).all()
         block_info = await self.config.disable_block_commands()
         embed = discord.Embed()
-        embed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.set_thumbnail(url=ctx.guild.icon)
         embed.title = "{}'s Guild Settings".format(ctx.guild.name)
 
         embed.add_field(
