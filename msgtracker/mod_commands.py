@@ -316,9 +316,11 @@ class ModCommands:
         )
         embed.add_field(
             name="Block Setting:",
-            value="Users can disallow the bot from tracking."
-            if block_info is False
-            else "Users can not disallow the bot from tracking.",
+            value=(
+                "Users can disallow the bot from tracking."
+                if block_info is False
+                else "Users can not disallow the bot from tracking."
+            ),
             inline=False,
         )
 

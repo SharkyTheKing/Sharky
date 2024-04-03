@@ -100,9 +100,11 @@ class EmbedSettings:
 
         embed.add_field(
             name="Category Name",
-            value=discord.utils.get(guild.channels, id=config_info["category"])
-            if config_info["category"]
-            else "No category set",
+            value=(
+                discord.utils.get(guild.channels, id=config_info["category"])
+                if config_info["category"]
+                else "No category set"
+            ),
             inline=False,
         )
 
@@ -121,16 +123,20 @@ class EmbedSettings:
 
         embed.add_field(
             name="Commands/Messages",
-            value="Must use a command in Bot's DM."
-            if global_toggle
-            else "Must send a direct message to the Bot.",
+            value=(
+                "Must use a command in Bot's DM."
+                if global_toggle
+                else "Must send a direct message to the Bot."
+            ),
         )
 
         embed.add_field(
             name="Logging Channel",
-            value=self.bot.get_channel(config_info["mail_log_channel"]).mention
-            if config_info["mail_log_channel"]
-            else "No logging category set",
+            value=(
+                self.bot.get_channel(config_info["mail_log_channel"]).mention
+                if config_info["mail_log_channel"]
+                else "No logging category set"
+            ),
             inline=False,
         )
 

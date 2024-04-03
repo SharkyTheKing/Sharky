@@ -6,7 +6,7 @@ repos:
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/flake8
-    rev: '3.9.2'
+    rev: '4.0.1'
     hooks:
       - id: flake8
   - repo: https://github.com/PyCQA/isort
@@ -14,7 +14,7 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.2.0
     hooks:
       # all files should end with an empty line (for one, it minimizes the diffs)
       - id: end-of-file-fixer
@@ -23,7 +23,7 @@ repos:
       # which is problematic for some tools
       - id: mixed-line-ending
         args:
-          - "--fix=lf"
+          - "--fix=auto"
 
       # Trailing whitespace is evil
       - id: trailing-whitespace
