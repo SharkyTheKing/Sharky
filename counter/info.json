@@ -1,0 +1,13 @@
+{
+    "author": [ 
+        "SharkyIsAKing"
+    ],
+    "name": "Counting Game",
+    "install_msg": "Thank you for installing Counter! Please make sure you set the channel using `[p]counter setchannel <channel>`.\n\nTake a look at all the settings option in `[p]help counter` and enjoy the game!",
+    "description": "A counting game cog. Users count up from 1, and if they mess up, the count resets to 1. They have 3 saves to prevent the reset, but they can also buy saves with their hard-earned coins.",
+    "short": "counter",
+    "tags": ["game", "counting"],
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+    "min_bot_version": "3.5.0"
+}
