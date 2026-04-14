@@ -52,7 +52,6 @@ Commands:
 - Mailset LogChannel: Sets the logging channel for when a modmail has been created or closed.
 - Mailset ShowSettings: Shows the guild's current settings.
 
-
 ## MsgTracker
 Counts how many messages a person sends in the guild if enabled. Sorts them into a leaderboard to display, allows for the members to set themselves to be ignored from the bot. Staff members have to allow them to be tracked if the member changes their mind.
 
