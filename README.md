@@ -16,6 +16,20 @@ It'll also send a message saying how many characters / lines is needed to not be
 
 > Note: You MUST have set the proper permissions for the bot to be able to manage_messages in each of the channels affected or else this could cause issues.
 
+## Counter
+A Counting Game, users will count up from 1, if they mess up at all the count resets to 1 and they have to start over again. There are 3 saves by default to prevent the reset, they can also buy saves with earned coins through the redbot's built-in bank system.
+
+> Note: You MUST have manage_messages to setup the counting system and adjust the settings. Be mindful that anyone can mess up the game by accident, there is no current way to purposedly block someone from participating outside of locking them out of the channel.
+
+Commands:
+- Counter buysave: Buys you an extra save. Default price is 1000, can be changed.
+- Counter resetguild: Resets everything back to default settings. 3 saves, first count is 1, default price is 1000. **Currently no confirmation as of cog version 1.0.0**
+- Counter setchannel: Sets the channel where the counting will be watched. The bot will only look for digits/numbers in messages.
+- Counter setcount: Sets the current count - Instead of starting from 1, you can start from 1000! In case you want to give the guild a little leniency from mistakes.
+- Counter setprice: Sets the saveprice from something other than 1000. Mind you, you need either the default red's economy cog loaded or another cog that touches the bank system.
+- Counter setsave: Changes the amount of saves currently. **Does not change the default 3**
+- Counter status: Shows the current count, saves, price and channel. **This can be ran by anyone unlike the other commands above.**
+
 ## Lockdown
 Lockdown system for guilds. Let's you completely lockdown your server Text Channels with having the option for the bot to leave a message.
 
