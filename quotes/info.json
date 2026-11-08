@@ -1,0 +1,20 @@
+{
+  "author": [
+    "SharkyIsAKing"
+  ],
+  "name": "Quotes",
+  "description": "A nice little cog to store random outlandish quotes/comments from people in the server!",
+  "install_msg": "Thank you for installing!",
+  "max_bot_version": "0.0.0",
+  "min_bot_version": "3.5.0",
+  "permissions": [
+    "attach_files",
+    "embed_links"
+  ],
+  "short": "Quote outlandish comments/quotes from your friends!",
+  "tags": [
+    "quotes",
+    "fun"
+  ],
+  "type": "COG"
+}
